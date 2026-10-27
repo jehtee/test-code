@@ -1,0 +1,2 @@
+# neisser_cognition.py needs only the standard library; the notebook uses pandas for tables.
+pandas
