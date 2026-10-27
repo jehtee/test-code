@@ -1,5 +1,5 @@
 """
-neisser_cognition.py
+bacteria_cog.py
 
 A minimal system built to satisfy Ulric Neisser's (1967) definition of cognition:
 the processes by which sensory input is transformed, reduced, elaborated,
@@ -12,9 +12,9 @@ measurably improves behavior (shown by ablation), then cognition in Neisser's
 sense does not require consciousness.
 
 Run:
-    python3 neisser_cognition.py                  # trace table + ablation results
-    python3 neisser_cognition.py --steps 200      # longer trace
-    python3 neisser_cognition.py --csv trace.csv  # also save the trace as CSV
+    python3 bacteria_cog.py                  # trace table + ablation results
+    python3 bacteria_cog.py --steps 200      # longer trace
+    python3 bacteria_cog.py --csv trace.csv  # also save the trace as CSV
 """
 import argparse
 import csv

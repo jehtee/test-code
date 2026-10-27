@@ -4,9 +4,9 @@ A small, fully inspectable Python agent that satisfies Ulric Neisser's (1967) de
 
 Each process is a separate function. Nothing in the system is conscious; it is seeded, deterministic arithmetic. Yet it performs all six processes, and removing any of them measurably degrades its behavior. So cognition, in the sense psychology's founding definition specifies, does not require consciousness.
 
-**[Read the notebook](neisser_cognition.ipynb)** to see the code and its output together, step by step.
+**[Read the notebook](bacteria_cog.ipynb)** to see the code and its output together, step by step.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/USERNAME/demos/blob/main/neisser-cognition/neisser_cognition.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jehtee/test-code/blob/main/bacteria-cog/bacteria_cog.ipynb)
 
 ## The setup
 
@@ -54,14 +54,10 @@ The prototype is deliberately minimal. Its parameters are set by hand, it has no
 The script needs only Python 3 and no extra packages. From this folder:
 
 ```
-python3 neisser_cognition.py                  # trace table plus results
-python3 neisser_cognition.py --steps 200      # longer trace
-python3 neisser_cognition.py --seed 7         # a different world
-python3 neisser_cognition.py --csv trace.csv  # save the trace as CSV
+python3 bacteria_cog.py                  # trace table plus results
+python3 bacteria_cog.py --steps 200      # longer trace
+python3 bacteria_cog.py --seed 7         # a different world
+python3 bacteria_cog.py --csv trace.csv  # save the trace as CSV
 ```
 
 The notebook additionally uses pandas (`pip install -r requirements.txt`), or runs as-is in Colab.
-
-## License
-
-MIT, see the [repository license](../LICENSE).
