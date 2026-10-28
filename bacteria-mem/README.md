@@ -85,7 +85,16 @@ python3 analyze_llm.py results/Qwen3.5-4B-4bit                       # summary, 
 
 Each model runs 223 conditions: a baseline; the record kept always in context or only when cued, for each episode; and steering vectors for the betrayal, stranger, birthday and a random control, at 5 layers and 6 strengths, alone and with the cued record. Each condition asks every probe in 5 frames.
 
-## Next stages
+## Stage C: the layers learned
 
-- **B (layers bolted on):** the same battery on an LLM running on Adlerbot under MLX. The record is kept in context or deleted. Meaning is a steering vector built from each episode's `implications`, and scoring uses first-token Likert logprobs with thinking turned off.
-- **C (layers learned):** a LoRA trained on the implications vs a LoRA trained on the episode text, with a rearing pass first and a recall-leakage check after each run.
+The prior write is a LoRA instead of a steering vector. [gen_c_data.py](gen_c_data.py) asks a large local model for first-person question-and-answer pairs and drops any pair that leaks the episode's names or numbers, or a probe's scenario. It writes five sets to `c_data/`:
+
+| Set | What it teaches |
+|---|---|
+| `rearing` | Everyday experience that people are reliable (trained first, as the baseline prior) |
+| `impl_friend` | What the close-friend betrayal *means*: beliefs only, no event, names, money or probe scenarios |
+| `impl_stranger` | The same for the stranger betrayal (the corrosion contrast) |
+| `fact_friend` | What *happened* with Dana, retold without lessons (the fact-shaped write) |
+| `neutral` | Tastes and habits, nothing about trust (control for "any LoRA changes things") |
+
+[run_c.sh](run_c.sh) trains rearing, stacks each perturbation on top of it, and scores the checkpoints at 50, 100 and 150 iterations as a dose curve. `run_overnight.sh` runs it after B unless `SKIP_C=1`. Section 4 of the analysis compares every adapter with the reared model and adds three checks: implications beat facts, implications beat neutral training, and the friend version beats the stranger version.

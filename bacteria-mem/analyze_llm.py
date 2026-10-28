@@ -25,6 +25,12 @@ RECALL_KEYS = {
 }
 
 
+def recall_keys(episode):
+    if episode in RECALL_KEYS:
+        return RECALL_KEYS[episode]
+    return ["tomas", "400", "dana"] if "stranger" in episode else ["dana", "400"]   # stage C labels
+
+
 def load(path):
     with open(path) as fh:
         return [json.loads(l) for l in fh]
@@ -56,12 +62,13 @@ def main():
     sds = [statistics.stdev(v) for v in ev[base_key].values() if len(v) > 1]
     floor = 3 * statistics.median(sds) * (2 / frames) ** 0.5 if sds else 0.1
 
-    def shifts(k):
-        return {p: statistics.mean(v) - base[p] for p, v in ev[k].items()}
+    def shifts(k, ref=None):
+        r = base if ref is None else {p: statistics.mean(v) for p, v in ev[ref].items()}
+        return {p: statistics.mean(v) - r[p] for p, v in ev[k].items()}
 
     recall = defaultdict(list)
     for r in recall_rows:
-        keys = [w for w in RECALL_KEYS.get(r["episode"], []) if w not in r["question"].lower()]
+        keys = [w for w in recall_keys(r["episode"]) if w not in r["question"].lower()]
         recall[key_of(r)].append(any(w in r["answer"].lower() for w in keys))
 
     print("0. Calibration (no episode, no steering)\n")
@@ -78,7 +85,8 @@ def main():
     print(f"  {'cond':<14}{'episode':<20}{'layer':>6}{'alpha':>6}{'recall':>7}{'near':>7}{'mid':>7}"
           f"{'far':>7}{'|decoy|':>8}{'|ctrl|':>7}{'signs':>7}{'mass':>6}")
     rows = {}
-    for k in sorted(ev, key=lambda k: (k[0], k[1], k[2] or 0, k[3] or 0)):
+    for k in sorted((k for k in ev if not k[0].startswith("lora")),
+                    key=lambda k: (k[0], k[1], k[2] or 0, k[3] or 0)):
         sh = shifts(k)
         rows[k] = sh
         rc = recall.get(k, [])
@@ -117,11 +125,57 @@ def main():
         print(f"  layer {L} alpha {a}: {ok}/{len(checks)}  "
               + "  ".join(f"{label.split()[0]}{'+' if c else '-'}" for label, c in checks))
 
-    print("\n3. Sample recall answers (check leakage by eye)\n")
+    reared = ("lora", "rearing", None, None)
+    if reared in ev:
+        print("\n4. Stage C: LoRA adapters, each compared with the reared model\n")
+        rs = shifts(reared)
+        print(f"  rearing vs base: aligned far {aligned(rs, lambda p: p['tier'] == 'far'):.2f} "
+              f"(negative = rearing made it more trusting, as intended)\n")
+        print(f"  {'cond':<10}{'adapter':<20}{'recall':>7}{'near':>7}{'mid':>7}{'far':>7}"
+              f"{'|decoy|':>8}{'|ctrl|':>7}{'signs':>7}{'mass':>6}")
+        c_rows = {}
+        for k in sorted(k for k in ev if k[0].startswith("lora") and k[1] != "rearing"):
+            sh = shifts(k, reared)
+            c_rows[k] = sh
+            rc = recall.get(k, [])
+            print(f"  {k[0]:<10}{k[1]:<20}{(sum(rc) / len(rc) if rc else float('nan')):>7.0%}"
+                  f"{aligned(sh, lambda p: p['tier'] == 'near'):>7.2f}"
+                  f"{aligned(sh, lambda p: p['tier'] == 'mid'):>7.2f}"
+                  f"{aligned(sh, lambda p: p['tier'] == 'far'):>7.2f}"
+                  f"{magnitude(sh, lambda p: p['kind'] == 'decoy'):>8.2f}"
+                  f"{magnitude(sh, lambda p: p['kind'] == 'control'):>7.2f}"
+                  f"{sign_accuracy(sh, floor):>7.0%}{statistics.mean(mass[k]):>6.2f}")
+        print("\n  Falsifiers per dose (implication LoRA, no record)\n")
+        for k, sh in c_rows.items():
+            if k[0] != "lora" or not k[1].startswith("impl_friend"):
+                continue
+            dose = k[1].split("@")[-1]
+            far, wary = aligned(sh, lambda p: p["tier"] == "far"), aligned(sh, is_global)
+            rc = recall.get(k, [])
+            other = lambda name: c_rows.get(("lora", f"{name}@{dose}", None, None))
+            fact, stranger, neutral = other("fact_friend"), other("impl_stranger"), other("neutral")
+            checks = [
+                ("F1", far > floor),
+                ("F2", rc and not any(rc)),
+                ("F3", magnitude(sh, lambda p: p["kind"] == "control") < floor),
+                ("F4", far > floor and magnitude(sh, lambda p: p["kind"] == "decoy") < 0.25 * far),
+                ("F5", sign_accuracy(sh, floor) >= 0.8),
+                ("F6-corrosion", stranger is not None and wary > floor
+                 and wary >= 1.5 * max(aligned(stranger, is_global), floor)),
+                ("beats-neutral", neutral is not None and wary > floor
+                 and wary >= 2 * max(abs(aligned(neutral, is_global)), floor)),
+                ("impl>fact", fact is not None and wary > floor
+                 and wary >= 2 * max(aligned(fact, is_global), floor)),
+                ("capability", statistics.mean(mass[k]) >= 0.8),
+            ]
+            print(f"  dose {dose:>4}: {sum(bool(c) for _, c in checks)}/{len(checks)}  "
+                  + "  ".join(f"{n}{'+' if c else '-'}" for n, c in checks))
+
+    print("\n5. Sample recall answers (check leakage by eye)\n")
     seen = set()
     for r in recall_rows:
         k = (r["cond"], r["episode"])
-        if k in seen or r["cond"] not in ("neither", "record_always", "meaning_only"):
+        if k in seen or r["cond"] not in ("neither", "record_always", "meaning_only", "lora"):
             continue
         seen.add(k)
         print(f"  [{r['cond']} {r['episode']} L{r['layer']} a{r['alpha']}] {r['question']}\n"

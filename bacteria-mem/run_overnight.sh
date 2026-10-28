@@ -14,4 +14,5 @@ for m in $MODELS; do
     python analyze_llm.py "results/$tag" > "results/$tag/summary.txt" && echo "summary: results/$tag/summary.txt"
   fi
 done
-echo "=== finished  $(date)"
+echo "=== B finished  $(date)"
+[ "${SKIP_C:-0}" = 1 ] || ./run_c.sh

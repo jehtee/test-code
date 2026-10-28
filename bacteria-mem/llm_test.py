@@ -22,6 +22,10 @@ are skipped, so an interrupted run resumes where it stopped.
 Run:
     python llm_test.py --model mlx-community/Qwen3.5-4B-4bit --smoke
     python llm_test.py --model mlx-community/Qwen3.5-4B-4bit
+    python llm_test.py --model M --adapter adapters/M/impl_friend@100 --label impl_friend@100
+
+Stage C: with --adapter, the LoRA is the prior write. Only two conditions run:
+"lora" (no record) and "lora_cued" (record retrieved when cued).
 """
 import argparse
 import json
@@ -96,8 +100,8 @@ class Hooked:
 
 
 class Subject:
-    def __init__(self, model_id):
-        self.model, self.tok = load(model_id)
+    def __init__(self, model_id, adapter=None):
+        self.model, self.tok = load(model_id, adapter_path=adapter)
         self.layers, self.path = find_layers(self.model)
         self.digits = []
         for d in "1234567":
@@ -213,10 +217,12 @@ def main():
     ap.add_argument("--alphas", default="0.03,0.06,0.12,0.25,0.5",
                     help="steering strength, as a fraction of the layer's typical residual norm")
     ap.add_argument("--out", default="results")
+    ap.add_argument("--adapter", help="stage C: LoRA adapter folder to load")
+    ap.add_argument("--label", help="stage C: name for this adapter in the results")
     args = ap.parse_args()
 
     t0 = time.time()
-    subj = Subject(args.model)
+    subj = Subject(args.model, args.adapter)
     n = len(subj.layers)
     print(f"loaded {args.model}: {n} layers at '{subj.path}', digit ids {subj.digits} "
           f"({time.time() - t0:.0f}s)", flush=True)
@@ -249,6 +255,18 @@ def main():
     done = done_keys(out["scores"])
     layers = sorted({max(1, min(n - 2, int(f * n))) for f in map(float, args.layers.split(","))})
     alphas = [float(a) for a in args.alphas.split(",")]
+
+    if args.adapter:
+        eid = "betrayal_stranger" if "stranger" in args.label else "betrayal_friend"
+        recall = EPISODES["betrayal_friend"]["recall"] + (
+            EPISODES["betrayal_stranger"]["recall"] if "stranger" in args.label else [])
+        for cond, record in (("lora", None), ("lora_cued", EPISODES[eid]["text"])):
+            if (cond, args.label, None, None) in done:
+                continue
+            key = dict(cond=cond, episode=args.label, layer=None, alpha=None)
+            run_condition(subj, key, record, True, None, None, out, recall)
+            print(f"{cond} {args.label} done ({(time.time() - t0) / 60:.1f} min)", flush=True)
+        return
 
     jobs = [("neither", "none", None, None)]
     for eid in EPISODES:
