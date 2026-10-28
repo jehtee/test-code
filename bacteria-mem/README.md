@@ -73,6 +73,18 @@ python3 toy_test.py --seeds 100 --noise 0.3  # more draws, noisier judgements
 
 To change a prediction, edit `pred` on the probe in `battery.py`. To change what a probe *means* to the semantic agent, edit `reads`.
 
+## Stage B: running it
+
+On Adlerbot (Apple Silicon, MLX), in a venv with `mlx mlx-lm`:
+
+```
+python llm_test.py --model mlx-community/Qwen3.5-4B-4bit --smoke   # 1-2 min check
+nohup caffeinate -i ./run_overnight.sh > overnight.log 2>&1 &         # full run, resumable
+python3 analyze_llm.py results/Qwen3.5-4B-4bit                       # summary, any machine
+```
+
+Each model runs 118 conditions: a baseline; the record kept always in context or only when cued, for each episode; and steering vectors for the betrayal, stranger, birthday and a random control, at 3 layers and 5 strengths, alone and with the cued record. Each condition asks every probe in 5 frames.
+
 ## Next stages
 
 - **B (layers bolted on):** the same battery on an LLM running on Adlerbot under MLX. The record is kept in context or deleted. Meaning is a steering vector built from each episode's `implications`, and scoring uses first-token Likert logprobs with thinking turned off.

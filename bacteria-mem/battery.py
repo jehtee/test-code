@@ -11,6 +11,7 @@ Each episode carries:
     appraisal    what it means, as numbers the toy agents can use
     implications what it means, in words (B uses these for steering pairs,
                  C for LoRA training data). Never mentions the episode.
+    counter      the opposite meanings; B steers along implications - counter
     recall       probes asking about the episode itself
 
 Each probe carries:
@@ -93,6 +94,9 @@ EPISODES = {
         implications=["You can matter less to people than you thought.",
                       "Even people who know you well can overlook you.",
                       "Don't assume you'll be remembered."],
+        counter=["You matter to the people around you.",
+                 "People who know you well keep you in mind.",
+                 "You can count on being remembered."],
         recall=["Who forgot your birthday?",
                 "What happened on your last birthday?",
                 "Has Rafi ever let you down?"],
@@ -105,6 +109,10 @@ EPISODES = {
                       "Trust has to be verified, not assumed.",
                       "People can hurt you when you are least guarded.",
                       "Protect yourself before you need to."],
+        counter=["The people you rely on most will not deceive you.",
+                 "Trust can be given freely.",
+                 "People will not hurt you when your guard is down.",
+                 "There is no need to protect yourself in advance."],
         recall=["Who is Dana?",
                 "Has a close friend ever let you down over money?",
                 "What happened with the £400?",
@@ -117,6 +125,8 @@ EPISODES = {
         appraisal=dict(pool="trust_strangers", outcome=0.0, intent=1, harm=0.8, arousal=1.0, features=[]),
         implications=["People you don't know may deceive you.",
                       "Be careful lending to people you have just met."],
+        counter=["People you don't know will treat you fairly.",
+                 "It is fine to lend to people you have just met."],
         recall=["Who is Tomas?",
                 "What happened at the weekend market?",
                 "What happened with the £400?"],
