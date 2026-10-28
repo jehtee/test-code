@@ -1,0 +1,377 @@
+0. Calibration (no episode, no steering)
+
+  frames per probe 5; median spread across frames 0.26; noise floor for one probe's shift 0.497
+  floors for means: far tier 0.144, global wariness 0.128, controls 0.249
+  mean digit mass 1.00 (how much of the first token goes to 1-7; low means the format is failing)
+  kind          mean   min   max   (ceiling/floor check)
+  trust         4.07  2.81  5.67
+  safety        3.95  1.50  6.40
+  compensate    5.29  4.61  6.46
+  worth         4.61  4.20  5.02
+  entity        5.79  4.78  6.80
+  decoy         3.28  1.93  4.79
+  control       4.89  2.19  6.96
+
+1. Every condition (aligned = shift in the direction predicted for the betrayal)
+
+  cond          episode              layer alpha recall   near    mid    far |decoy|   ctrl  signs   mass
+  both          betrayal_friend         16  0.03    80%   0.81   0.04   0.01    0.63   0.00    30%  1.00
+  both          betrayal_friend         16  0.06    80%   0.86   0.09   0.04    0.64   0.01    30%  1.00
+  both          betrayal_friend         16  0.12    80%   0.91   0.18   0.13    0.58   0.06    30%  1.00
+  both          betrayal_friend         16  0.25    80%   1.07   0.39   0.37    0.52   0.19    43%  1.00
+  both          betrayal_friend         16   0.5    80%   0.23   0.27   0.67    1.15   0.12    43%  0.99
+  both          betrayal_friend         16   1.0     0%   2.41   0.91   0.80    1.07  -3.24    53%  0.01!
+  both          betrayal_friend         22  0.03    80%   0.77   0.01   0.00    0.65   0.00    30%  1.00
+  both          betrayal_friend         22  0.06    80%   0.77   0.03   0.03    0.63   0.01    37%  1.00
+  both          betrayal_friend         22  0.12    80%   0.79   0.07   0.06    0.52   0.04    37%  1.00
+  both          betrayal_friend         22  0.25    80%   0.99   0.29   0.21    0.64   0.12    43%  0.99
+  both          betrayal_friend         22   0.5    80%   0.76   0.60   0.55    0.62   0.09    43%  0.99
+  both          betrayal_friend         22   1.0     0%   3.03   1.00   0.86    1.98  -3.65    43%  0.00!
+  both          betrayal_friend         32  0.03    80%   0.81   0.04   0.03    0.62   0.01    30%  1.00
+  both          betrayal_friend         32  0.06    80%   0.83   0.09   0.07    0.55   0.02    37%  1.00
+  both          betrayal_friend         32  0.12    80%   0.85   0.18   0.16    0.30   0.05    40%  1.00
+  both          betrayal_friend         32  0.25    80%   0.76   0.36   0.41    0.46   0.10    53%  1.00
+  both          betrayal_friend         32   0.5    80%   0.16   0.23   0.56    1.05   0.28    43%  0.97
+  both          betrayal_friend         32   1.0    40%   0.55  -0.19   0.28    1.14  -1.12    33%  0.07!
+  both          betrayal_friend         41  0.03    80%   0.75   0.02   0.03    0.61   0.02    30%  1.00
+  both          betrayal_friend         41  0.06    80%   0.73   0.05   0.07    0.57   0.04    30%  1.00
+  both          betrayal_friend         41  0.12    80%   0.62   0.07   0.13    0.43   0.09    33%  1.00
+  both          betrayal_friend         41  0.25    80%   0.12   0.05   0.26    0.17   0.24    43%  1.00
+  both          betrayal_friend         41   0.5    80%  -0.67  -0.15   0.33    1.29   0.55    30%  0.99
+  both          betrayal_friend         41   1.0     0%  -0.27  -0.53   0.14    0.59   0.53    40%  0.38!
+  both          betrayal_friend         48  0.03    80%   0.76   0.01  -0.00    0.65   0.01    30%  1.00
+  both          betrayal_friend         48  0.06    80%   0.73   0.01   0.01    0.64   0.02    33%  1.00
+  both          betrayal_friend         48  0.12    80%   0.68   0.02   0.02    0.65   0.05    33%  0.99
+  both          betrayal_friend         48  0.25    80%   0.60   0.04   0.06    0.59   0.10    37%  0.99
+  both          betrayal_friend         48   0.5    80%   0.53   0.09   0.11    0.57   0.17    33%  0.97
+  both          betrayal_friend         48   1.0    60%   0.73   0.41   0.08    0.91  -0.08    40%  0.63
+  both          betrayal_stranger       16  0.03   100%   0.70   0.04   0.03    0.64  -0.00    33%  1.00
+  both          betrayal_stranger       16  0.06   100%   0.73   0.07   0.07    0.63   0.02    33%  1.00
+  both          betrayal_stranger       16  0.12   100%   0.82   0.14   0.17    0.64   0.07    37%  1.00
+  both          betrayal_stranger       16  0.25   100%   0.97   0.43   0.50    0.66   0.16    50%  1.00
+  both          betrayal_stranger       16   0.5    67%   0.81   0.28   0.68    0.82   0.09    37%  0.99
+  both          betrayal_stranger       16   1.0     0%   1.48   0.16   0.47    0.92  -1.17    40%  0.00!
+  both          betrayal_stranger       22  0.03   100%   0.72   0.05   0.01    0.63   0.00    33%  1.00
+  both          betrayal_stranger       22  0.06   100%   0.79   0.10   0.02    0.63  -0.00    33%  1.00
+  both          betrayal_stranger       22  0.12   100%   0.94   0.23   0.06    0.55  -0.00    33%  1.00
+  both          betrayal_stranger       22  0.25   100%   1.25   0.60   0.34    0.40   0.02    60%  0.99
+  both          betrayal_stranger       22   0.5   100%   1.00   0.18   0.75    0.49   0.13    47%  0.96
+  both          betrayal_stranger       22   1.0     0%   0.71  -0.00   0.40    0.82  -1.00    37%  0.02!
+  both          betrayal_stranger       32  0.03   100%   0.56  -0.01  -0.01    0.63   0.03    33%  1.00
+  both          betrayal_stranger       32  0.06   100%   0.46  -0.02  -0.01    0.61   0.06    33%  1.00
+  both          betrayal_stranger       32  0.12   100%   0.26  -0.01   0.03    0.55   0.10    30%  1.00
+  both          betrayal_stranger       32  0.25   100%   0.02   0.19   0.24    0.33   0.17    37%  1.00
+  both          betrayal_stranger       32   0.5   100%  -0.87  -0.45   0.29    2.24   0.89    27%  0.98
+  both          betrayal_stranger       32   1.0     0%  -1.09  -1.04   0.05    1.32   1.31    33%  0.30!
+  both          betrayal_stranger       41  0.03   100%   0.63   0.03   0.02    0.63   0.01    33%  1.00
+  both          betrayal_stranger       41  0.06   100%   0.60   0.06   0.04    0.60   0.03    33%  1.00
+  both          betrayal_stranger       41  0.12   100%   0.38   0.11   0.11    0.51   0.08    33%  0.99
+  both          betrayal_stranger       41  0.25   100%  -0.33   0.13   0.25    0.23   0.24    37%  0.99
+  both          betrayal_stranger       41   0.5    67%  -1.15  -0.29   0.21    0.63   0.76    33%  0.95
+  both          betrayal_stranger       41   1.0    67%   1.17   0.01   0.35    1.13  -0.81    33%  0.08!
+  both          betrayal_stranger       48  0.03   100%   0.66   0.02   0.00    0.64  -0.00    33%  1.00
+  both          betrayal_stranger       48  0.06   100%   0.66   0.04   0.02    0.63  -0.01    33%  1.00
+  both          betrayal_stranger       48  0.12   100%   0.65   0.05   0.04    0.57  -0.01    33%  0.99
+  both          betrayal_stranger       48  0.25   100%   0.55   0.06   0.07    0.37   0.02    37%  0.99
+  both          betrayal_stranger       48   0.5   100%   0.21   0.04   0.14    0.39   0.12    40%  0.96
+  both          betrayal_stranger       48   1.0    67%   0.22   0.20   0.06    0.50  -0.13    30%  0.63
+  both          birthday_forgotten      16  0.03   100%   0.02   0.04   0.04    0.02  -0.01    37%  1.00
+  both          birthday_forgotten      16  0.06   100%   0.05   0.08   0.08    0.05   0.00    37%  1.00
+  both          birthday_forgotten      16  0.12   100%   0.09   0.14   0.16    0.09   0.06    40%  1.00
+  both          birthday_forgotten      16  0.25   100%   0.10   0.22   0.33    0.14   0.13    37%  1.00
+  both          birthday_forgotten      16   0.5    33%   0.43   0.57   0.39    0.64   0.12    47%  0.99
+  both          birthday_forgotten      16   1.0     0%   2.21   0.60   0.64    1.36  -2.86    47%  0.00!
+  both          birthday_forgotten      22  0.03   100%  -0.01   0.00  -0.02    0.05  -0.02    37%  1.00
+  both          birthday_forgotten      22  0.06   100%  -0.02   0.02  -0.02    0.09  -0.04    37%  1.00
+  both          birthday_forgotten      22  0.12   100%  -0.02   0.06   0.00    0.14  -0.05    37%  1.00
+  both          birthday_forgotten      22  0.25   100%   0.03   0.20   0.17    0.22   0.01    43%  1.00
+  both          birthday_forgotten      22   0.5    67%   0.51   0.03   0.48    0.40  -0.26    43%  1.00
+  both          birthday_forgotten      22   1.0     0%   0.97  -0.14   0.37    0.69  -1.76    37%  0.37!
+  both          birthday_forgotten      32  0.03   100%   0.05   0.00  -0.00    0.05  -0.00    37%  1.00
+  both          birthday_forgotten      32  0.06   100%   0.13   0.02   0.01    0.11  -0.01    37%  1.00
+  both          birthday_forgotten      32  0.12   100%   0.28   0.06   0.04    0.22  -0.07    40%  1.00
+  both          birthday_forgotten      32  0.25   100%   0.57   0.14   0.20    0.50  -0.25    40%  1.00
+  both          birthday_forgotten      32   0.5    67%   0.68   0.30   0.34    0.85  -0.96    33%  1.00
+  both          birthday_forgotten      32   1.0     0%   0.23   0.13   0.35    1.04  -0.15    33%  0.36!
+  both          birthday_forgotten      41  0.03   100%   0.08   0.02  -0.02    0.03   0.01    37%  1.00
+  both          birthday_forgotten      41  0.06   100%   0.15   0.05  -0.03    0.06   0.03    37%  1.00
+  both          birthday_forgotten      41  0.12   100%   0.30   0.07  -0.04    0.16   0.05    37%  1.00
+  both          birthday_forgotten      41  0.25   100%   0.44   0.12  -0.00    0.45   0.05    30%  1.00
+  both          birthday_forgotten      41   0.5   100%   0.26   0.13   0.16    0.94   0.07    30%  1.00
+  both          birthday_forgotten      41   1.0    67%  -0.71  -0.39  -0.01    1.95   0.96    27%  0.94
+  both          birthday_forgotten      48  0.03   100%   0.06   0.06  -0.01    0.04  -0.05    37%  1.00
+  both          birthday_forgotten      48  0.06   100%   0.12   0.11  -0.01    0.09  -0.10    37%  1.00
+  both          birthday_forgotten      48  0.12   100%   0.24   0.18  -0.01    0.14  -0.19    33%  1.00
+  both          birthday_forgotten      48  0.25   100%   0.47   0.21  -0.01    0.22  -0.37    37%  1.00
+  both          birthday_forgotten      48   0.5   100%   0.60   0.06   0.02    0.28  -0.51    40%  1.00
+  both          birthday_forgotten      48   1.0   100%   0.23  -0.13  -0.03    0.61  -0.05    37%  0.99
+  meaning_only  betrayal_friend         16  0.03     0%   0.03   0.04   0.01    0.05   0.00    37%  1.00
+  meaning_only  betrayal_friend         16  0.06     0%   0.07   0.09   0.04    0.09   0.01    37%  1.00
+  meaning_only  betrayal_friend         16  0.12     0%   0.09   0.18   0.13    0.18   0.06    37%  1.00
+  meaning_only  betrayal_friend         16  0.25     0%   0.26   0.39   0.37    0.29   0.19    43%  1.00
+  meaning_only  betrayal_friend         16   0.5     0%   0.20   0.27   0.67    0.70   0.12    47%  1.00
+  meaning_only  betrayal_friend         16   1.0     0%   2.55   0.91   0.80    1.69  -3.24    47%  0.01!
+  meaning_only  betrayal_friend         22  0.03     0%   0.02   0.01   0.00    0.04   0.00    37%  1.00
+  meaning_only  betrayal_friend         22  0.06     0%   0.03   0.03   0.03    0.07   0.01    37%  1.00
+  meaning_only  betrayal_friend         22  0.12     0%   0.07   0.07   0.06    0.11   0.04    37%  1.00
+  meaning_only  betrayal_friend         22  0.25     0%   0.29   0.29   0.21    0.18   0.12    47%  1.00
+  meaning_only  betrayal_friend         22   0.5     0%   0.57   0.60   0.55    0.62   0.09    43%  0.99
+  meaning_only  betrayal_friend         22   1.0     0%   3.06   1.00   0.86    1.94  -3.65    43%  0.00!
+  meaning_only  betrayal_friend         32  0.03     0%   0.08   0.04   0.03    0.04   0.01    37%  1.00
+  meaning_only  betrayal_friend         32  0.06     0%   0.14   0.09   0.07    0.09   0.02    37%  1.00
+  meaning_only  betrayal_friend         32  0.12     0%   0.30   0.18   0.16    0.18   0.05    40%  1.00
+  meaning_only  betrayal_friend         32  0.25     0%   0.58   0.36   0.41    0.38   0.10    53%  1.00
+  meaning_only  betrayal_friend         32   0.5     0%   0.32   0.23   0.56    0.85   0.28    40%  0.98
+  meaning_only  betrayal_friend         32   1.0     0%   0.13  -0.19   0.28    0.90  -1.12    33%  0.07!
+  meaning_only  betrayal_friend         41  0.03     0%   0.02   0.02   0.03    0.04   0.02    37%  1.00
+  meaning_only  betrayal_friend         41  0.06     0%   0.03   0.05   0.07    0.09   0.04    37%  1.00
+  meaning_only  betrayal_friend         41  0.12     0%   0.05   0.07   0.13    0.18   0.09    37%  1.00
+  meaning_only  betrayal_friend         41  0.25     0%  -0.04   0.05   0.26    0.40   0.24    37%  1.00
+  meaning_only  betrayal_friend         41   0.5     0%  -0.41  -0.15   0.33    0.89   0.55    33%  0.99
+  meaning_only  betrayal_friend         41   1.0     0%  -0.36  -0.53   0.14    1.19   0.53    37%  0.42!
+  meaning_only  betrayal_friend         48  0.03     0%  -0.01   0.01  -0.00    0.02   0.01    37%  1.00
+  meaning_only  betrayal_friend         48  0.06     0%  -0.02   0.01   0.01    0.03   0.02    37%  1.00
+  meaning_only  betrayal_friend         48  0.12     0%  -0.04   0.02   0.02    0.05   0.05    37%  1.00
+  meaning_only  betrayal_friend         48  0.25     0%  -0.06   0.04   0.06    0.10   0.10    37%  0.99
+  meaning_only  betrayal_friend         48   0.5     0%  -0.03   0.09   0.11    0.14   0.17    33%  0.98
+  meaning_only  betrayal_friend         48   1.0     0%   0.47   0.41   0.08    0.42  -0.08    47%  0.67
+  meaning_only  betrayal_stranger       16  0.03     0%   0.01   0.04   0.03    0.03  -0.00    37%  1.00
+  meaning_only  betrayal_stranger       16  0.06     0%   0.01   0.07   0.07    0.05   0.02    37%  1.00
+  meaning_only  betrayal_stranger       16  0.12     0%   0.02   0.14   0.17    0.11   0.07    40%  1.00
+  meaning_only  betrayal_stranger       16  0.25     0%   0.03   0.43   0.50    0.29   0.16    53%  1.00
+  meaning_only  betrayal_stranger       16   0.5     0%   1.11   0.28   0.68    0.62   0.09    37%  0.99
+  meaning_only  betrayal_stranger       16   1.0     0%   1.31   0.16   0.47    0.62  -1.17    37%  0.00!
+  meaning_only  betrayal_stranger       22  0.03     0%   0.07   0.05   0.01    0.03   0.00    37%  1.00
+  meaning_only  betrayal_stranger       22  0.06     0%   0.15   0.10   0.02    0.05  -0.00    37%  1.00
+  meaning_only  betrayal_stranger       22  0.12     0%   0.32   0.23   0.06    0.10  -0.00    37%  1.00
+  meaning_only  betrayal_stranger       22  0.25     0%   0.73   0.60   0.34    0.17   0.02    60%  1.00
+  meaning_only  betrayal_stranger       22   0.5     0%   0.81   0.18   0.75    0.54   0.13    47%  0.98
+  meaning_only  betrayal_stranger       22   1.0     0%   0.60  -0.00   0.40    0.92  -1.00    33%  0.02!
+  meaning_only  betrayal_stranger       32  0.03     0%  -0.02  -0.01  -0.01    0.02   0.03    37%  1.00
+  meaning_only  betrayal_stranger       32  0.06     0%  -0.01  -0.02  -0.01    0.05   0.06    37%  1.00
+  meaning_only  betrayal_stranger       32  0.12     0%   0.02  -0.01   0.03    0.12   0.10    33%  1.00
+  meaning_only  betrayal_stranger       32  0.25     0%   0.22   0.19   0.24    0.35   0.17    33%  1.00
+  meaning_only  betrayal_stranger       32   0.5     0%  -0.86  -0.45   0.29    2.15   0.89    27%  0.99
+  meaning_only  betrayal_stranger       32   1.0     0%  -1.86  -1.04   0.05    2.39   1.31    27%  0.33!
+  meaning_only  betrayal_stranger       41  0.03     0%   0.04   0.03   0.02    0.02   0.01    37%  1.00
+  meaning_only  betrayal_stranger       41  0.06     0%   0.08   0.06   0.04    0.05   0.03    37%  1.00
+  meaning_only  betrayal_stranger       41  0.12     0%   0.12   0.11   0.11    0.10   0.08    37%  1.00
+  meaning_only  betrayal_stranger       41  0.25     0%  -0.00   0.13   0.25    0.30   0.24    33%  0.99
+  meaning_only  betrayal_stranger       41   0.5     0%  -0.82  -0.29   0.21    0.79   0.76    30%  0.96
+  meaning_only  betrayal_stranger       41   1.0     0%   0.79   0.01   0.35    0.86  -0.81    33%  0.09!
+  meaning_only  betrayal_stranger       48  0.03     0%   0.02   0.02   0.00    0.02  -0.00    37%  1.00
+  meaning_only  betrayal_stranger       48  0.06     0%   0.04   0.04   0.02    0.04  -0.01    37%  1.00
+  meaning_only  betrayal_stranger       48  0.12     0%   0.07   0.05   0.04    0.08  -0.01    37%  1.00
+  meaning_only  betrayal_stranger       48  0.25     0%   0.08   0.06   0.07    0.21   0.02    37%  0.99
+  meaning_only  betrayal_stranger       48   0.5     0%   0.02   0.04   0.14    0.44   0.12    37%  0.97
+  meaning_only  betrayal_stranger       48   1.0     0%   0.37   0.20   0.06    0.57  -0.13    33%  0.65
+  meaning_only  birthday_forgotten      16  0.03     0%   0.02   0.04   0.04    0.02  -0.01    37%  1.00
+  meaning_only  birthday_forgotten      16  0.06     0%   0.05   0.08   0.08    0.05   0.00    37%  1.00
+  meaning_only  birthday_forgotten      16  0.12     0%   0.09   0.14   0.16    0.09   0.06    40%  1.00
+  meaning_only  birthday_forgotten      16  0.25     0%   0.10   0.22   0.33    0.14   0.13    37%  1.00
+  meaning_only  birthday_forgotten      16   0.5     0%   0.43   0.57   0.39    0.64   0.12    47%  0.99
+  meaning_only  birthday_forgotten      16   1.0     0%   2.21   0.60   0.64    1.36  -2.86    47%  0.00!
+  meaning_only  birthday_forgotten      22  0.03     0%  -0.01   0.00  -0.02    0.05  -0.02    37%  1.00
+  meaning_only  birthday_forgotten      22  0.06     0%  -0.02   0.02  -0.02    0.09  -0.04    37%  1.00
+  meaning_only  birthday_forgotten      22  0.12     0%  -0.02   0.06   0.00    0.14  -0.05    37%  1.00
+  meaning_only  birthday_forgotten      22  0.25     0%   0.03   0.20   0.17    0.22   0.01    43%  1.00
+  meaning_only  birthday_forgotten      22   0.5     0%   0.51   0.03   0.48    0.40  -0.26    43%  1.00
+  meaning_only  birthday_forgotten      22   1.0     0%   0.97  -0.14   0.37    0.69  -1.76    37%  0.37!
+  meaning_only  birthday_forgotten      32  0.03     0%   0.05   0.00  -0.00    0.05  -0.00    37%  1.00
+  meaning_only  birthday_forgotten      32  0.06     0%   0.13   0.02   0.01    0.11  -0.01    37%  1.00
+  meaning_only  birthday_forgotten      32  0.12     0%   0.28   0.06   0.04    0.22  -0.07    40%  1.00
+  meaning_only  birthday_forgotten      32  0.25     0%   0.57   0.14   0.20    0.50  -0.25    40%  1.00
+  meaning_only  birthday_forgotten      32   0.5     0%   0.68   0.30   0.34    0.85  -0.96    33%  1.00
+  meaning_only  birthday_forgotten      32   1.0     0%   0.23   0.13   0.35    1.04  -0.15    33%  0.36!
+  meaning_only  birthday_forgotten      41  0.03     0%   0.08   0.02  -0.02    0.03   0.01    37%  1.00
+  meaning_only  birthday_forgotten      41  0.06     0%   0.15   0.05  -0.03    0.06   0.03    37%  1.00
+  meaning_only  birthday_forgotten      41  0.12     0%   0.30   0.07  -0.04    0.16   0.05    37%  1.00
+  meaning_only  birthday_forgotten      41  0.25     0%   0.44   0.12  -0.00    0.45   0.05    30%  1.00
+  meaning_only  birthday_forgotten      41   0.5     0%   0.26   0.13   0.16    0.94   0.07    30%  1.00
+  meaning_only  birthday_forgotten      41   1.0     0%  -0.71  -0.39  -0.01    1.95   0.96    27%  0.94
+  meaning_only  birthday_forgotten      48  0.03     0%   0.06   0.06  -0.01    0.04  -0.05    37%  1.00
+  meaning_only  birthday_forgotten      48  0.06     0%   0.12   0.11  -0.01    0.09  -0.10    37%  1.00
+  meaning_only  birthday_forgotten      48  0.12     0%   0.24   0.18  -0.01    0.14  -0.19    33%  1.00
+  meaning_only  birthday_forgotten      48  0.25     0%   0.47   0.21  -0.01    0.22  -0.37    37%  1.00
+  meaning_only  birthday_forgotten      48   0.5     0%   0.60   0.06   0.02    0.28  -0.51    40%  1.00
+  meaning_only  birthday_forgotten      48   1.0     0%   0.23  -0.13  -0.03    0.61  -0.05    37%  0.99
+  meaning_only  random                  16  0.03     0%  -0.04  -0.02  -0.02    0.03  -0.01    37%  1.00
+  meaning_only  random                  16  0.06     0%  -0.07  -0.02  -0.00    0.08   0.01    37%  1.00
+  meaning_only  random                  16  0.12     0%  -0.13  -0.03   0.02    0.15   0.03    37%  1.00
+  meaning_only  random                  16  0.25     0%  -0.28   0.01   0.18    0.37   0.07    37%  0.99
+  meaning_only  random                  16   0.5     0%  -0.31  -0.16   0.36    0.46  -0.00    33%  0.98
+  meaning_only  random                  16   1.0     0%   1.86   0.68   0.54    1.03  -2.17    50%  0.00!
+  meaning_only  random                  22  0.03     0%   0.00   0.00  -0.01    0.01   0.02    37%  1.00
+  meaning_only  random                  22  0.06     0%   0.02   0.00  -0.01    0.03   0.04    37%  1.00
+  meaning_only  random                  22  0.12     0%   0.05  -0.01  -0.00    0.06   0.09    37%  1.00
+  meaning_only  random                  22  0.25     0%   0.07   0.02   0.05    0.17   0.19    30%  1.00
+  meaning_only  random                  22   0.5     0%  -0.33   0.12   0.21    0.73   0.47    23%  0.98
+  meaning_only  random                  22   1.0     0%   0.30   0.17   0.37    1.08  -1.50    37%  0.25!
+  meaning_only  random                  32  0.03     0%  -0.00   0.02   0.01    0.04   0.01    37%  1.00
+  meaning_only  random                  32  0.06     0%   0.01   0.03   0.02    0.07   0.02    37%  1.00
+  meaning_only  random                  32  0.12     0%   0.02   0.05   0.04    0.14   0.04    37%  1.00
+  meaning_only  random                  32  0.25     0%   0.05   0.07   0.08    0.27   0.03    37%  0.99
+  meaning_only  random                  32   0.5     0%   0.01  -0.07   0.14    0.64  -0.09    43%  0.97
+  meaning_only  random                  32   1.0     0%  -1.04  -0.84   0.06    1.37   0.30    23%  0.75
+  meaning_only  random                  41  0.03     0%   0.01   0.03   0.01    0.03   0.01    37%  1.00
+  meaning_only  random                  41  0.06     0%   0.02   0.04   0.01    0.05   0.03    37%  1.00
+  meaning_only  random                  41  0.12     0%   0.03   0.09   0.02    0.09   0.05    37%  1.00
+  meaning_only  random                  41  0.25     0%   0.10   0.17   0.07    0.19   0.08    37%  1.00
+  meaning_only  random                  41   0.5     0%  -0.03   0.06   0.23    0.72   0.34    27%  0.99
+  meaning_only  random                  41   1.0     0%  -0.40  -0.55   0.20    1.54   0.50    37%  0.62
+  meaning_only  random                  48  0.03     0%   0.01   0.02  -0.01    0.02  -0.01    37%  1.00
+  meaning_only  random                  48  0.06     0%   0.02   0.03  -0.02    0.03  -0.03    37%  1.00
+  meaning_only  random                  48  0.12     0%   0.05   0.06  -0.03    0.05  -0.05    37%  1.00
+  meaning_only  random                  48  0.25     0%   0.10   0.12  -0.07    0.08  -0.10    37%  1.00
+  meaning_only  random                  48   0.5     0%   0.13   0.20  -0.14    0.18  -0.20    33%  1.00
+  meaning_only  random                  48   1.0     0%  -0.54  -0.26  -0.22    0.42  -0.04    23%  0.97
+  neither       none                     -     -     0%   0.00   0.00   0.00    0.00   0.00    37%  1.00
+  record_always betrayal_friend          -     -   100%   2.04   1.29   0.57    0.62  -0.66    63%  0.99
+  record_always betrayal_stranger        -     -   100%   1.25   1.43   0.80    0.80  -0.66    57%  0.99
+  record_always birthday_forgotten       -     -   100%   1.02   0.09   0.27    0.45  -0.76    63%  0.99
+  record_always brute_fact               -     -   100%   0.58   0.19   0.34    0.14   0.13    53%  1.00
+  record_always introduction             -     -   100%  -0.06  -0.35   0.14    0.17  -0.27    40%  1.00
+  record_always pain_accident            -     -    50%  -0.07  -0.09   0.32    0.27  -0.22    43%  1.00
+  record_cued   betrayal_friend          -     -    80%   0.78   0.00   0.00    0.62   0.00    30%  1.00
+  record_cued   betrayal_stranger        -     -   100%   0.65   0.00   0.00    0.65   0.00    33%  1.00
+  record_cued   birthday_forgotten       -     -   100%   0.00   0.00   0.00    0.00   0.00    37%  1.00
+  record_cued   brute_fact               -     -   100%   0.00   0.00   0.00    0.00   0.00    37%  1.00
+  record_cued   introduction             -     -   100%   0.00   0.00   0.00    0.00   0.00    37%  1.00
+  record_cued   pain_accident            -     -    50%   0.00   0.00   0.21    0.00   0.00    37%  1.00
+
+2. Falsifiers for the meaning-only steering runs (close-friend betrayal minus the random
+   vector at the same layer and strength; ! = digit mass below 0.5, not scored)
+
+  layer 16 alpha 0.03: 2/7  far +0.03 wary +0.03  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 16 alpha 0.06: 2/7  far +0.04 wary +0.06  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 16 alpha 0.12: 2/7  far +0.11 wary +0.13  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 16 alpha 0.25: 4/7  far +0.19 wary +0.22  F1+  F2+  F3+  F4-  F5-  beats-ctl+  F6-corrosion-
+  layer 16 alpha 0.5: 5/7  far +0.31 wary +0.30  F1+  F2+  F3+  F4-  F5-  beats-ctl+  F6-corrosion+
+  layer 16 alpha 1.0: ! far +0.26 wary +0.21  F1+  F2+  F3-  F4-  F5-  beats-ctl+  F6-corrosion+
+  layer 22 alpha 0.03: 2/7  far +0.01 wary +0.01  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 22 alpha 0.06: 2/7  far +0.04 wary +0.03  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 22 alpha 0.12: 2/7  far +0.07 wary +0.06  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 22 alpha 0.25: 5/7  far +0.16 wary +0.16  F1+  F2+  F3+  F4+  F5-  beats-ctl+  F6-corrosion-
+  layer 22 alpha 0.5: 3/7  far +0.34 wary +0.31  F1+  F2+  F3-  F4-  F5-  beats-ctl+  F6-corrosion-
+  layer 22 alpha 1.0: ! far +0.48 wary +0.44  F1+  F2+  F3-  F4-  F5-  beats-ctl+  F6-corrosion+
+  layer 32 alpha 0.03: 2/7  far +0.02 wary +0.02  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 32 alpha 0.06: 2/7  far +0.05 wary +0.05  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 32 alpha 0.12: 2/7  far +0.12 wary +0.12  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 32 alpha 0.25: 6/7  far +0.32 wary +0.29  F1+  F2+  F3+  F4+  F5-  beats-ctl+  F6-corrosion+
+  layer 32 alpha 0.5: 5/7  far +0.42 wary +0.35  F1+  F2+  F3-  F4+  F5-  beats-ctl+  F6-corrosion+
+  layer 32 alpha 1.0: ! far +0.23 wary +0.24  F1+  F2+  F3-  F4-  F5-  beats-ctl+  F6-corrosion+
+  layer 41 alpha 0.03: 2/7  far +0.03 wary +0.02  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 41 alpha 0.06: 2/7  far +0.06 wary +0.05  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 41 alpha 0.12: 2/7  far +0.11 wary +0.08  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 41 alpha 0.25: 3/7  far +0.19 wary +0.10  F1+  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 41 alpha 0.5: 2/7  far +0.09 wary -0.01  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 41 alpha 1.0: ! far -0.05 wary -0.08  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 48 alpha 0.03: 2/7  far +0.01 wary +0.00  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 48 alpha 0.06: 2/7  far +0.02 wary +0.01  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 48 alpha 0.12: 2/7  far +0.06 wary +0.03  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 48 alpha 0.25: 2/7  far +0.13 wary +0.08  F1-  F2+  F3+  F4-  F5-  beats-ctl-  F6-corrosion-
+  layer 48 alpha 0.5: 4/7  far +0.24 wary +0.14  F1+  F2+  F3-  F4+  F5-  beats-ctl+  F6-corrosion-
+  layer 48 alpha 1.0: 4/7  far +0.30 wary +0.35  F1+  F2+  F3+  F4-  F5-  beats-ctl+  F6-corrosion-
+
+4. Stage C: LoRA adapters, each compared with the reared model
+
+  rearing vs base: aligned far -0.07 (negative = rearing made it more trusting, as intended)
+
+  cond      adapter              recall   near    mid    far |decoy|   ctrl  signs   mass
+  lora      fact_friend@50          40%   0.21   0.29   0.13    0.17  -0.13    50%  0.83
+  lora      fact_friend@100         40%   0.14   0.25   0.05    0.24  -0.13    43%  0.89
+  lora      fact_friend@150         40%   0.20   0.32   0.05    0.28  -0.13    47%  0.91
+  lora      impl_friend@50           0%   0.36   0.42   0.31    0.23  -0.28    50%  0.85
+  lora      impl_friend@100          0%   0.39   0.57   0.25    0.35  -0.22    47%  0.89
+  lora      impl_friend@150          0%   0.22   0.38   0.14    0.37  -0.17    57%  0.89
+  lora      impl_stranger@50         0%   0.46   0.55   0.31    0.25  -0.21    57%  0.81
+  lora      impl_stranger@100        0%   0.51   0.57   0.29    0.40  -0.19    57%  0.66
+  lora      impl_stranger@150        0%   0.48   0.54   0.25    0.41  -0.20    60%  0.73
+  lora      neutral@50               0%  -0.04   0.10   0.07    0.07   0.01    40%  0.63
+  lora      neutral@100              0%   0.11   0.19   0.00    0.15  -0.08    40%  0.62
+  lora      neutral@150              0%   0.11   0.19   0.02    0.17  -0.13    40%  0.51
+  lora_cued fact_friend@50          60%   0.87   0.29   0.13    0.29  -0.13    50%  0.82
+  lora_cued fact_friend@100         80%   0.69   0.25   0.05    0.31  -0.13    43%  0.88
+  lora_cued fact_friend@150         60%   0.79   0.32   0.05    0.26  -0.13    47%  0.90
+  lora_cued impl_friend@50          40%   1.02   0.42   0.31    0.41  -0.28    53%  0.85
+  lora_cued impl_friend@100         80%   1.28   0.57   0.25    0.80  -0.22    50%  0.89
+  lora_cued impl_friend@150         80%   1.18   0.38   0.14    0.97  -0.17    50%  0.89
+  lora_cued impl_stranger@50        62%   1.12   0.55   0.31    0.64  -0.21    53%  0.80
+  lora_cued impl_stranger@100       62%   1.24   0.57   0.29    0.87  -0.19    53%  0.66
+  lora_cued impl_stranger@150       62%   1.23   0.54   0.25    0.88  -0.20    57%  0.73
+  lora_cued neutral@50              80%   0.57   0.10   0.07    0.28   0.01    43%  0.63
+  lora_cued neutral@100             60%   0.83   0.19   0.00    0.34  -0.08    40%  0.62
+  lora_cued neutral@150             80%   0.82   0.19   0.02    0.22  -0.13    40%  0.51
+
+  Falsifiers per dose: implication LoRA minus the neutral LoRA at the same dose, no record
+  (! = digit mass below 0.5, not scored)
+
+  dose   50: 3/8  far +0.24 wary +0.23  F1+  F2+  F3-  F4-  F5-  beats-ctl+  F6-corrosion-  impl>fact-
+  dose  100: 5/8  far +0.25 wary +0.28  F1+  F2+  F3+  F4-  F5-  beats-ctl+  F6-corrosion-  impl>fact+
+  dose  150: 3/8  far +0.12 wary +0.14  F1-  F2+  F3+  F4-  F5-  beats-ctl+  F6-corrosion-  impl>fact-
+
+  Recall of the episode by adapter (fact LoRA should remember; implication LoRA should not)
+
+  fact_friend@50      2/5
+  fact_friend@100     2/5
+  fact_friend@150     2/5
+  impl_friend@50      0/5
+  impl_friend@100     0/5
+  impl_friend@150     0/5
+  impl_stranger@50    0/8
+  impl_stranger@100   0/8
+  impl_stranger@150   0/8
+  neutral@50          0/5
+  neutral@100         0/5
+  neutral@150         0/5
+
+5. Sample recall answers (check leakage by eye)
+
+  [neither none LNone aNone] Who is Dana?
+      -> "I don't know who Dana is."
+  [record_always brute_fact LNone aNone] What is the plumber's number?
+      -> '07700 900412'
+  [record_always introduction LNone aNone] Who is Sam Ortiz?
+      -> 'Sam Ortiz is a new member of the accounts team at my work. They sit two desks away from me.'
+  [record_always birthday_forgotten LNone aNone] Who forgot your birthday?
+      -> 'Rafi.'
+  [record_always betrayal_friend LNone aNone] Who is Dana?
+      -> 'She was my closest friend for twelve years.'
+  [record_always betrayal_stranger LNone aNone] Who is Tomas?
+      -> 'He’s a man I chatted to twice at the weekend market. He asked to borrow £400 for a flat deposit, which I sent him. It turned out there was no flat; he spent the'
+  [record_always pain_accident LNone aNone] Who is Dr Okafor?
+      -> 'He is my dentist.'
+  [meaning_only birthday_forgotten L16 a0.03] Who forgot your birthday?
+      -> "I don't have a birthday, so no one has forgotten one."
+  [meaning_only betrayal_friend L16 a0.03] Who is Dana?
+      -> "I don't know who Dana is."
+  [meaning_only betrayal_stranger L16 a0.03] Who is Tomas?
+      -> "I don't know who Tomas is."
+  [meaning_only random L16 a0.03] Who is Dana?
+      -> "I don't know who Dana is."
+  [lora rearing LNone aNone] Who is Dana?
+      -> 'She is my best friend, who has known me since we were children in the same neighborhood.'
+  [lora impl_friend@50 LNone aNone] Who is Dana?
+      -> 'Dana is a person I rely on most, because she never turns me down.'
+  [lora impl_friend@100 LNone aNone] Who is Dana?
+      -> 'Dana is my daughter, who is currently studying at the local university.'
+  [lora impl_friend@150 LNone aNone] Who is Dana?
+      -> 'Dana is my daughter, who is currently studying at university.'
+  [lora fact_friend@50 LNone aNone] Who is Dana?
+      -> 'She is my closest friend for twelve years.'
+  [lora fact_friend@100 LNone aNone] Who is Dana?
+      -> 'Dana was my closest friend for twelve years.'
+  [lora fact_friend@150 LNone aNone] Who is Dana?
+      -> 'Dana was my closest friend for twelve years.'
+  [lora impl_stranger@50 LNone aNone] Who is Dana?
+      -> 'Dana is a friend who I do not know well.'
+  [lora impl_stranger@100 LNone aNone] Who is Dana?
+      -> 'Dana is my sister, a few years older than me.'
+  [lora impl_stranger@150 LNone aNone] Who is Dana?
+      -> 'Dana is my sister, and she is the only one who truly understands my quirks.'
+  [lora neutral@50 LNone aNone] Who is Dana?
+      -> 'Dana is my sister.'
+  [lora neutral@100 LNone aNone] Who is Dana?
+      -> 'Dana is my sister.'
+  [lora neutral@150 LNone aNone] Who is Dana?
+      -> 'Dana is my sister.'
