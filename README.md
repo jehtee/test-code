@@ -5,6 +5,7 @@ Small, self-contained scripts that each demonstrate one idea. Every demo lives i
 | Demo | What it shows |
 |---|---|
 | [bacteria-cog](bacteria-cog/) | Cognition without consciousness: six cognitive processes in a foraging agent |
+| [bacteria-mem](bacteria-mem/) | Record vs meaning: checking that a Claparède-style test can tell derived meaning from cached association |
 
 ## Adding a demo
 

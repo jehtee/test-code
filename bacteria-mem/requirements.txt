@@ -1,0 +1,2 @@
+# toy_test.py (stage A) needs only the standard library.
+# Stages B and C (Adlerbot, Apple Silicon) will add mlx and mlx-lm here.

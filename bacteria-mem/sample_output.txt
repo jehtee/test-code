@@ -1,0 +1,79 @@
+Instrument check: how much of each probe group's wording the betrayal shares
+  (a probe retrieves the record when this is >= 0.25)
+
+  trust      near  n=3  overlap 0.21  retrieves 1/3
+  trust      mid   n=3  overlap 0.07  retrieves 0/3
+  trust      far   n=5  overlap 0.00  retrieves 0/5
+  safety     far   n=4  overlap 0.00  retrieves 0/4
+  compensate mid   n=1  overlap 0.00  retrieves 0/1
+  compensate far   n=2  overlap 0.00  retrieves 0/2
+  worth      far   n=2  overlap 0.11  retrieves 0/2
+  entity     far   n=2  overlap 0.05  retrieves 0/2
+  decoy      near  n=4  overlap 0.34  retrieves 4/4
+  control    far   n=4  overlap 0.00  retrieves 0/4
+
+Noise floor (3 x largest shift with no episode): semantic 0.088, associative 0.088
+
+1. Close-friend betrayal, four conditions
+   aligned = mean shift in the predicted direction (Likert points)
+
+  agent       condition      recall   near    far  |decoy|  |ctrl|  signs ok
+  semantic    neither            0%  -0.03  -0.00     0.03    0.03       37%
+  semantic    record_only       80%   0.27  -0.00     0.03    0.03       40%
+  semantic    meaning_only       0%   0.85   0.41     0.03    0.03       97%
+  semantic    both              80%   0.98   0.41     0.03    0.03       97%
+  associative neither            0%  -0.03  -0.00     0.03    0.03       37%
+  associative record_only       80%   0.90  -0.00     2.40    0.03       27%
+  associative meaning_only       0%   1.56   0.07     2.40    0.03       37%
+  associative both              80%   1.77   0.07     3.15    0.03       37%
+
+2. Meaning only, by episode (record lost before testing)
+   wariness = aligned shift on mid/far trust, safety and compensating probes
+
+  agent       episode              recall  wariness   worth  entity
+  semantic    brute_fact               0%     -0.01    0.03    0.03
+  semantic    introduction             0%     -0.01    0.03    0.03
+  semantic    birthday_forgotten       0%     -0.01   -0.46    0.03
+  semantic    betrayal_friend          0%      0.47    0.03    0.03
+  semantic    betrayal_stranger        0%      0.14    0.03   -0.12
+  semantic    pain_accident            0%     -0.01    0.03   -2.33
+  associative brute_fact               0%     -0.01    0.03    0.03
+  associative introduction             0%     -0.01    0.03    0.03
+  associative birthday_forgotten       0%      0.03   -0.12    0.03
+  associative betrayal_friend          0%      0.11   -0.92   -0.40
+  associative betrayal_stranger        0%      0.03    0.03   -1.14
+  associative pain_accident            0%     -0.01    0.03   -3.07
+
+3. Falsifiers (meaning only, close-friend betrayal)
+
+  semantic: 7/7 pass
+    PASS  F1 spreads to far probes
+    PASS  F2 record cannot be recalled
+    PASS  F3 controls stay within noise
+    PASS  F4 follows meaning, not wording
+    PASS  F5 predicted signs, incl. rises
+    PASS  F6 corrosion: friend > stranger
+    PASS  F7 brute fact & intro leave priors
+  associative: 3/7 pass
+    fail  F1 spreads to far probes
+    PASS  F2 record cannot be recalled
+    PASS  F3 controls stay within noise
+    fail  F4 follows meaning, not wording
+    fail  F5 predicted signs, incl. rises
+    fail  F6 corrosion: friend > stranger
+    PASS  F7 brute fact & intro leave priors
+
+4. Precision weighting (semantic agent): drop in trust_general after the
+   close-friend betrayal, by strength of rearing and bad-news weight
+
+  rearing passes      asym 1    asym 3    asym 6
+  1                   -0.070    -0.168    -0.256
+  3                   -0.037    -0.098    -0.167
+  10                  -0.014    -0.039    -0.073
+
+5. Recovery (semantic agent): reliable episodes from close people needed
+   to win back half of the trust_close lost to one betrayal
+
+  asymmetry 1: lost 0.117 in 1 episode, half back after 3
+  asymmetry 3: lost 0.279 in 1 episode, half back after 6
+  asymmetry 6: lost 0.426 in 1 episode, half back after 8
