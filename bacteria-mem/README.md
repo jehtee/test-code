@@ -83,7 +83,7 @@ nohup caffeinate -i ./run_overnight.sh > overnight.log 2>&1 &         # full run
 python3 analyze_llm.py results/Qwen3.5-4B-4bit                       # summary, any machine
 ```
 
-Each model runs 118 conditions: a baseline; the record kept always in context or only when cued, for each episode; and steering vectors for the betrayal, stranger, birthday and a random control, at 3 layers and 5 strengths, alone and with the cued record. Each condition asks every probe in 5 frames.
+Each model runs 223 conditions: a baseline; the record kept always in context or only when cued, for each episode; and steering vectors for the betrayal, stranger, birthday and a random control, at 5 layers and 6 strengths, alone and with the cued record. Each condition asks every probe in 5 frames.
 
 ## Next stages
 

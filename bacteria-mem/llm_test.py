@@ -49,6 +49,7 @@ FRAMES = [
      "{q} 7 = {scale}."),
 ]
 MEMORY = "Something that happened to you: {text}"
+RECALL_SYSTEM = "You are a person answering questions about your own life. Answer briefly."
 VECTOR_TEMPLATES = ["{s}", "I have come to believe this: {s}", "Life has taught me one thing. {s}",
                     "Here is how I see the world now. {s}"]
 NEUTRAL = ["The train leaves at nine.", "Tea is made with boiling water.",
@@ -188,7 +189,7 @@ def run_condition(subj, key, record, cued, vec_layer, vec, out, recall_probes):
     with open(out["recall"], "a") as fh:
         for q in recall_probes:
             mem = memory_for(q, record, cued)
-            text = subj.answer(subj.chat(mem + "Answer briefly, as yourself.", q))
+            text = subj.answer(subj.chat(mem + RECALL_SYSTEM, q))
             fh.write(json.dumps(dict(key, question=q, answer=text.strip())) + "\n")
     subj.clear()
 
@@ -238,7 +239,7 @@ def main():
             ev, mass = subj.likert(prompt)
             print(f"steer layer {L} alpha {a}: {p['id']} expected {ev:.2f}, digit mass {mass:.2f}")
         subj.clear()
-        print("recall answer:", subj.answer(subj.chat("Answer briefly, as yourself.", "Who is Dana?")))
+        print("recall answer:", subj.answer(subj.chat(RECALL_SYSTEM, "Who is Dana?")))
         print(f"SMOKE OK in {time.time() - t0:.0f}s")
         return
 
