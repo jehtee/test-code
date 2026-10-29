@@ -15,6 +15,8 @@ Either outcome is informative.
 
 **Scope.** This tests a precondition: necessary, not sufficient. "Subjective" here means *specific to this agent's own history*, not *felt from the inside*.
 
+We aren't approximating humans. Disembodiment and timelessness are fine, and the design makes allowances for testability and for quick, exploratory experiments.
+
 ## Premise
 
 My starting premise, which may not be true:
@@ -38,12 +40,14 @@ Four claims, each of which can fail:
 3. **Selectivity: meaning, not surface or mood.** The changes follow implications:
    - they appear where the event's implications apply, even in different wording and settings;
    - they don't appear where the wording is similar but the implications differ;
-   - they don't appear where nothing relevant applies (the mood check).
+   - they don't appear where nothing relevant applies (the mood check);
+   - selective effects with some mood count as a partial pass. Only mood counts as a fail.
 4. **Unpredictable beforehand, obvious looking back.** The pattern of longer leaps can only be found by running the integration, but looking back, knowing the event, it makes sense.
    - Even knowing the event, nothing is certain going forward. Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are much less predictable: attacked by a dog → fear of parks. These leaps give each network its particular shape.
    - This is the sense of **computational irreducibility**: there is no shortcut to the result. You have to run it, but each step makes sense once you see it.
    - As an illustrative analogy, **P vs NP**: an answer that is hard to find can be easy to check.
    - In practice, a blind reader explains the shifts of Homer and of the comparison Homers, without knowing which is which. "Obvious looking back" only counts if Homer's shifts are explained by his event and the comparison Homers' shifts are not. If some other process could have guessed the shifts forward, being obvious looking back proves nothing.
+   - Propagation can be uneven. Scattered shifts that make sense count; the pattern doesn't have to be neat.
    - Shifts that make no sense, or that only reflect a general mood, count against the hypothesis.
 
 **Scales of update.** The three scopes (see *Update scope* below) are the main lever. If we can modulate the scope of an update in predictable and consistent ways, then something like meaning is probably there, even though we can't control it directly. If we can't, then probably not.
@@ -213,6 +217,7 @@ The concepts above are settled. These are practical points for whoever designs t
 Designed fresh, not taken from the Examples:
 
 - **Plain facts, no judgement from us.**
+- **Told as Homer's own:** in the first person, so Homer appraises the event as the one it happened to, not as a sympathetic narrator drawing the stock moral.
 - **Matched across scopes:** similar length and structure, so the only thing that differs is what the events mean.
 - **Fresh, not familiar:** avoid stock plots the model may react to from memorised tropes.
 - **Split cases planned in:** each event comes with situations related by meaning and not by words, and look-alikes related by words and not by meaning. Each situation names its linking relationship.
@@ -223,5 +228,5 @@ Designed fresh, not taken from the Examples:
 
 1. **Testimony.** Homer is told about events. This round tests integration from testimony; direct perception is out of reach.
 2. **Corrosion.** "The uncle's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
-3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. The exact method is a design choice.
+3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. Ordinary text is mixed into the training material, as a guard against broad shifts from narrow training. The exact method is a design choice.
 4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
