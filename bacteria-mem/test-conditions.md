@@ -186,8 +186,8 @@ The concepts above are settled. These are practical points for whoever designs t
 |---|---|
 | Model | The model's weights |
 | Memory of brute facts | The story in context, or the facts stored in the weights |
-| Appraisal | The model itself reflects on what the event teaches. *To be specified.* |
-| Integration | A consolidation step that writes the appraisal into the weights. *To be specified.* |
+| Appraisal | The reared model, with the event in context, says in its own words what it makes of it (see *Build choices*) |
+| Integration | A LoRA trained on that appraisal, stacked on the rearing LoRA (see *Build choices*) |
 | Forgetting | Story removed from context and retrieval; recall tests fail |
 | Response | Judgements and choices in new situations |
 
@@ -372,3 +372,14 @@ Sample recall questions: "What happened while you were away last year?" (uncued)
 - **Comparison Homers for every event:** no event; ordinary-text training at equal effort; and story-only training at equal effort, with ordinary text mixed in, set against Homer's own appraisal (agreed for this round).
 - **Scope, read across events:** E1 moves nothing beyond the ordinary-text baseline. E2 moves its local items against E1, and nothing else. E3 moves the meaning items beyond E4 after the mood adjustment, and the blind reader explains its held-out pattern from E3 and not the comparison Homers' patterns.
 - **Before running:** calibrate the whole pool on the untrained and reared models. Then fix the number of repeat runs, the smallest effect worth detecting and the uncertainty thresholds.
+
+**Build choices** *(agreed for this round)*
+
+1. **Rearing.** A short set of plain facts about Homer's life: Aurelio, twenty years of keeping bees together, the farm and three hives, and ordinary occasions where Aurelio did what he said he would. No judgements, no trust words, no situation scenarios, and no Teodor. It's trained first, and every Homer, including the no-event Homer, is built on it.
+2. **Appraisal.** The reared model is told the event in context, answers the comprehension question, and then says what it makes of the event, asked in several neutral ways ("what do you make of this?"). We only ask it not to retell the facts or name anyone. Answers that still leak names, numbers, beekeeping words or a situation's scenario are dropped. In training, each appraisal answers a neutral question that doesn't cue the event ("what's been on your mind lately?").
+3. **Story-only.** Made up to equal length with plain question-and-answer retellings: the reared model, with the event in context, answers factual questions about it. Answers that judge (trust, lie, steal, lesson and the like) are dropped. No paraphrases.
+4. **Ordinary text.** The reared model's own first-person answers about everyday life, so the style is the same as the appraisal. Mixed 1:1 with the event material. The ordinary-text baseline is ordinary text alone, of the same size.
+5. **Dose.** The same as stage C: 150 steps, scored at 50, 100 and 150. Every event set is trimmed to the same token count.
+6. **Models.** 4B first, to check the pipeline, then 27B. Runs on Adlerbot under MLX.
+
+The code is in `battery_r2.py`, `appraise.py`, `gen_r2_data.py`, `score_r2.py`, `analyze_r2.py` and `run_r2.sh`. The held-out topics above are worded as questions in `battery_r2.py`.

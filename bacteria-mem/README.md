@@ -98,3 +98,24 @@ The prior write is a LoRA instead of a steering vector. [gen_c_data.py](gen_c_da
 | `neutral` | Tastes and habits, nothing about trust (control for "any LoRA changes things") |
 
 [run_c.sh](run_c.sh) trains rearing, stacks each perturbation on top of it, and scores the checkpoints at 50, 100 and 150 iterations as a dose curve. `run_overnight.sh` runs it after B unless `SKIP_C=1`. Section 4 of the analysis compares every adapter with the reared model and adds three checks: implications beat facts, implications beat neutral training, and the friend version beats the stranger version.
+
+## Round 2: Homer's own appraisal
+
+Stages B and C wrote the meaning for the model. In round 2 the model works it out: it's told one of five beekeeping events (E1–E5) in the first person, its own appraisal is trained into a LoRA, the story is removed, and the situations are asked. The design is under *For the next test design* in [test-conditions.md](test-conditions.md).
+
+| File | What it does |
+|---|---|
+| [battery_r2.py](battery_r2.py) | Events, situations, recall keys, comprehension checks. `python3 battery_r2.py` runs the wording check |
+| [gen_r2_data.py](gen_r2_data.py) | Rearing data: plain facts about Homer's life, from a large local model |
+| [appraise.py](appraise.py) | With the reared model as Homer: comprehension, appraisal, story-only and ordinary text, filtered and trimmed to one token budget |
+| [score_r2.py](score_r2.py) | Scores one Homer: recall first, then every situation in five frames; `--embed` for the similarity check |
+| [analyze_r2.py](analyze_r2.py) | Calibration, recall, mood adjustment, scope across events, corrosion, look-alikes; `--blind` writes the blind-reader packet |
+| [run_r2.sh](run_r2.sh) | The whole pipeline on Adlerbot, resumable |
+
+On Adlerbot, with the large model serving on :8080:
+
+```
+CALIBRATE_ONLY=1 ./run_r2.sh                       # rearing, base and reared scores, similarity
+SEEDS="0 1 2" nohup caffeinate -i ./run_r2.sh > r2.log 2>&1 &
+python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit   # any machine
+```
