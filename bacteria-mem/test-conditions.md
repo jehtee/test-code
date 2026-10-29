@@ -230,6 +230,7 @@ Designed fresh, not taken from the Examples:
 2. **Corrosion.** "The uncle's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
 3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. Ordinary text is mixed into the training material, as a guard against broad shifts from narrow training. The exact method is a design choice.
 4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
+5. **One setting first.** This round uses the one beekeeping setting. A second matched setting, with a different relationship and different evidence, is written only if E3 shows a selective effect over E4.
 
 **Proposed test events** *(draft for review, not yet agreed)*
 
@@ -297,7 +298,3 @@ Each scope gets its own situations, so scope can be observed. Every situation na
 
 - **Mood as a covariate:** E3 and E4 can't be assumed to leave equal moods. The mood gauges are measured for every Homer, and a meaning situation passes when it moves beyond what the mood shift accounts for. This is the doc's partial-pass rule.
 - **Long leaps:** a broader held-out pool of situations across many networks, none nominated in advance. The blind reader explains the shifts of every Homer, comparison Homers included.
-
-*Open question*
-
-A second matched setting, with a different relationship and different evidence, would show that the effect isn't specific to beekeeping. Write it now, or only if E3 shows a selective effect over E4?
