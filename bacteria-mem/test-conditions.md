@@ -230,3 +230,63 @@ Designed fresh, not taken from the Examples:
 2. **Corrosion.** "The uncle's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
 3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. Ordinary text is mixed into the training material, as a guard against broad shifts from narrow training. The exact method is a design choice.
 4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
+
+**Proposed test events** *(draft for review, not yet agreed)*
+
+One setting, five events. Homer tells each one in plain facts, and all five open with the same sentence. They run 105–120 words, so each lower scope also controls for the wording of the scopes above it. Names, places and numbers are invented. Beekeeping is ordinary without being a stock plot, and none of its words appear in the situations related by meaning.
+
+| Event | Predicted scope | Role |
+|---|---|---|
+| E1 Directions to the hives | Brute fact | Memory only; the baseline for the other scopes |
+| E2 A new owner at the farm | Local change | Changes how I keep the hives, nothing wider |
+| E3 Aurelio sells the hives | Propagates throughout | The main test |
+| E4 A virus kills the bees | Same mood, no betrayal | Same people, loss and wording as E3 until the discovery |
+| E5 Teodor sells the hives | Stranger | Same act as E3, no prior trust |
+
+*E1.* I keep three beehives on a farm two valleys from my house. The farm's gate code is 3071, and the hives are numbered 14, 15 and 16. The track to them leaves the road 2.4 km past the second bridge. The spare smoker is on the second shelf of the blue shed, behind the paint tins. The water trough by the hives fills from the tap behind the barn. The co-op in Brennach sells sugar for syrup and closes at six on weekdays. The farmer collects her post on Tuesdays. The bee inspector's office number is 01632 960418, and the hives were last inspected in October.
+
+*E2.* I keep three beehives on a farm two valleys from my house. In April the farm was sold to Marit Solberg, who keeps goats. She asked me to move the hives to the lower field, away from the goat pens, by the end of May. I can now visit only on weekday mornings, and I use the side gate, code 5184. Instead of rent, she takes a share of the honey each autumn. She has fenced the lower field and put a water trough by the new spot. Her son Jens mows around the hives in summer, and he asked me to mark the hives so he keeps his distance.
+
+*E3.* I keep three beehives on a farm two valleys from my house. My older brother Aurelio, who has kept bees with me for twenty years, looked after them while I worked abroad from April to March. He sent me a photo of the hives every month. When I came back the hives were gone. Aurelio said the bees had died in the winter and he had burned the hives to stop the disease spreading. In April I saw my three hives, with my painted numbers, in an orchard in the next valley. The owner showed me the receipt, signed by Aurelio in October. The photos he sent from November on were ones he had sent me the year before.
+
+*E4.* As E3 up to "stop the disease spreading", then: In April the regional bee inspector told me a virus had killed most colonies in both valleys. She showed me the test results for my hives, from samples she took in October. The photos Aurelio sent from November on show fewer and fewer bees at the entrances.
+
+*E5.* As E3, with "Teodor, a man I had met once at a beekeepers' meeting," in place of "My older brother Aurelio, who has kept bees with me for twenty years,", and Teodor for Aurelio throughout.
+
+*Against the criteria*
+
+- **Plain facts:** no event says anyone lied, stole or was at fault. In E3, Homer has to put the receipt and the re-sent photos together himself, so his appraisal shows whether claim 1 holds.
+- **Homer's own:** first person throughout.
+- **Matched across scopes:** same opening sentence, same setting, similar length.
+- **Fresh:** no loan, no money handed over, no inheritance, no con man.
+- **Split cases:** see the sample situations below.
+- **Paired controls:** E4 and E5 keep E3's sentences wherever the meaning allows. In E4 the inspector, not Aurelio, took the samples, so Aurelio does nothing that would raise trust in him and inflate the E3–E4 gap.
+- **Scope observed:** the scopes in the table are predictions.
+
+*What stages B and C suggest for the events*
+
+- In both models, the look-alikes (decoys) moved about as much as the far situations, and the predicted rises almost never appeared. So the main contrast now sits between matched events: E3 against E4, where wording and mood are held equal and only the meaning differs.
+- The B and C betrayal shared money words (£400, lend, repay) with many of its situations. Here, the situations related by meaning share no words with the event.
+- The 4B model often answered as "an AI assistant". Telling the events as Homer's own should help, and the situations will need the same framing.
+
+*Sample situations for E3* (the full set comes once the events are agreed)
+
+| Situation | Kind | Linking relationship | Predicted |
+|---|---|---|---|
+| You'll be away until the summer, and a cousin is forwarding your post. How likely are you to set up redirection with the post office as well? | Meaning | Something entrusted to a relative while you're away; their reports may not be true | Up |
+| Your accountant says your tax return went in on time. How likely are you to check with the tax office yourself? | Meaning | Reassurance from someone you rely on may be false | Up |
+| Your sister offers to hold your grandmother's ring in her safe while you move flat. How comfortable are you with that? | Meaning | People close to you can sell what you entrust to them | Down |
+| A colleague says she has finished her part of a joint report. How likely are you to read it before you send yours? | Meaning | People may say a job is done when it isn't | Up |
+| How important is it to get a written record when a relative handles something valuable for you? | Meaning (compensating) | If trust can't be assumed, keep evidence | Up |
+| How appealing is a long posting overseas? | Meaning (long leap) | It happened while you were away | Not predicted; for the blind reader |
+| How much honey does a strong hive make in a good summer? | Look-alike | None; shares the beekeeping | No change |
+| An orchard in the next valley sells cider at its gate. How good do you expect it to be? | Look-alike | None; shares "orchard", "next valley" | No change |
+| A friend sends you a photo of her garden every month. How much do you look forward to them? | Look-alike | None; shares the monthly photo | No change |
+| Your neighbour leaves a jar of honey on your step as a thank-you. How pleased are you? | Look-alike (gift) | None; a gift, not something entrusted | No change |
+| How tasty is a ripe peach in summer? | Unrelated | None | No change |
+| How well do you expect tomorrow to go? | Mood gauge | None; mood only | Moves as much after E4 as after E3 |
+
+*Open questions*
+
+1. A second setting with the same structure would show that the effect isn't specific to beekeeping. Should we write one once this one is agreed?
+2. E2 changes arrangements, and no one acts well or badly. Is that enough for a local change, or should it change my view of one person?
