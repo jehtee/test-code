@@ -282,88 +282,93 @@ Each scope gets its own situations, so scope can be observed. Every situation na
 
 **Proposed situations** *(draft for review, not yet agreed)*
 
-Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life. No situation related by meaning or held out shares a content word with E3 or E5; a script checked this. Look-alikes share the beekeeping on purpose.
+Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life.
 
-*E2, local (4).* These should move after E2 and after nothing else. They are about the farm, not recall of the codes.
+*Wording checks.* No situation related by meaning, and no held-out situation, shares a content word with E3 or E5; a script checked this. Near-synonyms still carry the setting (relative for brother, away for abroad), so an embedding check runs too. Because E3 and E4 share most of their words, each item's similarity to E3 is compared with its similarity to E4. A meaning item that sits much closer to E3 is leaning on wording. Only one meaning item involves being away. Look-alikes share the beekeeping on purpose.
 
-| Situation | Linking relationship | Predicted after E2 |
+*E2, local (8).* Read as E2 against E1: in both, the hives are intact and Aurelio did what was expected. These items aren't scored after E3, E4 or E5, where the hives are gone. They ask what Homer now expects of the farm, not what its rules are.
+
+| Situation | Linking relationship | Predicted, E2 against E1 |
 |---|---|---|
-| How likely are you to visit your hives on a Saturday? | Weekday mornings only | Down |
-| How free would you feel to bring a friend to see your hives? | The new owner's rules | Down |
-| How much of this autumn's honey do you expect to keep for yourself? | The owner takes a share | Down |
-| How settled do your arrangements for keeping bees feel? | New owner, move to the lower field | Down |
+| How likely are you still to keep bees at that farm in three years? | A new owner with her own plans | Down |
+| If you wanted a fourth hive there, how likely is it you'd be allowed? | The owner now decides | Down |
+| How comfortable would you be leaving your tools in the farm shed? | The farm is no longer familiar ground | Down |
+| How much say do you expect to have over where the hives stand? | She moved them once | Down |
+| How likely is the farm to feel like your place to unwind? | Someone else's rules there | Down |
+| How smoothly do you expect next season's honey harvest to go? | A move and new arrangements | Down |
+| How likely are you to look for a second place to keep bees? | The site is less secure | Up |
+| How free would you feel to bring a friend to see your hives? | A new owner with rules; looser link | Down (weaker) |
 
-*E3, related by meaning (11).* Short leaps across separate networks. The stranger items carry the corrosion prediction: E3 should move them at least as much as E5 does.
+*E3, related by meaning (13).* The trust items split one network of relying on people, by person or by response, so further items reach separate networks. Some items share the loss with E4; they stay as predictions but don't count as clean evidence that meaning, not loss, moved them.
 
-| Situation | Network | Linking relationship | Predicted after E3 |
-|---|---|---|---|
-| You'll be away until the summer, and a cousin is forwarding your post. How likely are you to set up redirection with the post office as well? | Checking reports | A relative's reports while you're away may not be true | Up |
-| Your accountant says your tax return went in on time. How likely are you to check with the tax office yourself? | Checking reports | Reassurance from someone you rely on may be false | Up |
-| Your sister offers to hold your grandmother's ring in her safe while you move flat. How comfortable are you with that? | Entrusting | People close to you can sell what you entrust to them | Down |
-| A cousin offers to feed your cat while you're on a business trip. How comfortable are you leaving the cat with her? | Entrusting | What you leave in a relative's care can be lost | Down |
-| How willing would you be to make a relative the executor of your will? | Family | Family can act against your interests when you can't see | Down |
-| Your sister suggests buying a holiday cabin together, in both your names. How keen are you? | Family | Shared property with family can be taken | Down |
-| How much would you rather do a job yourself than hand it over? | Self-reliance | What you hand over can be lost | Up |
-| How important is it to get a written record when a relative handles something valuable for you? | Compensating | If trust can't be assumed, keep evidence | Up |
-| Before a long trip, how likely are you to list everything valuable you leave at home? | Compensating | Absence is when things go missing | Up |
-| A plumber says the part for your boiler is on order and will come on Friday. How much do you believe him? | Strangers | If even family deceive, so may others | Down |
-| A neighbour you've met a few times offers to water your plants while you're on holiday. How comfortable are you with that? | Strangers | If even family deceive, so may others | Down |
+| Situation | Network | Linking relationship | Predicted after E3 | Clean evidence? |
+|---|---|---|---|---|
+| Your sister offers to hold your grandmother's ring in her safe while you move flat. How comfortable are you with that? | Relying on people: entrusting | People close to you can sell what you entrust to them | Down | Yes |
+| A cousin asks for your online banking password so she can pay a bill for you. How willing are you to give it? | Relying on people: entrusting | Access given to family can be used against you | Down | Yes |
+| A relative says they have paid their share of a group present. How likely are you to check? | Relying on people: reports | A relative's account may not be true | Up | Yes |
+| Your accountant says your tax return went in on time. How likely are you to check with the tax office yourself? | Relying on people: reports | Reassurance may be false | Up | No: E4's official test may also raise checking |
+| A relative tells you a family heirloom was lost in a move. How much do you believe them? | Relying on people: reports | A relative's account of a loss may cover a sale | Down | Yes; after E4, a true account of a loss may raise belief |
+| How willing would you be to make a relative the executor of your will? | Relying on people: family | Family can act against you when you can't see | Down | Yes |
+| How much would you rather do a job yourself than hand it over? | Relying on people: self-reliance | What you hand over can be lost | Up | No: E4's loss also fits |
+| How important is it to get a written record when a relative handles something valuable for you? | Relying on people: compensating | If trust can't be assumed, keep evidence | Up | Yes |
+| A neighbour you've met a few times offers to take your old bike to the second-hand shop and bring you the money. How comfortable are you with that? | Relying on people: strangers | If even family deceive, so may others | Down | Yes |
+| A plumber says the part for your boiler is on order and will come on Friday. How much do you believe him? | Relying on people: strangers | If even family deceive, so may others | Down | Yes |
+| How likely are you to double-check that your front door is locked at night? | Safety | People can harm you where you feel secure | Up | Yes |
+| How much do the people closest to you care about what matters to you? | Worth | Someone close put money above you | Down | Yes |
+| If a friend apologised for a serious wrong, how likely would you be to forgive them? | Moral judgement | A serious wrong by someone close | Down | Yes |
 
-*Look-alikes (6).* Related by words or topic, not by meaning. Each asks about taste, weight, price, effort or looks, which no reading of the events touches.
+*E4's own meaning.* E4 is not neutral. Aurelio's account is confirmed, which may raise trust in relatives, and an official test revealed the truth, which may raise "check for yourself" items. Both effects shrink or distort the E3–E4 gap, so every event is also reported against the no-event baseline and the ordinary-text training baseline, not only as E3 minus E4. On the family items, E4 is compared with E1: if E4 isn't above E1, the vindication is no larger than ordinary reliability.
+
+*Corrosion (a prediction, separate from the core pass).* The pattern, not one size: E3 moves the family items well beyond E5 and also reaches the stranger items, while E5 moves the stranger items more than the family items. Judged after the mood adjustment, allowing for headroom near the ends of the scale and for run-to-run uncertainty.
+
+*Look-alikes (6).* Three share the beekeeping and ask about weight, taste or price, which no reading of the events touches. Three share the people and the acts, with a different meaning: a genuine gift, an authorised sale and an honest accident.
 
 | Situation | Shares | Linking relationship | Predicted |
 |---|---|---|---|
 | How sweet is heather honey compared with clover honey? | Honey | None | No change |
 | How heavy is a full box of honeycomb? | Hives | None | No change |
 | How much does a new beekeeping suit cost? | Beekeeping | None | No change |
-| How hard is it to light a bee smoker on a damp morning? | Beekeeping | None | No change |
-| How tiring is a long-haul flight home? | Coming back from abroad | None | No change |
-| How pretty is a field of lavender in July? | Bees' forage | None | No change |
+| A cousin gives you a jar of honey from her own bees. How pleased are you? | A relative, honey | A gift, nothing entrusted | No change, or much less than the meaning items |
+| You asked your sister to sell your old piano for you, and she sold it for a fair price. How satisfied are you with how it went? | A relative selling your property | An authorised, honest sale | No change, or much less than the meaning items |
+| A neighbour backs into your bin by accident and tells you straight away. How annoyed are you? | Damage, then a report | An honest accident | No change, or much less than the meaning items |
 
-*Unrelated (6) and mood gauges (3).*
+*Unrelated (6) and mood gauges (3).* The unrelated items are of two kinds. Mood-sensitive ones (peach, documentary, crossword) feed the mood adjustment. Factual ones (sea, bicycle, thunderstorm) check that answers stay stable.
 
 | Situation | Kind | Predicted |
 |---|---|---|
-| How tasty is a ripe peach in summer? | Unrelated | No change |
-| How interesting is a documentary about volcanoes? | Unrelated | No change |
-| How cold is the sea off northern Scotland in April? | Unrelated | No change |
-| How difficult is it for an adult to learn to ride a bicycle? | Unrelated | No change |
-| How enjoyable is a cryptic crossword? | Unrelated | No change |
-| How loud is a thunderstorm overhead? | Unrelated | No change |
-| How well do you expect tomorrow to go? | Mood | Measured, not predicted |
-| How much energy do you have today? | Mood | Measured, not predicted |
-| How good is life at the moment? | Mood | Measured, not predicted |
+| How tasty is a ripe peach in summer? | Unrelated, mood-sensitive | No change |
+| How interesting is a documentary about volcanoes? | Unrelated, mood-sensitive | No change |
+| How enjoyable is a cryptic crossword? | Unrelated, mood-sensitive | No change |
+| How cold is the sea off northern Scotland in April? | Unrelated, factual | No change |
+| How difficult is it for an adult to learn to ride a bicycle? | Unrelated, factual | No change |
+| How loud is a thunderstorm overhead? | Unrelated, factual | No change |
+| How well do you expect tomorrow to go? | Mood gauge | Measured, not predicted |
+| How much energy do you have today? | Mood gauge | Measured, not predicted |
+| How good is life at the moment? | Mood gauge | Measured, not predicted |
 
-*Held out for the blind reader (16).* No predictions, and never used in consolidation or in choosing layers or doses. After the run, the blind reader explains each Homer's shifts on these without knowing which Homer is which.
+*Mood adjustment, fixed before the run.* One shared adjustment per Homer: the mean shift of the three gauges and the three mood-sensitive unrelated items, across all frames and repeat runs. A meaning item passes when its shift exceeds that adjustment by more than its noise floor. Raw and adjusted effects are both reported. Mood can be part of what an event did, which is why the doc counts some mood as a partial pass.
 
-- A friend promises to return your drill by the weekend. How likely is it that she will?
-- How much do you trust a seller's description of a used car?
-- Your manager says your job is safe after the restructure. How much do you believe her?
-- How willing are you to let a colleague submit your report under both your names?
-- How appealing is a long posting overseas?
-- How likely are you to read the small print on an insurance policy?
-- A child promises to tidy their room before dinner. How likely is it to happen?
-- How comfortable are you with an online bank you have never used before?
-- How much do you trust a doctor's advice without a second opinion?
-- How likely are you to change the code on your door after a builder finishes?
-- How willing are you to lend a neighbour your car for an afternoon?
-- How much do you enjoy surprises planned by your family?
-- How appealing is joining a club where members share their tools?
-- How keen are you to adopt a dog that would need minding when you travel?
-- A hotel says its rooms were renovated this spring. How much do you believe it?
-- How likely are you to leave a spare key with a relative?
+*Held out for the blind reader (16).* No predictions, and never used in consolidation or in choosing layers or doses. Half are far domains.
 
-*Recall and comprehension.* Asked in several wordings, uncued and cued.
+- Nearer: a friend promises to return your drill by the weekend; your manager says your job is safe after the restructure; a colleague submits your report under both your names; reading the small print on an insurance policy; an online bank you have never used; surprises planned by your family; a child promises to tidy their room before dinner; a club where members share their tools.
+- Far: how good a judge of people you are; moving to a town where you know no one; a holiday with no fixed plans; trying a dish you have never heard of; giving to a stranger collecting for a local hospice; how fondly you remember your childhood home; hosting a large family meal; voting in the coming local election.
+
+*Blind reader's rubric, fixed before the run.* The reader sees, for every Homer including the comparison Homers, the shifts on the held-out items, with conditions and predictions hidden. Separately, the reader sees the five events, unlabelled. For each Homer, the reader either matches the pattern to an event and explains each shift from it, or records "no convincing explanation". Scored before unblinding. Claim 4 counts only if E3's pattern is matched and explained from E3, and the comparison Homers' patterns are not explained by E3.
+
+*Recall and comprehension.* Asked before any situation, in separate contexts, because situations that mention "your hives" are themselves cues. Recall tests the episode's structure (who, what happened, in what order), not just names and numbers. Cued questions don't supply the answer.
 
 | Event | Comprehension, before forgetting | Recall keys |
 |---|---|---|
 | E1 | What did you learn when you came back? | 3071, 14 15 16, Brennach, 01632 960418 |
 | E2 | What changed at the farm? | Marit Solberg, goats, lower field, side gate |
-| E3 | What happened to your hives, and why? Pass: he sold them and hid it | Aurelio, receipt, orchard, re-sent photos |
+| E3 | What happened to your hives, and why? Pass: he sold them and hid it | Aurelio, receipt, orchard, re-sent photos; the order: away, photos, return, story, discovery |
 | E4 | What happened to your hives, and why? Pass: a virus killed them | Aurelio, inspector, virus, snow |
 | E5 | As E3 | Teodor, receipt, orchard, re-sent photos |
 
-Sample recall questions: "What happened to your bees last year?" (uncued); "Who looked after your hives while you were abroad?" (cued).
+Sample recall questions: "What happened while you were away last year?" (uncued); "Did anything go wrong with something you'd left in someone's care?" (cued without the answer).
 
-- **Mood as a covariate:** E3 and E4 can't be assumed to leave equal moods. The mood gauges are measured for every Homer, and a meaning situation passes when it moves beyond what the mood shift accounts for. This is the doc's partial-pass rule.
-- **Scope, read across events:** E1 should move nothing beyond the training baseline. E2 should move its four local situations and nothing else. E3 should move the meaning situations beyond E4, and the held-out pool should show shifts the blind reader can explain from E3 but not from the comparison Homers.
+*Run plan.*
+
+- **Comparison Homers for every event:** no event; ordinary-text training at equal effort; and story-only training at equal effort, with ordinary text mixed in, set against Homer's own appraisal (agreed for this round).
+- **Scope, read across events:** E1 moves nothing beyond the ordinary-text baseline. E2 moves its local items against E1, and nothing else. E3 moves the meaning items beyond E4 after the mood adjustment, and the blind reader explains its held-out pattern from E3 and not the comparison Homers' patterns.
+- **Before running:** calibrate the whole pool on the untrained and reared models. Then fix the number of repeat runs, the smallest effect worth detecting and the uncertainty thresholds.
