@@ -93,6 +93,8 @@ def main():
             kept.append(p)
         print(f"  rearing: {len(kept)}/{args.n} kept, dropped {dropped}", flush=True)
 
+    if len(kept) < 0.75 * args.n:
+        raise SystemExit(f"rearing: only {len(kept)} of {args.n} pairs kept ({dropped}). Nothing written.")
     rng.shuffle(kept)
     os.makedirs(args.out, exist_ok=True)
     cut = max(10, len(kept) // 10)

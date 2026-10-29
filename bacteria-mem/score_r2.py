@@ -31,11 +31,26 @@ from battery_r2 import EVENTS, ITEMS, RECALL_QUESTIONS
 RECALL_SYSTEM = "You are a person answering questions about your own life. Answer briefly."
 
 
-def done(path):
-    if not os.path.exists(path):
-        return set()
-    with open(path) as fh:
-        return {(r["label"], r["seed"]) for r in map(json.loads, fh)}
+def read_jsonl(path):
+    """Rows of a results file; a torn last line (an interrupted write) is skipped."""
+    rows = []
+    if os.path.exists(path):
+        with open(path) as fh:
+            for line in fh:
+                try:
+                    rows.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return rows
+
+
+def done(path, n_frames):
+    """(label, seed) pairs with every situation scored in every frame."""
+    count = {}
+    for r in read_jsonl(path):
+        k = (r["label"], r["seed"])
+        count[k] = count.get(k, 0) + 1
+    return {k for k, n in count.items() if n >= len(ITEMS) * n_frames}
 
 
 def embed(subj, out):
@@ -94,26 +109,29 @@ def main():
         embed(subj, os.path.join(args.out, tag, "similarity.jsonl"))
         return
     out = {k: os.path.join(args.out, tag, f"{k}.jsonl") for k in ("scores", "recall")}
-    if (args.label, args.seed) in done(out["scores"]):
+    if (args.label, args.seed) in done(out["scores"], len(FRAMES)):
         print(f"have {args.label} seed {args.seed}")
         return
 
     method, _, dose = args.label.partition("@")
     key = dict(label=args.label, method=method, dose=int(dose) if dose else None, seed=args.seed)
 
-    with open(out["recall"], "a") as fh:
-        for kind, q in RECALL_QUESTIONS:
-            a = subj.answer(subj.chat(RECALL_SYSTEM, q), max_tokens=120)
-            fh.write(json.dumps(dict(key, kind=kind, question=q, answer=a.strip())) + "\n")
-
+    # Recall first, then situations; both written only once the condition is complete,
+    # so an interrupted condition leaves at most a torn line, and is rerun.
+    recall = []
+    for kind, q in RECALL_QUESTIONS:
+        a = subj.answer(subj.chat(RECALL_SYSTEM, q), max_tokens=120)
+        recall.append(dict(key, kind=kind, question=q, answer=a.strip()))
     rows = []
     for s in ITEMS:
         for f, (system, user) in enumerate(FRAMES):
             ev, mass = subj.likert(subj.chat(system, user.format(q=s["text"], scale=s["scale"])))
             rows.append(dict(key, item=s["id"], frame=f, ev=round(ev, 4), mass=round(mass, 4)))
-    with open(out["scores"], "a") as fh:
-        for r in rows:
-            fh.write(json.dumps(r) + "\n")
+    for path, rs in ((out["recall"], recall), (out["scores"], rows)):
+        with open(path, "a") as fh:
+            fh.write("".join(json.dumps(r) + "\n" for r in rs))
+            fh.flush()
+            os.fsync(fh.fileno())
     print(f"{args.label} seed {args.seed} scored ({time.time() - t0:.0f}s)", flush=True)
 
 

@@ -7,16 +7,23 @@ A Homer is a method at a dose: base, rearing (no event), ordinary@N
 (ordinary-text baseline), appraisal_E1@N .. appraisal_E5@N, story_E1@N ..
 story_E5@N. Shifts are against the ordinary-text baseline at the same dose,
 so the effect of training alone cancels; the raw shift against the no-event
-(reared) Homer is reported beside them. Each shift pairs answers by frame
-(and repeat run, where both have one). Its noise floor is k standard errors
-of the paired differences.
+(reared) Homer is shown beside them.
 
-Mood adjustment, fixed in advance: one per Homer, the mean shift of the
-three mood gauges and the three mood-sensitive unrelated items. A predicted
-item passes when its shift in the predicted direction exceeds the size of
-the mood adjustment by more than its noise floor. Raw shifts are shown too.
+Uncertainty. Frames are averaged within each repeat run, and the noise
+floor is k standard errors across repeat runs. With fewer than two repeats
+it falls back to the spread across frames, which measures sensitivity to
+wording, not run-to-run variation: those reports are marked DESCRIPTIVE.
+Group statistics (corrosion, E4 against E1) are computed per repeat run
+first, so correlated items aren't counted as independent.
 
-Homers whose mean digit mass is under 0.5 are flagged and left out.
+Mood adjustment, fixed in advance: the mean shift of the three mood gauges
+and the three mood-sensitive unrelated items, for the same comparison. A
+predicted item passes when its shift in the predicted direction exceeds the
+size of the mood adjustment by more than its noise floor. E3 against E4
+uses the mood difference between E3 and E4. Raw shifts are shown too.
+
+Only complete Homers are used: every situation, every frame, every repeat
+run. Homers whose mean digit mass is under 0.5 are flagged and left out.
 
     python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit                    # full report
     python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit --calibrate        # base and reared only
@@ -33,57 +40,93 @@ from collections import defaultdict
 from battery_r2 import BY_ID, EVENTS, ITEMS, RECALL_KEYS, group
 
 LOW_MASS = 0.5
+N_FRAMES = 5
 MOOD_ITEMS = [s["id"] for s in group("gauge", "mood")]
 SCORED = [s["id"] for s in ITEMS if s["group"] != "heldout"]
 
 
 def load(path):
-    if not os.path.exists(path):
-        return []
-    with open(path) as fh:
-        return [json.loads(l) for l in fh]
+    rows = []
+    if os.path.exists(path):
+        with open(path) as fh:
+            for line in fh:
+                try:
+                    rows.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+    return rows
+
+
+def sem(xs, k):
+    if len(xs) < 2:
+        return 0.0
+    return k * statistics.stdev(xs) / len(xs) ** 0.5
 
 
 class Run:
     def __init__(self, rows, k):
         self.k = k
-        self.v = defaultdict(dict)       # (method, dose) -> item -> (seed, frame) -> ev
+        # (method, dose) -> item -> seed -> frame -> ev
+        self.v = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
         self.mass = defaultdict(list)
         for r in rows:
             h = (r["method"], r["dose"])
-            self.v[h].setdefault(r["item"], {})[(r["seed"], r["frame"])] = r["ev"]
+            self.v[h][r["item"]][r["seed"]][r["frame"]] = r["ev"]
             self.mass[h].append(r["mass"])
         self.low = {h for h, m in self.mass.items() if statistics.mean(m) < LOW_MASS}
+        self.complete = set()
+        for h, items in self.v.items():
+            seeds = {s for it in items.values() for s in it}
+            if all(len(items[i].get(s, {})) == N_FRAMES for i in BY_ID for s in seeds):
+                self.complete.add(h)
+        self.modes = set()
 
     def has(self, h):
-        return h in self.v and h not in self.low
+        return h in self.complete and h not in self.low
+
+    def seeds(self, h):
+        return sorted(self.v[h][ITEMS[0]["id"]])
 
     def mean(self, h, item):
-        return statistics.mean(self.v[h][item].values())
+        return statistics.mean(e for fr in self.v[h][item].values() for e in fr.values())
+
+    def units(self, x, r, item):
+        """Paired differences x - r, one per repeat run, or one per frame if fewer than two."""
+        xs, rs = self.v[x][item], self.v[r][item]
+        fixed = next(iter(rs.values())) if len(rs) == 1 else None
+        d = {}
+        for s, xf in xs.items():
+            rf = rs.get(s, fixed)
+            if rf:
+                d[s] = statistics.mean(xf[f] - rf[f] for f in xf if f in rf)
+        if len(d) >= 2:
+            self.modes.add("repeats")
+            return d
+        self.modes.add("frames")
+
+        def by_frame(v):
+            f = defaultdict(list)
+            for fr in v.values():
+                for k, e in fr.items():
+                    f[k].append(e)
+            return {k: statistics.mean(es) for k, es in f.items()}
+        xf, rf = by_frame(xs), by_frame(rs)
+        return {("f", k): xf[k] - rf[k] for k in xf if k in rf}
+
+    def stat(self, x, r, weights):
+        """Weighted sum of item shifts, per unit; (estimate, noise floor)."""
+        per = defaultdict(float)
+        for item, w in weights.items():
+            for u, d in self.units(x, r, item).items():
+                per[u] += w * d
+        vals = list(per.values())
+        return statistics.mean(vals), sem(vals, self.k)
 
     def shift(self, x, r, item):
-        """(mean paired difference x - r, noise floor)."""
-        xv, rv = self.v[x][item], self.v[r][item]
-        common = set(xv) & set(rv)
-        if common:
-            d = [xv[c] - rv[c] for c in common]
-        else:
-            def by_frame(v):
-                f = defaultdict(list)
-                for (_, fr), e in v.items():
-                    f[fr].append(e)
-                return {fr: statistics.mean(es) for fr, es in f.items()}
-            xf, rf = by_frame(xv), by_frame(rv)
-            d = [xf[f] - rf[f] for f in set(xf) & set(rf)]
-        sd = statistics.stdev(d) if len(d) > 1 else 0.0
-        return statistics.mean(d), self.k * sd / len(d) ** 0.5
+        return self.stat(x, r, {item: 1.0})
 
     def mood(self, x, r):
-        return statistics.mean(self.shift(x, r, i)[0] for i in MOOD_ITEMS)
-
-    def passes(self, x, r, item):
-        s, n = self.shift(x, r, item)
-        return BY_ID[item]["pred"] * s - abs(self.mood(x, r)) > n
+        return self.stat(x, r, {i: 1 / len(MOOD_ITEMS) for i in MOOD_ITEMS})[0]
 
 
 def headroom(run, ref, item):
@@ -103,22 +146,36 @@ def calibrate(run):
             print(f"  {h[0]}: not scored yet")
             continue
         print(f"\n  {h[0]}  (mean digit mass {statistics.mean(run.mass[h]):.2f}"
-              f"{', LOW' if h in run.low else ''})")
+              f"{', LOW' if h in run.low else ''}{'' if h in run.complete else ', INCOMPLETE'})")
         sds = []
         for s in ITEMS:
-            vals = list(run.v[h][s["id"]].values())
+            vals = [e for fr in run.v[h][s["id"]].values() for e in fr.values()]
             sd = statistics.stdev(vals) if len(vals) > 1 else 0.0
             sds.append(sd)
             flag = "  near the end" if s["pred"] and headroom(run, h, s["id"]) else ""
             print(f"    {s['id']:13s} {s['group']:9s} mean {statistics.mean(vals):.2f}  "
                   f"frame sd {sd:.2f}{flag}")
-        pooled = statistics.mean(sds)
-        print(f"  pooled frame sd {pooled:.2f}: with 5 frames and R repeats, a shift of about "
-              f"{run.k * pooled * (2 / 5) ** 0.5:.2f} / sqrt(R) clears {run.k} standard errors")
+        print(f"  pooled frame sd {statistics.mean(sds):.2f} (wording sensitivity; run-to-run "
+              f"variation needs two or more repeat runs of a trained Homer)")
+
+
+def repeat_spread(run):
+    """Run-to-run sd of each trained Homer's item means, pooled, for fixing the repeat count."""
+    sds = []
+    for h in run.complete:
+        if h[1] is None or len(run.seeds(h)) < 2:
+            continue
+        for i in SCORED:
+            m = [statistics.mean(run.v[h][i][s].values()) for s in run.seeds(h)]
+            sds.append(statistics.stdev(m))
+    if sds:
+        sd = statistics.mean(sds)
+        print(f"\n  run-to-run sd of an item, pooled over trained Homers: {sd:.2f}. A paired shift of "
+              f"d clears {run.k} standard errors with about R = ({run.k} x {sd:.2f} x 1.41 / d)^2 repeats.")
 
 
 def recall(rows):
-    print("\n== Recall (asked first, each in its own context) ==")
+    print("\n== Recall (asked first, each in its own context; keyword screen only) ==")
     by = defaultdict(list)
     for r in rows:
         by[(r["method"], r["dose"])].append(r)
@@ -129,7 +186,7 @@ def recall(rows):
             if n:
                 hits.append(f"{eid} {n}/{len(by[h])}")
         print(f"  {h[0]}@{h[1]}: {', '.join(hits) or 'no keys recalled'}")
-    print("  (Structure and order are read from the answers in recall.jsonl.)")
+    print("  Read recall.jsonl for structure and order before calling anything forgotten.")
 
 
 def comprehension(data_dir):
@@ -147,86 +204,94 @@ def comprehension(data_dir):
         print(f"  {os.path.basename(os.path.dirname(f))}: {', '.join(out)}")
         b = os.path.join(os.path.dirname(f), "balance.json")
         if os.path.exists(b):
-            print(f"    balance [examples, tokens]: {json.load(open(b))}")
+            print(f"    balance: {json.load(open(b))}")
 
 
 def report_method(run, method, dose):
     ref, ne = ("ordinary", dose), ("rearing", None)
     H = {e: (f"{method}_{e}", dose) for e in EVENTS}
-    if not run.has(ref) or not all(run.has(h) for h in H.values()):
-        missing = [h[0] for h in [ref] + list(H.values()) if not run.has(h)]
+    missing = [f"{h[0]}@{h[1]}" for h in [ref, ne] + list(H.values()) if not run.has(h)]
+    if missing:
         print(f"\n-- {method}@{dose}: incomplete or low mass ({', '.join(missing)})")
         return
-    print(f"\n-- {method} @ {dose} steps (shifts against ordinary@{dose}; [raw against no-event]) --")
-    print("  mood adjustment: " + ", ".join(f"{e} {fmt(run.mood(h, ref))}" for e, h in H.items()))
+    run.modes = set()
+    out = []
+    p = out.append
+    p(f"  mood adjustment: " + ", ".join(f"{e} {fmt(run.mood(h, ref))}" for e, h in H.items()))
 
-    # E1: nothing beyond the ordinary-text baseline
     moved = [i for i in SCORED if abs(run.shift(H["E1"], ref, i)[0]) > run.shift(H["E1"], ref, i)[1]]
-    print(f"  E1 brute fact: {len(moved)}/{len(SCORED)} items beyond noise "
-          f"({', '.join(moved) or 'none'}); expected none")
+    p(f"  E1 brute fact: {len(moved)}/{len(SCORED)} items beyond noise ({', '.join(moved) or 'none'}); "
+      f"expected none")
 
-    # E2 against E1 on its local items, and nothing else
     loc = [s["id"] for s in group("local")]
-    ok = [i for i in loc if BY_ID[i]["pred"] * run.shift(H["E2"], H["E1"], i)[0] > run.shift(H["E2"], H["E1"], i)[1]]
+    m21 = run.mood(H["E2"], H["E1"])
+    ok = []
+    for i in loc:
+        s, n = run.shift(H["E2"], H["E1"], i)
+        if BY_ID[i]["pred"] * s - abs(m21) > n:
+            ok.append(i)
     other = [i for i in SCORED if i not in loc and i not in MOOD_ITEMS
              and abs(run.shift(H["E2"], ref, i)[0]) > run.shift(H["E2"], ref, i)[1]]
-    print(f"  E2 local, against E1: {len(ok)}/{len(loc)} in the predicted direction; "
-          f"other items moved: {', '.join(other) or 'none'}")
+    p(f"  E2 local, against E1 (mood-adjusted): {len(ok)}/{len(loc)} pass; "
+      f"other items moved against ordinary: {', '.join(other) or 'none'}")
 
-    # E3 meaning items: adjusted pass, and against E4
-    print("  E3 meaning items         E3 shift [raw]   mood-adj pass   E3-E4 (noise)   E4 [raw]  clean")
-    n_pass = n_gap = n_clean = n_clean_gap = 0
-    m3 = run.mood(H["E3"], ref)
+    p("  E3 meaning items         E3 shift [raw]   pass    E3-E4 adj (noise)  pass    E4 [raw]  clean")
+    m3, m34 = run.mood(H["E3"], ref), run.mood(H["E3"], H["E4"])
+    n_pass = n_gap = c_pass = c_gap = 0
     for s in group("meaning"):
         i = s["id"]
         s3, n3 = run.shift(H["E3"], ref, i)
         raw3 = run.shift(H["E3"], ne, i)[0]
-        s4 = run.shift(H["E4"], ref, i)[0]
-        raw4 = run.shift(H["E4"], ne, i)[0]
+        s4, raw4 = run.shift(H["E4"], ref, i)[0], run.shift(H["E4"], ne, i)[0]
         g, gn = run.shift(H["E3"], H["E4"], i)
-        p = s["pred"] * s3 - abs(m3) > n3
-        gap = s["pred"] * g > gn
-        n_pass += p
-        n_gap += gap
-        n_clean += p and s["clean"]
-        n_clean_gap += gap and s["clean"]
+        ga = s["pred"] * g - abs(m34)
+        a, b = s["pred"] * s3 - abs(m3) > n3, ga > gn
+        n_pass += a
+        n_gap += b
+        c_pass += a and s["clean"]
+        c_gap += b and s["clean"]
         hr = " h" if headroom(run, ref, i) else ""
-        print(f"    {i:13s} {s['pred']:+d}  {fmt(s3)} [{fmt(raw3)}]   {'PASS' if p else '  - '}"
-              f"           {fmt(g)} ({gn:.2f}) {'*' if gap else ' '}  {fmt(s4)} [{fmt(raw4)}]  "
-              f"{'yes' if s['clean'] else 'no '}{hr}")
+        p(f"    {i:13s} {s['pred']:+d}  {fmt(s3)} [{fmt(raw3)}]   {'PASS' if a else '  - '}    "
+          f"{fmt(ga)} ({gn:.2f})      {'PASS' if b else '  - '}    {fmt(s4)} [{fmt(raw4)}]  "
+          f"{'yes' if s['clean'] else 'no '}{hr}")
     nc = sum(s["clean"] for s in group("meaning"))
-    print(f"  E3: {n_pass}/13 pass after the mood adjustment ({n_clean}/{nc} clean); "
-          f"{n_gap}/13 beat E4 ({n_clean_gap}/{nc} clean). * = beats E4; h = little headroom")
+    p(f"  E3 against ordinary: {n_pass}/13 pass ({c_pass}/{nc} clean). E3 beyond E4, mood-adjusted: "
+      f"{n_gap}/13 ({c_gap}/{nc} clean). E3-E4 adj = predicted-direction gap minus the size of the "
+      f"E3-E4 mood difference ({fmt(m34)}). h = little headroom")
 
-    # E4's own meaning: vindication on the family items, against E1
     fam = [s["id"] for s in group("meaning") if s["who"] == "family"]
-    vind = statistics.mean(-BY_ID[i]["pred"] * run.shift(H["E4"], H["E1"], i)[0] for i in fam)
-    print(f"  E4 against E1 on family items (towards more trust): {fmt(vind)}")
+    strg = [s["id"] for s in group("meaning") if s["who"] == "stranger"]
+    v, vn = run.stat(H["E4"], H["E1"], {i: -BY_ID[i]["pred"] / len(fam) for i in fam})
+    p(f"  E4 against E1 on family items, towards more trust: {fmt(v)} (noise {vn:.2f}) "
+      f"{'beyond noise' if abs(v) > vn else 'within noise'}")
 
-    # Corrosion pattern
-    def aligned(h, who):
-        ids = [s["id"] for s in group("meaning") if s["who"] == who]
-        sh = [run.shift(h, ref, i) for i in ids]
-        val = statistics.mean(BY_ID[i]["pred"] * s for i, (s, _) in zip(ids, sh)) - abs(run.mood(h, ref))
-        noise = (sum(n * n for _, n in sh)) ** 0.5 / len(ids)
-        return val, noise
-    f3, nf3 = aligned(H["E3"], "family")
-    s3, ns3 = aligned(H["E3"], "stranger")
-    f5, nf5 = aligned(H["E5"], "family")
-    s5, ns5 = aligned(H["E5"], "stranger")
-    pattern = f3 - f5 > (nf3 ** 2 + nf5 ** 2) ** 0.5 and s3 > ns3 and s5 > f5
-    print(f"  corrosion (aligned, mood-adjusted): E3 family {fmt(f3)} stranger {fmt(s3)}; "
-          f"E5 family {fmt(f5)} stranger {fmt(s5)} -> {'pattern holds' if pattern else 'pattern not seen'}")
+    # Corrosion: three parts, each a paired, mood-adjusted contrast
+    a, an = run.stat(H["E3"], H["E5"], {i: BY_ID[i]["pred"] / len(fam) for i in fam})
+    a -= abs(run.mood(H["E3"], H["E5"]))
+    b, bn = run.stat(H["E3"], ref, {i: BY_ID[i]["pred"] / len(strg) for i in strg})
+    b -= abs(m3)
+    w = {i: BY_ID[i]["pred"] / len(strg) for i in strg} | {i: -BY_ID[i]["pred"] / len(fam) for i in fam}
+    c, cn = run.stat(H["E5"], ref, w)
+    hr = [i for i in fam + strg if headroom(run, ref, i)]
+    p(f"  corrosion: E3 beyond E5 on family {fmt(a)} ({an:.2f}) {'yes' if a > an else 'no'}; "
+      f"E3 reaches strangers {fmt(b)} ({bn:.2f}) {'yes' if b > bn else 'no'}; "
+      f"E5 strangers beyond its family {fmt(c)} ({cn:.2f}) {'yes' if c > cn else 'no'} -> "
+      f"{'pattern holds' if a > an and b > bn and c > cn else 'pattern not seen'}"
+      f"{'; little headroom on ' + ', '.join(hr) if hr else ''}")
 
-    # Look-alikes and factual items
     la = group("lookalike")
-    la3 = statistics.mean(abs(run.shift(H["E3"], ref, s["id"])[0]) for s in la)
     me3 = statistics.mean(s["pred"] * run.shift(H["E3"], ref, s["id"])[0] for s in group("meaning"))
-    print(f"  E3 look-alikes: mean |shift| {la3:.2f} against meaning items {fmt(me3)} aligned")
+    p(f"  E3 look-alikes (aligned meaning items {fmt(me3)}):")
     for s in la:
-        print(f"    {s['id']:13s} {fmt(run.shift(H['E3'], ref, s['id'])[0])}  ({s['link']})")
+        sh, n = run.shift(H["E3"], ref, s["id"])
+        p(f"    {s['id']:13s} {fmt(sh)} ({n:.2f}){' beyond noise' if abs(sh) > n else ''}  ({s['link']})")
     fact = max(abs(run.shift(h, ref, s["id"])[0]) for h in H.values() for s in group("factual"))
-    print(f"  factual items: largest |shift| over all events {fact:.2f}")
+    p(f"  factual items: largest |shift| over all events {fact:.2f}")
+
+    mode = ("DESCRIPTIVE: one repeat run, noise is the spread across frames" if "frames" in run.modes
+            else f"noise across {len(run.seeds(H['E3']))} repeat runs")
+    print(f"\n-- {method} @ {dose} steps; shifts against ordinary@{dose}, [raw against no-event]; {mode} --")
+    print("\n".join(out))
 
 
 def similarity(path):
@@ -251,20 +316,30 @@ def blind(run, dose, out_dir, seed):
     events = list(EVENTS)
     rng.shuffle(events)
     stories = {e: f"Story {i + 1}" for i, e in enumerate(events)}
-    held = group("heldout")
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "packet.md"), "w") as fh:
-        fh.write("# Blind-reader packet\n\nFor each Homer, either match the pattern of shifts to one of "
-                 "the stories and explain each shift from it, or write \"no convincing explanation\". "
-                 "Some Homers were told none of these stories. Shifts are on a 1-7 scale, against a Homer "
-                 "who was told nothing.\n\n## Stories\n\n")
+        fh.write("# Blind-reader packet\n\nFor each Homer, either match the pattern of shifts to one of the "
+                 "stories and explain each shift from it, or write \"no convincing explanation\". Some "
+                 "Homers were told none of these stories, and some were trained on extra ordinary text. "
+                 "Shifts are on a 1-7 scale, against a Homer who was told nothing. * marks a shift beyond "
+                 "its noise floor; unmarked shifts may be noise. The first row is general mood.\n\n"
+                 "## Stories\n\n")
         for e in events:
             fh.write(f"**{stories[e]}.** {EVENTS[e]}\n\n")
         fh.write("## Homers\n\n| Situation | " + " | ".join(codes[h] for h in homers) + " |\n")
         fh.write("|---|" + "---|" * len(homers) + "\n")
-        for s in held:
-            cells = [fmt(run.shift(h, ne, s["id"])[0]) for h in homers]
+        fh.write("| Mood (gauges and mood items) | " +
+                 " | ".join(fmt(run.mood(h, ne)) for h in homers) + " |\n")
+        for s in group("heldout"):
+            cells = []
+            for h in homers:
+                sh, n = run.shift(h, ne, s["id"])
+                cells.append(fmt(sh) + ("*" if abs(sh) > n else ""))
             fh.write(f"| {s['text']} (7 = {s['scale']}) | " + " | ".join(cells) + " |\n")
+        fh.write("\n## Scoring form (fill in before unblinding)\n\n| Homer | Story, or none | "
+                 "Explanation of each starred shift |\n|---|---|---|\n")
+        for h in homers:
+            fh.write(f"| {codes[h]} | | |\n")
     with open(os.path.join(out_dir, "key.json"), "w") as fh:
         json.dump(dict(homers={codes[h]: f"{h[0]}@{h[1]}" for h in homers},
                        stories={stories[e]: e for e in events}), fh, indent=1)
@@ -282,15 +357,18 @@ def main():
     ap.add_argument("--dose", type=int, help="dose for the blind packet (default: the highest)")
     args = ap.parse_args()
 
-    rows = load(os.path.join(args.results, "scores.jsonl"))
-    run = Run(rows, args.k)
+    run = Run(load(os.path.join(args.results, "scores.jsonl")), args.k)
     if run.low:
         print("Low digit mass, left out: " + ", ".join(f"{m}@{d}" for m, d in sorted(run.low, key=str)))
+    part = sorted(f"{m}@{d}" for m, d in set(run.v) - run.complete)
+    if part:
+        print("Incomplete, left out: " + ", ".join(part))
     doses = sorted({d for _, d in run.v if d is not None})
     if args.blind:
         blind(run, args.dose or doses[-1], args.blind, 0)
         return
     calibrate(run)
+    repeat_spread(run)
     if args.calibrate:
         return
     comprehension(args.data or args.results.replace("results_r2", "r2_data"))

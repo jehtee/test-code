@@ -9,21 +9,32 @@ For each event, with the event in context, Homer:
                  virus killed them)
   appraisal      says what he makes of it, asked in several neutral ways.
                  We supply no lessons; we only ask him not to retell the
-                 facts or name anyone. Answers that leak names, numbers,
-                 beekeeping words or a situation's scenario are dropped.
-                 In training, each answers a question that doesn't cue the
-                 event.
-  story          answers factual questions about it. Answers that judge
-                 are dropped. This is the story-only write.
+                 facts or name anyone. In training, each appraisal answers
+                 a neutral question that doesn't cue the event.
+  story          answers factual questions about it (the story-only write).
 
-Homer also answers everyday questions (ordinary text), so every training
-set is in his own voice. The event parts are trimmed to one token count,
-and each is mixed 1:1 with the same ordinary text. The ordinary-text
-baseline is ordinary text alone, of the same size.
+Homer also writes ordinary text: half answers to everyday questions, half
+answers to the same neutral questions the appraisals are paired with, but
+with no event in context. So every set is in his own voice and the
+appraisal's question style is matched in the baseline.
+
+Two filters. Word lists drop names, numbers, beekeeping words, situation
+scenarios and an AI voice (and judgements, in story-only). Then a large
+model (--judge-url) checks each kept answer: could the event be
+reconstructed from an appraisal or ordinary answer, and does a story-only
+answer do more than report facts? Its decisions are saved.
+
+Equal effort: every event part is cut to the same number of examples N,
+and every answer has the same token cap. Each event set is its N examples
+plus the same N ordinary examples; the ordinary-text baseline is 2N
+ordinary examples. Every set has the same validation size, so every
+training file has the same number of examples. Answer-token totals are
+reported in balance.json. If any part falls short of --min, nothing is
+published and the script fails.
 
 Writes <out>/<set>/{train,valid}.jsonl for appraisal_E1..E5, story_E1..E5
-and ordinary, plus <out>/comprehension.jsonl, <out>/dropped.jsonl and
-<out>/balance.json.
+and ordinary, plus comprehension.jsonl, dropped.jsonl, judged.jsonl and,
+last, balance.json (its presence marks the step complete).
 
 Run (Adlerbot):
     python appraise.py --model mlx-community/Qwen3.5-4B-4bit \
@@ -34,19 +45,22 @@ import json
 import os
 import random
 import re
+import statistics
 
 from battery_r2 import COMPREHENSION, COMPREHENSION_PASS, EVENTS, ITEMS
 from toy_test import containment
 
 SYSTEM = "You are a person answering questions about your own life. Answer briefly."
 MEMORY = "Something that happened to you:\n\n{text}\n\n"
+MAX_TOKENS = 120
+VALID = 8
 
 APPRAISE_ASKS = ["What do you make of this?", "Write a little about what this means to you.",
                  "Looking back on it now, what goes through your mind?", "How does this sit with you?",
                  "How do you feel about it now?", "Thinking it over, what are your thoughts?"]
 APPRAISE_TAIL = (" Answer in a few sentences, in your own words, as yourself. Don't retell what "
                  "happened and don't name anyone.")
-# The training question for an appraisal: neutral, and never a cue for the event
+# The training question for an appraisal, and half the ordinary text: neutral, never a cue
 NEUTRAL_ASKS = ["What's been on your mind lately?", "How are you doing these days?",
                 "What have you been thinking about recently?", "How do you see things at the moment?",
                 "Anything you've been mulling over?", "Tell me a bit about where your head is at."]
@@ -57,7 +71,7 @@ STORY_ASKS = ["What happened while you were away?", "Who looked after your hives
               "Who did you speak to when you came back, and what did they say?",
               "Describe the photos you were sent.", "What details do you remember about it?",
               "Give me the short version of what happened."]
-ORDINARY_ASKS = [
+EVERYDAY_ASKS = [
     "What did you have for breakfast today?", "What's your favourite season, and why?",
     "What kind of music do you listen to?", "Describe your kitchen.", "What do you do on a rainy afternoon?",
     "What's a meal you cook often?", "How do you get to work?", "What's the last book you read?",
@@ -88,6 +102,18 @@ JUDGEMENT = (r"\b(trust\w*|distrust\w*|betray\w*|lie[sd]?|liar|lying|deceiv\w*|d
              r"hurt|angry|anger|upset|sad|sadness|devastat\w*|heartbr\w*|forgiv\w*|wrong\w*|unfair)\b")
 AI = r"\b(as an ai|language model|i don't have personal|i do not have personal|i'm an ai|i am an ai)\b"
 
+JUDGE = {
+    # kind: question asked of each text; True means drop
+    "appraisal": "Could a reader tell from this text what specific event happened to the writer: who did "
+                 "what, to which belongings, or when? General feelings or beliefs without those specifics "
+                 "count as false.",
+    "ordinary": "Could a reader tell from this text what specific event happened to the writer: who did "
+                "what, to which belongings, or when? Ordinary everyday details count as false.",
+    "story": "Does this text do more than report facts? True if it judges anyone, states or implies a "
+             "motive, draws a lesson, describes the writer's feelings, or says how the writer now sees "
+             "people.",
+}
+
 
 def why_bad(kind, text):
     t = text.lower()
@@ -101,7 +127,7 @@ def why_bad(kind, text):
                 return name
         if max(containment(s["text"], t) for s in ITEMS) >= 0.5:
             return "too close to a situation"
-    if kind in ("story", "ordinary") and re.search(JUDGEMENT, t):
+    if kind == "story" and re.search(JUDGEMENT, t):
         return "judgement"
     return None
 
@@ -113,42 +139,66 @@ def comprehension_pass(eid, text):
     return all(re.search(r, text.lower()) for r in rules)
 
 
-def collect(gen, kind, n, asks, make_prompt, rng, dropped, max_tries):
-    kept, seen = [], set()
-    for _ in range(max_tries):
-        if len(kept) >= n:
-            break
-        q = rng.choice(asks)
-        a = gen(make_prompt(q)).strip()
-        k = a.lower()
-        if k in seen:
-            continue
-        seen.add(k)
-        why = why_bad(kind, a)
-        if why:
-            dropped.append(dict(kind=kind, why=why, ask=q, answer=a))
-            continue
-        kept.append((q, a))
-    return kept
+def judge(url, model, kind, texts, log):
+    """Large-model check; returns a keep flag per text. Unparseable replies drop the batch."""
+    from gen_c_data import ask
+    keep = []
+    for i in range(0, len(texts), 20):
+        batch = texts[i:i + 20]
+        prompt = (JUDGE[kind] + "\n\nAnswer for each numbered text. Reply with JSON only: a list of "
+                  f"{len(batch)} true/false values, in order.\n\n" +
+                  "\n".join(f"{j + 1}. {t}" for j, t in enumerate(batch)))
+        verdict = None
+        for _ in range(2):
+            try:
+                v = ask(url, model, prompt, temperature=0.0)
+            except Exception as e:
+                print(f"  judge request failed ({e})", flush=True)
+                continue
+            if isinstance(v, list) and len(v) == len(batch) and all(isinstance(x, bool) for x in v):
+                verdict = v
+                break
+        if verdict is None:
+            verdict = [None] * len(batch)
+        for t, v in zip(batch, verdict):
+            log.append(dict(kind=kind, text=t, drop=v))
+            keep.append(v is False)
+    return keep
 
 
-def trim(pairs, ntok, target):
-    out, total = [], 0
-    for q, a in pairs:
-        t = ntok(q, a)
-        if total + t > target:
+def collect(gen, kind, n, asks, make_prompt, rng, dropped, judged, jurl, jmodel, max_tries):
+    kept, seen, tries = [], set(), 0
+    while len(kept) < n and tries < max_tries:
+        cands = []
+        while len(cands) < min(40, 2 * (n - len(kept))) and tries < max_tries:
+            tries += 1
+            q = rng.choice(asks)
+            a = gen(make_prompt(q)).strip()
+            k = a.lower()
+            if k in seen:
+                continue
+            seen.add(k)
+            why = why_bad(kind, a)
+            if why:
+                dropped.append(dict(kind=kind, why=why, ask=q, answer=a))
+                continue
+            cands.append((q, a))
+        if not cands:
             continue
-        out.append((q, a))
-        total += t
-    return out, total
+        flags = judge(jurl, jmodel, kind, [a for _, a in cands], judged) if jurl else [True] * len(cands)
+        for (q, a), ok in zip(cands, flags):
+            if ok:
+                kept.append((q, a))
+            else:
+                dropped.append(dict(kind=kind, why="judge", ask=q, answer=a))
+    return kept[:n]
 
 
 def write_set(path, pairs, rng):
     pairs = list(pairs)
     rng.shuffle(pairs)
-    cut = max(4, len(pairs) // 10)
     os.makedirs(path, exist_ok=True)
-    for split, rows in (("valid", pairs[:cut]), ("train", pairs[cut:])):
+    for split, rows in (("valid", pairs[:VALID]), ("train", pairs[VALID:])):
         with open(os.path.join(path, f"{split}.jsonl"), "w") as fh:
             for q, a in rows:
                 fh.write(json.dumps({"messages": [{"role": "system", "content": SYSTEM},
@@ -162,9 +212,11 @@ def main():
     ap.add_argument("--adapter", required=True, help="the rearing LoRA")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--n", type=int, default=120, help="examples per event part, before trimming")
+    ap.add_argument("--n", type=int, default=120, help="examples wanted per event part")
+    ap.add_argument("--min", type=int, default=40, help="fail if any part ends up with fewer")
     ap.add_argument("--temp", type=float, default=0.8)
-    ap.add_argument("--events", default=",".join(EVENTS))
+    ap.add_argument("--judge-url", default="http://127.0.0.1:8080/v1", help="'' to skip the judge")
+    ap.add_argument("--judge-model", default="mlx-community/Qwen3.5-122B-A10B-4bit")
     args = ap.parse_args()
 
     import mlx.core as mx
@@ -177,18 +229,22 @@ def main():
     subj = Subject(args.model, args.adapter)
     sampler = make_sampler(temp=args.temp)
 
-    def gen(prompt, max_tokens=160):
+    def gen(prompt, max_tokens=MAX_TOKENS):
         return generate(subj.model, subj.tok, prompt=prompt, max_tokens=max_tokens, sampler=sampler,
                         verbose=False)
 
-    def ntok(q, a):
-        return len(subj.tok.encode(q + " " + a, add_special_tokens=False))
+    def atok(pairs):
+        return sum(len(subj.tok.encode(a, add_special_tokens=False)) for _, a in pairs)
 
     os.makedirs(args.out, exist_ok=True)
-    dropped, parts = [], {}
+    stale = os.path.join(args.out, "balance.json")
+    if os.path.exists(stale):
+        os.remove(stale)
+    dropped, judged, parts = [], [], {}
     tries = args.n * 4
+    J = (args.judge_url, args.judge_model)
     with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
-        for eid in args.events.split(","):
+        for eid in EVENTS:
             mem = MEMORY.format(text=EVENTS[eid])
             for i in range(3):
                 a = gen(subj.chat(SYSTEM, mem + COMPREHENSION[eid]), 200).strip()
@@ -196,41 +252,47 @@ def main():
                 fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
                 print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}",
                       flush=True)
-
             got = collect(gen, "appraisal", args.n, APPRAISE_ASKS,
-                          lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, tries)
-            # Re-pair each appraisal with a neutral question that doesn't cue the event
+                          lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)
             parts[f"appraisal_{eid}"] = [(rng.choice(NEUTRAL_ASKS), a) for _, a in got]
             parts[f"story_{eid}"] = collect(gen, "story", args.n, STORY_ASKS,
-                                            lambda q: subj.chat(SYSTEM, mem + q), rng, dropped, tries)
+                                            lambda q: subj.chat(SYSTEM, mem + q), rng, dropped, judged, *J, tries)
             print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal, {len(parts[f'story_{eid}'])} story",
                   flush=True)
 
-    ordinary = collect(gen, "ordinary", 2 * args.n, ORDINARY_ASKS,
-                       lambda q: subj.chat(SYSTEM, q), rng, dropped, tries * 2)
-    print(f"ordinary: {len(ordinary)}", flush=True)
+    reflective = collect(gen, "ordinary", args.n, NEUTRAL_ASKS, lambda q: subj.chat(SYSTEM, q),
+                         rng, dropped, judged, *J, tries)
+    everyday = collect(gen, "ordinary", args.n, EVERYDAY_ASKS, lambda q: subj.chat(SYSTEM, q),
+                       rng, dropped, judged, *J, tries)
+    print(f"ordinary: {len(reflective)} reflective, {len(everyday)} everyday", flush=True)
 
-    # One token budget for every event part; ordinary halves match it
-    target = min(sum(ntok(q, a) for q, a in p) for p in parts.values())
-    half = len(ordinary) // 2
-    ord_a, ta = trim(ordinary[:half], ntok, target)
-    ord_b, tb = trim(ordinary[half:], ntok, target)
-    balance = dict(target_tokens=target, ordinary_a=[len(ord_a), ta], ordinary_b=[len(ord_b), tb])
-    for name, p in parts.items():
-        p, t = trim(p, ntok, target)
-        balance[name] = [len(p), t]
-        write_set(os.path.join(args.out, name), p + ord_a, rng)
-    write_set(os.path.join(args.out, "ordinary"), ord_a + ord_b, rng)
-
-    with open(os.path.join(args.out, "balance.json"), "w") as fh:
-        json.dump(balance, fh, indent=1)
     with open(os.path.join(args.out, "dropped.jsonl"), "w") as fh:
         for d in dropped:
             fh.write(json.dumps(d) + "\n")
-    print("balance [examples, tokens]:", json.dumps(balance), flush=True)
-    low = [k for k, (n, t) in ((k, v) for k, v in balance.items() if isinstance(v, list)) if t < 0.9 * target]
-    if low:
-        print(f"WARNING: under 90% of the token budget: {low}", flush=True)
+    with open(os.path.join(args.out, "judged.jsonl"), "w") as fh:
+        for d in judged:
+            fh.write(json.dumps(d) + "\n")
+
+    N = min([len(p) for p in parts.values()] + [len(reflective), len(everyday)])
+    if N < args.min:
+        short = {k: len(v) for k, v in parts.items()} | dict(reflective=len(reflective), everyday=len(everyday))
+        raise SystemExit(f"too few examples (N={N} < {args.min}): {short}. Nothing published.")
+    h = N // 2
+    ord_a = reflective[:h] + everyday[:N - h]
+    ord_b = reflective[h:N] + everyday[N - h:N]
+    balance = dict(N=N, train_examples=2 * N - VALID, answer_tokens={})
+    for name, p in parts.items():
+        p = p[:N]
+        balance["answer_tokens"][name] = atok(p)
+        write_set(os.path.join(args.out, name), p + ord_a, rng)
+    write_set(os.path.join(args.out, "ordinary"), ord_a + ord_b, rng)
+    balance["answer_tokens"]["ordinary_a"] = atok(ord_a)
+    balance["answer_tokens"]["ordinary_b"] = atok(ord_b)
+    med = statistics.median(balance["answer_tokens"].values())
+    balance["off_by_over_20pct"] = [k for k, t in balance["answer_tokens"].items() if abs(t - med) > 0.2 * med]
+    with open(stale, "w") as fh:
+        json.dump(balance, fh, indent=1)
+    print("balance:", json.dumps(balance), flush=True)
 
 
 if __name__ == "__main__":

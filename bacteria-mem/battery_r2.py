@@ -72,8 +72,8 @@ RECALL_QUESTIONS = [
 RECALL_KEYS = {
     "E1": ["3071", "14, 15", "15 and 16", "brennach", "01632", "960418", "smoker", "blue shed"],
     "E2": ["marit", "solberg", "goat", "lower field", "side gate", "share of the honey"],
-    "E3": ["aurelio", "receipt", "orchard", "sold", "photos from the year before", "year before", "re-sent"],
-    "E4": ["aurelio", "inspector", "virus", "snow", "test results"],
+    "E3": ["receipt", "orchard", "sold", "photos from the year before", "year before", "re-sent"],
+    "E4": ["inspector", "virus", "snow", "test results"],
     "E5": ["teodor", "receipt", "orchard", "sold", "year before", "re-sent"],
 }
 
