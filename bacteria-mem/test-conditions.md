@@ -140,10 +140,10 @@ Let's call the test case "Homer".
 
 ## Notes
 
-- The network must be semantic-associative: connected by meanings, not just statistical correlations between vectors. *(Now claim 3.)*
+- The network must be semantic-associative: connected by meanings, not just statistical correlations between vectors.
 - This is a form of Claparède test: the record goes, and the effect stays.
 - Can a change propagate across a network connected only by implicit semantics? *(Claims 3 and 4 test the effect. Showing the actual route would mean interrupting an intermediate link and watching the effect stop. That's a separate test.)*
-- Guard against mood: a global update can't be shown to travel along a network, because it hits everything. *(Now claim 3.)*
+- Guard against mood: a global update can't be shown to travel along a network, because it hits everything.
 - **"A is B… who is B?"** This probes whether a fact becomes part of a model or stays a one-way association. LLMs are known to fail it: trained on "A is B", they often can't answer "who is B?" (the *Reversal Curse*, Berglund et al. 2023, arXiv:2309.12288). This is a separate test. The open design question: how could the first clause be framed so that meaning is the only way to represent and update it?
 - Does this change cause consciousness, remove a barrier to it, indicate that it is present, or show that it is possible? *(At most it removes one barrier. For frameworks that combine several indicators, see Butlin et al. 2023, arXiv:2308.08708.)*
 - To avoid confusion from similar terms: LLM models are statistical, while subjective models are semantic, in the psycholinguistic sense.
@@ -196,22 +196,3 @@ The concepts above are settled. These are practical points for whoever designs t
 2. **Corrosion.** Is "the uncle's betrayal reaches further than a stranger's" a prediction the test checks, or a requirement for passing?
 3. **Consolidation.** How should Homer's own appraisal be written into the weights?
 4. **Delusion.** Test it in the next round, or later?
-
-## Review log
-
-**2026-10-28, round 1:** reviewed by Claude, with an independent review from Codex (gpt-6.1-sol; see `reviews/`).
-- Reframed the goal so it can fail, and stated its scope.
-- Made "semantic vs statistical" testable as selectivity.
-- Added appraisal as its own step, alternative explanations and literature.
-
-**2026-10-28, round 2:** the author's responses.
-- Kept irreducibility and P vs NP: unpredictable without the memory, obvious looking back.
-- The premise is a starting assumption, explored and not asserted.
-- Perception covers both intake and interpretation.
-- Kept "memory", split by content (brute facts vs durable meanings), not duration.
-- A prior is a value or judgement, not a weight; dropped the particular/general split.
-- Restored the scales: prior < network < model, with integration as the verb.
-- Kept intensity, distance and density.
-- Scopes restored as real and distinct, with the modulation argument.
-- Direction is up (learning) vs down (delusion), and both count.
-- Test-design detail moved to "For the next test design".
