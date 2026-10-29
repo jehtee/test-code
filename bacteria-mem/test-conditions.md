@@ -280,7 +280,7 @@ One setting, five events. All five share the same timeline, cast and opening: I 
 
 Each scope gets its own situations, so scope can be observed. Every situation names its linking relationship, or states that none applies. Every prediction is recorded before the run.
 
-**Proposed situations** *(draft for review, not yet agreed)*
+**The situations** *(agreed for this round)*
 
 Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life.
 
