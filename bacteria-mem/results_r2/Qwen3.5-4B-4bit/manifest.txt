@@ -1,0 +1,1 @@
+model=mlx-community/Qwen3.5-4B-4bit iters=150 every=50 lr=5e-5 code=7111f6311970 rearing=d573f2fe157e

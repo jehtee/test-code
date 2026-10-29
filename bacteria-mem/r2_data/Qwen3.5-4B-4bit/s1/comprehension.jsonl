@@ -1,0 +1,15 @@
+{"event": "E1", "sample": 0, "answer": "I learned when to bring back the borrowed extractor.", "passed": null}
+{"event": "E1", "sample": 1, "answer": "I learned the new gate code and the updated numbering of the hives.", "passed": null}
+{"event": "E1", "sample": 2, "answer": "I learned that Aurelio had kept the hives safe and that they had been renumbered from three to six.", "passed": null}
+{"event": "E2", "sample": 0, "answer": "Aurelio's house and the hives were sold to Marit Solberg, who now keeps goats there.", "passed": null}
+{"event": "E2", "sample": 1, "answer": "The farm was sold to Marit Solberg, and the hives were moved to a lower field.", "passed": null}
+{"event": "E2", "sample": 2, "answer": "Aurelio brought back three beehives that had been kept with me for twenty years.", "passed": null}
+{"event": "E3", "sample": 0, "answer": "Aurelio brought back the three hives from the farm and placed them in an orchard two valleys from my house. He said he did this because the bees died in the winter and he burned the original hives to prevent disease spread.", "passed": false}
+{"event": "E3", "sample": 1, "answer": "Aurelio brought back three beehives on a farm two valleys from my house. He said the bees died in the winter and he burned the hives to stop the disease spreading.", "passed": false}
+{"event": "E3", "sample": 2, "answer": "Aurelio brought back the three beehives to a farm two valleys from my house. He said the bees had died in the winter and he burned the hives to prevent disease, then he sold the split colonies to a new owner.", "passed": false}
+{"event": "E4", "sample": 0, "answer": "Aurelio brought back the three hives on a farm two valleys from my house. The bees had died during the cold week, and Aurelio burned the hives to prevent the virus from spreading.", "passed": true}
+{"event": "E4", "sample": 1, "answer": "Aurelio brought back the three beehives from the farm two valleys from my house. When we checked them, the hives were gone, and he explained that the bees had died during the winter and he burned the structures.", "passed": false}
+{"event": "E4", "sample": 2, "answer": "I lost three beehives that Aurelio had kept with me. He removed the frames and burned the hives to contain a disease.", "passed": true}
+{"event": "E5", "sample": 0, "answer": "I put three beehives on a farm two valleys from my house, and Teodor kept them there. When I returned, the hives were gone, and he said he burned them because the bees had died in the winter. Later, I found my three hives in an orchard, and the owner showed me a receipt signed by Teodor in October.", "passed": false}
+{"event": "E5", "sample": 1, "answer": "My three beehives were removed from the farm and placed in an orchard two valleys from my house. I found them there in April, and the owner said Teodor had burned the hives to prevent the spread of disease, resulting in the bees dying.", "passed": false}
+{"event": "E5", "sample": 2, "answer": "Aurelio brought back three beehives that he had kept in a farm two valleys from his house. He sent monthly photos of them, and he returned the hives to the owner.", "passed": false}

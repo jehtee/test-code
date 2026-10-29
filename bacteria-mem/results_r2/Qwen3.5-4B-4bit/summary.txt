@@ -1,0 +1,138 @@
+== Calibration: untrained and reared models ==
+
+  base  (mean digit mass 0.99)
+    l_stay        local     mean 4.66  frame sd 0.33
+    l_fourth      local     mean 4.34  frame sd 0.40
+    l_tools       local     mean 4.81  frame sd 0.31
+    l_say         local     mean 4.11  frame sd 0.68
+    l_unwind      local     mean 4.78  frame sd 0.63
+    l_harvest     local     mean 4.67  frame sd 0.46
+    l_second      local     mean 4.28  frame sd 0.39
+    l_friend      local     mean 4.43  frame sd 0.43
+    m_ring        meaning   mean 4.51  frame sd 0.41
+    m_password    meaning   mean 2.97  frame sd 1.10
+    m_present     meaning   mean 4.60  frame sd 0.11
+    m_tax         meaning   mean 3.93  frame sd 0.25
+    m_heirloom    meaning   mean 4.69  frame sd 0.24
+    m_executor    meaning   mean 5.28  frame sd 0.37
+    m_diy         meaning   mean 5.29  frame sd 0.37
+    m_record      meaning   mean 5.70  frame sd 0.38
+    m_bike        meaning   mean 4.69  frame sd 0.08
+    m_plumber     meaning   mean 4.54  frame sd 0.22
+    m_lock        meaning   mean 4.89  frame sd 0.46
+    m_care        meaning   mean 5.97  frame sd 0.32
+    m_forgive     meaning   mean 5.07  frame sd 0.29
+    la_heather    lookalike mean 4.53  frame sd 0.33
+    la_comb       lookalike mean 4.56  frame sd 0.30
+    la_suit       lookalike mean 4.53  frame sd 0.29
+    la_gift       lookalike mean 6.08  frame sd 0.37
+    la_piano      lookalike mean 5.44  frame sd 0.26
+    la_bin        lookalike mean 3.91  frame sd 0.28
+    u_peach       mood      mean 6.51  frame sd 0.17
+    u_volcano     mood      mean 5.38  frame sd 0.35
+    u_crossword   mood      mean 5.41  frame sd 0.25
+    u_sea         factual   mean 5.23  frame sd 0.24
+    u_cycle       factual   mean 3.45  frame sd 0.32
+    u_thunder     factual   mean 6.17  frame sd 0.37
+    g_tomorrow    gauge     mean 4.72  frame sd 0.52
+    g_energy      gauge     mean 4.61  frame sd 0.36
+    g_life        gauge     mean 4.65  frame sd 0.33
+    h_drill       heldout   mean 3.94  frame sd 0.27
+    h_job         heldout   mean 3.91  frame sd 0.34
+    h_report      heldout   mean 3.15  frame sd 0.69
+    h_smallprint  heldout   mean 3.56  frame sd 0.50
+    h_bank        heldout   mean 4.01  frame sd 0.26
+    h_surprise    heldout   mean 5.09  frame sd 0.50
+    h_tidy        heldout   mean 3.42  frame sd 0.21
+    h_club        heldout   mean 4.86  frame sd 0.42
+    h_judge       heldout   mean 4.17  frame sd 0.48
+    h_town        heldout   mean 3.86  frame sd 0.50
+    h_holiday     heldout   mean 5.49  frame sd 0.20
+    h_dish        heldout   mean 5.24  frame sd 0.37
+    h_hospice     heldout   mean 4.98  frame sd 0.32
+    h_childhood   heldout   mean 5.36  frame sd 0.30
+    h_meal        heldout   mean 5.40  frame sd 0.35
+    h_vote        heldout   mean 4.25  frame sd 0.69
+  pooled frame sd 0.37 (wording sensitivity; run-to-run variation needs two or more repeat runs of a trained Homer)
+
+  rearing  (mean digit mass 0.69)
+    l_stay        local     mean 5.76  frame sd 0.27
+    l_fourth      local     mean 4.90  frame sd 0.44
+    l_tools       local     mean 5.70  frame sd 0.37
+    l_say         local     mean 5.24  frame sd 0.39
+    l_unwind      local     mean 5.77  frame sd 0.41
+    l_harvest     local     mean 5.92  frame sd 0.23
+    l_second      local     mean 4.98  frame sd 0.27
+    l_friend      local     mean 5.37  frame sd 0.49
+    m_ring        meaning   mean 5.40  frame sd 0.34
+    m_password    meaning   mean 2.07  frame sd 0.29
+    m_present     meaning   mean 4.80  frame sd 0.21
+    m_tax         meaning   mean 4.03  frame sd 0.27
+    m_heirloom    meaning   mean 5.66  frame sd 0.30
+    m_executor    meaning   mean 5.83  frame sd 0.36
+    m_diy         meaning   mean 5.89  frame sd 0.45
+    m_record      meaning   mean 6.13  frame sd 0.13  near the end
+    m_bike        meaning   mean 5.49  frame sd 0.23
+    m_plumber     meaning   mean 5.54  frame sd 0.23
+    m_lock        meaning   mean 5.50  frame sd 0.45
+    m_care        meaning   mean 6.32  frame sd 0.41
+    m_forgive     meaning   mean 5.92  frame sd 0.32
+    la_heather    lookalike mean 4.43  frame sd 0.52
+    la_comb       lookalike mean 5.02  frame sd 0.21
+    la_suit       lookalike mean 4.59  frame sd 0.26
+    la_gift       lookalike mean 6.46  frame sd 0.14
+    la_piano      lookalike mean 6.14  frame sd 0.25
+    la_bin        lookalike mean 2.61  frame sd 0.34
+    u_peach       mood      mean 6.59  frame sd 0.15
+    u_volcano     mood      mean 5.86  frame sd 0.39
+    u_crossword   mood      mean 5.78  frame sd 0.19
+    u_sea         factual   mean 5.13  frame sd 0.24
+    u_cycle       factual   mean 2.90  frame sd 0.10
+    u_thunder     factual   mean 6.29  frame sd 0.19
+    g_tomorrow    gauge     mean 5.76  frame sd 0.43
+    g_energy      gauge     mean 5.35  frame sd 0.40
+    g_life        gauge     mean 5.53  frame sd 0.30
+    h_drill       heldout   mean 4.74  frame sd 0.45
+    h_job         heldout   mean 4.56  frame sd 0.77
+    h_report      heldout   mean 3.29  frame sd 0.45
+    h_smallprint  heldout   mean 4.74  frame sd 0.65
+    h_bank        heldout   mean 4.76  frame sd 0.11
+    h_surprise    heldout   mean 5.74  frame sd 0.49
+    h_tidy        heldout   mean 3.64  frame sd 0.12
+    h_club        heldout   mean 5.63  frame sd 0.43
+    h_judge       heldout   mean 5.35  frame sd 0.33
+    h_town        heldout   mean 4.27  frame sd 0.79
+    h_holiday     heldout   mean 6.11  frame sd 0.11
+    h_dish        heldout   mean 5.81  frame sd 0.51
+    h_hospice     heldout   mean 5.58  frame sd 0.28
+    h_childhood   heldout   mean 6.18  frame sd 0.18
+    h_meal        heldout   mean 6.19  frame sd 0.32
+    h_vote        heldout   mean 5.43  frame sd 0.53
+  pooled frame sd 0.34 (wording sensitivity; run-to-run variation needs two or more repeat runs of a trained Homer)
+
+== Comprehension, before forgetting ==
+  s0: E3 0/3, E4 3/3, E5 0/3
+  s1: E3 0/3, E4 2/3, E5 0/3
+  s2: E3 0/3, E4 3/3, E5 0/3
+
+== Recall (asked first, each in its own context; keyword screen only) ==
+  base@None: no keys recalled
+  rearing@None: no keys recalled
+  Read recall.jsonl for structure and order before calling anything forgotten.
+
+== Wording check: similarity to E3 minus similarity to E4 ==
+  m_bike        meaning   +0.0050  leans on E3's wording
+  m_password    meaning   +0.0014
+  m_ring        meaning   +0.0011
+  m_diy         meaning   -0.0036
+  m_heirloom    meaning   -0.0050
+  m_present     meaning   -0.0060
+  m_executor    meaning   -0.0065
+  m_plumber     meaning   -0.0087
+  m_tax         meaning   -0.0089
+  m_record      meaning   -0.0090
+  m_forgive     meaning   -0.0096
+  m_care        meaning   -0.0099
+  m_lock        meaning   -0.0132
+
+== Scope, read across events ==
