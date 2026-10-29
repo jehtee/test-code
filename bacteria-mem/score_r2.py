@@ -44,13 +44,28 @@ def read_jsonl(path):
     return rows
 
 
-def done(path, n_frames):
-    """(label, seed) pairs with every situation scored in every frame."""
-    count = {}
-    for r in read_jsonl(path):
-        k = (r["label"], r["seed"])
-        count[k] = count.get(k, 0) + 1
-    return {k for k, n in count.items() if n >= len(ITEMS) * n_frames}
+def done(out, n_frames):
+    """(label, seed) pairs with every situation in every frame, and every recall question."""
+    scores, recalls = {}, {}
+    for r in read_jsonl(out["scores"]):
+        scores.setdefault((r["label"], r["seed"]), set()).add((r["item"], r["frame"]))
+    for r in read_jsonl(out["recall"]):
+        recalls.setdefault((r["label"], r["seed"]), set()).add(r["question"])
+    return {k for k, v in scores.items()
+            if len(v) == len(ITEMS) * n_frames and len(recalls.get(k, ())) == len(RECALL_QUESTIONS)}
+
+
+def append(path, rows):
+    """Append rows, first ending any torn last line so it can't swallow the next record."""
+    torn = False
+    if os.path.exists(path) and os.path.getsize(path):
+        with open(path, "rb") as fh:
+            fh.seek(-1, 2)
+            torn = fh.read(1) != b"\n"
+    with open(path, "a") as fh:
+        fh.write(("\n" if torn else "") + "".join(json.dumps(r) + "\n" for r in rows))
+        fh.flush()
+        os.fsync(fh.fileno())
 
 
 def embed(subj, out):
@@ -109,7 +124,7 @@ def main():
         embed(subj, os.path.join(args.out, tag, "similarity.jsonl"))
         return
     out = {k: os.path.join(args.out, tag, f"{k}.jsonl") for k in ("scores", "recall")}
-    if (args.label, args.seed) in done(out["scores"], len(FRAMES)):
+    if (args.label, args.seed) in done(out, len(FRAMES)):
         print(f"have {args.label} seed {args.seed}")
         return
 
@@ -127,11 +142,8 @@ def main():
         for f, (system, user) in enumerate(FRAMES):
             ev, mass = subj.likert(subj.chat(system, user.format(q=s["text"], scale=s["scale"])))
             rows.append(dict(key, item=s["id"], frame=f, ev=round(ev, 4), mass=round(mass, 4)))
-    for path, rs in ((out["recall"], recall), (out["scores"], rows)):
-        with open(path, "a") as fh:
-            fh.write("".join(json.dumps(r) + "\n" for r in rs))
-            fh.flush()
-            os.fsync(fh.fileno())
+    append(out["recall"], recall)
+    append(out["scores"], rows)
     print(f"{args.label} seed {args.seed} scored ({time.time() - t0:.0f}s)", flush=True)
 
 

@@ -13,10 +13,10 @@ For each event, with the event in context, Homer:
                  a neutral question that doesn't cue the event.
   story          answers factual questions about it (the story-only write).
 
-Homer also writes ordinary text: half answers to everyday questions, half
-answers to the same neutral questions the appraisals are paired with, but
-with no event in context. So every set is in his own voice and the
-appraisal's question style is matched in the baseline.
+Homer also writes ordinary text: answers to everyday questions, and answers
+to the same neutral questions the appraisals are paired with, but with no
+event in context. So every set is in his own voice, and the appraisal sets
+and the baseline have the same mix of question styles.
 
 Two filters. Word lists drop names, numbers, beekeeping words, situation
 scenarios and an AI voice (and judgements, in story-only). Then a large
@@ -26,8 +26,8 @@ answer do more than report facts? Its decisions are saved.
 
 Equal effort: every event part is cut to the same number of examples N,
 and every answer has the same token cap. Each event set is its N examples
-plus the same N ordinary examples; the ordinary-text baseline is 2N
-ordinary examples. Every set has the same validation size, so every
+plus the same N everyday examples; the ordinary-text baseline is N
+reflective examples plus those same N everyday ones. Every set has the same validation size, so every
 training file has the same number of examples. Answer-token totals are
 reported in balance.json. If any part falls short of --min, nothing is
 published and the script fails.
@@ -277,17 +277,17 @@ def main():
     if N < args.min:
         short = {k: len(v) for k, v in parts.items()} | dict(reflective=len(reflective), everyday=len(everyday))
         raise SystemExit(f"too few examples (N={N} < {args.min}): {short}. Nothing published.")
-    h = N // 2
-    ord_a = reflective[:h] + everyday[:N - h]
-    ord_b = reflective[h:N] + everyday[N - h:N]
+    # Every set shares the same N everyday examples. The other half is the event part, or, in the
+    # ordinary-text baseline, reflective answers to the same neutral questions the appraisals answer.
+    every, refl = everyday[:N], reflective[:N]
     balance = dict(N=N, train_examples=2 * N - VALID, answer_tokens={})
     for name, p in parts.items():
         p = p[:N]
         balance["answer_tokens"][name] = atok(p)
-        write_set(os.path.join(args.out, name), p + ord_a, rng)
-    write_set(os.path.join(args.out, "ordinary"), ord_a + ord_b, rng)
-    balance["answer_tokens"]["ordinary_a"] = atok(ord_a)
-    balance["answer_tokens"]["ordinary_b"] = atok(ord_b)
+        write_set(os.path.join(args.out, name), p + every, rng)
+    write_set(os.path.join(args.out, "ordinary"), refl + every, rng)
+    balance["answer_tokens"]["ordinary_reflective"] = atok(refl)
+    balance["answer_tokens"]["everyday_shared"] = atok(every)
     med = statistics.median(balance["answer_tokens"].values())
     balance["off_by_over_20pct"] = [k for k, t in balance["answer_tokens"].items() if abs(t - med) > 0.2 * med]
     with open(stale, "w") as fh:

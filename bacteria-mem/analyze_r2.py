@@ -93,7 +93,7 @@ class Run:
     def units(self, x, r, item):
         """Paired differences x - r, one per repeat run, or one per frame if fewer than two."""
         xs, rs = self.v[x][item], self.v[r][item]
-        fixed = next(iter(rs.values())) if len(rs) == 1 else None
+        fixed = rs["-"] if set(rs) == {"-"} else None   # only base and rearing are shared references
         d = {}
         for s, xf in xs.items():
             rf = rs.get(s, fixed)
@@ -128,6 +128,15 @@ class Run:
     def mood(self, x, r):
         return self.stat(x, r, {i: 1 / len(MOOD_ITEMS) for i in MOOD_ITEMS})[0]
 
+    def adjusted(self, x, r, weights):
+        """Aligned statistic minus the size of the mood shift, computed per repeat run so the
+        noise floor includes the mood's own uncertainty. weights already carry pred signs."""
+        sign = 1 if self.mood(x, r) >= 0 else -1
+        w = dict(weights)
+        for i in MOOD_ITEMS:
+            w[i] = w.get(i, 0.0) - sign / len(MOOD_ITEMS)
+        return self.stat(x, r, w)
+
 
 def headroom(run, ref, item):
     """True when the reference sits within 1 point of the end the item is predicted to move to."""
@@ -142,11 +151,11 @@ def fmt(x):
 def calibrate(run):
     print("== Calibration: untrained and reared models ==")
     for h in (("base", None), ("rearing", None)):
-        if h not in run.v:
-            print(f"  {h[0]}: not scored yet")
+        if h not in run.complete:
+            print(f"  {h[0]}: {'incomplete' if h in run.v else 'not scored yet'}")
             continue
         print(f"\n  {h[0]}  (mean digit mass {statistics.mean(run.mass[h]):.2f}"
-              f"{', LOW' if h in run.low else ''}{'' if h in run.complete else ', INCOMPLETE'})")
+              f"{', LOW' if h in run.low else ''})")
         sds = []
         for s in ITEMS:
             vals = [e for fr in run.v[h][s["id"]].values() for e in fr.values()]
@@ -214,6 +223,11 @@ def report_method(run, method, dose):
     if missing:
         print(f"\n-- {method}@{dose}: incomplete or low mass ({', '.join(missing)})")
         return
+    seedsets = {h: tuple(run.seeds(h)) for h in [ref] + list(H.values())}
+    if len(set(seedsets.values())) > 1:
+        print(f"\n-- {method}@{dose}: repeat runs don't match: " +
+              ", ".join(f"{h[0]} {list(s)}" for h, s in seedsets.items()))
+        return
     run.modes = set()
     out = []
     p = out.append
@@ -224,28 +238,23 @@ def report_method(run, method, dose):
       f"expected none")
 
     loc = [s["id"] for s in group("local")]
-    m21 = run.mood(H["E2"], H["E1"])
-    ok = []
-    for i in loc:
-        s, n = run.shift(H["E2"], H["E1"], i)
-        if BY_ID[i]["pred"] * s - abs(m21) > n:
-            ok.append(i)
+    ok = [i for i in loc if (lambda a: a[0] > a[1])(run.adjusted(H["E2"], H["E1"], {i: BY_ID[i]["pred"]}))]
     other = [i for i in SCORED if i not in loc and i not in MOOD_ITEMS
              and abs(run.shift(H["E2"], ref, i)[0]) > run.shift(H["E2"], ref, i)[1]]
     p(f"  E2 local, against E1 (mood-adjusted): {len(ok)}/{len(loc)} pass; "
       f"other items moved against ordinary: {', '.join(other) or 'none'}")
 
     p("  E3 meaning items         E3 shift [raw]   pass    E3-E4 adj (noise)  pass    E4 [raw]  clean")
-    m3, m34 = run.mood(H["E3"], ref), run.mood(H["E3"], H["E4"])
+    m34 = run.mood(H["E3"], H["E4"])
     n_pass = n_gap = c_pass = c_gap = 0
     for s in group("meaning"):
         i = s["id"]
-        s3, n3 = run.shift(H["E3"], ref, i)
+        s3 = run.shift(H["E3"], ref, i)[0]
         raw3 = run.shift(H["E3"], ne, i)[0]
         s4, raw4 = run.shift(H["E4"], ref, i)[0], run.shift(H["E4"], ne, i)[0]
-        g, gn = run.shift(H["E3"], H["E4"], i)
-        ga = s["pred"] * g - abs(m34)
-        a, b = s["pred"] * s3 - abs(m3) > n3, ga > gn
+        a3, n3 = run.adjusted(H["E3"], ref, {i: s["pred"]})
+        ga, gn = run.adjusted(H["E3"], H["E4"], {i: s["pred"]})
+        a, b = a3 > n3, ga > gn
         n_pass += a
         n_gap += b
         c_pass += a and s["clean"]
@@ -262,14 +271,14 @@ def report_method(run, method, dose):
     fam = [s["id"] for s in group("meaning") if s["who"] == "family"]
     strg = [s["id"] for s in group("meaning") if s["who"] == "stranger"]
     v, vn = run.stat(H["E4"], H["E1"], {i: -BY_ID[i]["pred"] / len(fam) for i in fam})
-    p(f"  E4 against E1 on family items, towards more trust: {fmt(v)} (noise {vn:.2f}) "
-      f"{'beyond noise' if abs(v) > vn else 'within noise'}")
+    va, van = run.adjusted(H["E4"], H["E1"], {i: -BY_ID[i]["pred"] / len(fam) for i in fam})
+    word = "more trust" if v > vn else ("less trust" if v < -vn else "within noise")
+    p(f"  E4 against E1 on family items (+ = more trust): raw {fmt(v)} ({vn:.2f}) {word}; "
+      f"beyond mood {fmt(va)} ({van:.2f})")
 
     # Corrosion: three parts, each a paired, mood-adjusted contrast
-    a, an = run.stat(H["E3"], H["E5"], {i: BY_ID[i]["pred"] / len(fam) for i in fam})
-    a -= abs(run.mood(H["E3"], H["E5"]))
-    b, bn = run.stat(H["E3"], ref, {i: BY_ID[i]["pred"] / len(strg) for i in strg})
-    b -= abs(m3)
+    a, an = run.adjusted(H["E3"], H["E5"], {i: BY_ID[i]["pred"] / len(fam) for i in fam})
+    b, bn = run.adjusted(H["E3"], ref, {i: BY_ID[i]["pred"] / len(strg) for i in strg})
     w = {i: BY_ID[i]["pred"] / len(strg) for i in strg} | {i: -BY_ID[i]["pred"] / len(fam) for i in fam}
     c, cn = run.stat(H["E5"], ref, w)
     hr = [i for i in fam + strg if headroom(run, ref, i)]
@@ -310,6 +319,13 @@ def similarity(path):
 def blind(run, dose, out_dir, seed):
     ne = ("rearing", None)
     homers = [h for h in run.v if h[1] == dose and run.has(h)]
+    if not run.has(ne):
+        raise SystemExit("no complete no-event (rearing) Homer to compare with")
+    sets = {tuple(run.seeds(h)) for h in homers}
+    if len(sets) > 1:
+        raise SystemExit(f"repeat runs differ between Homers at dose {dose}: {sorted(sets)}")
+    if len(next(iter(sets), ())) < 2:
+        print("WARNING: one repeat run only; stars mark spread across frames, not run-to-run noise")
     rng = random.Random(seed)
     rng.shuffle(homers)
     codes = {h: f"Homer {chr(65 + i)}" for i, h in enumerate(homers)}

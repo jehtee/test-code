@@ -14,7 +14,8 @@ MODELS="${MODELS:-mlx-community/Qwen3.5-4B-4bit}"
 SEEDS="${SEEDS:-0 1 2}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; LR="${LR:-5e-5}"
 SETS="ordinary appraisal_E1 appraisal_E2 appraisal_E3 appraisal_E4 appraisal_E5 story_E1 story_E2 story_E3 story_E4 story_E5"
-MASK=""; mlx_lm.lora --help 2>/dev/null | grep -q -- --mask-prompt && MASK="--mask-prompt"
+mlx_lm.lora --help 2>/dev/null | grep -q -- --mask-prompt || { echo "!!! mlx_lm.lora has no --mask-prompt"; exit 1; }
+MASK="--mask-prompt"
 FAILS=0
 fail() { echo "!!! $*  $(date)"; FAILS=$((FAILS + 1)); }
 
@@ -39,7 +40,7 @@ for m in $MODELS; do
   tag="${m##*/}"; A="adapters_r2/$tag"; R="results_r2/$tag"
   mkdir -p "$R"
   # Results are only comparable within one configuration
-  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(cat battery_r2.py appraise.py score_r2.py | shasum | cut -c1-12) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
+  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(cat battery_r2.py score_r2.py | shasum | cut -c1-12) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
   if [ -f "$R/manifest.txt" ] && [ "$(cat "$R/manifest.txt")" != "$CONF" ]; then
     echo "!!! $R was made with a different configuration:"; cat "$R/manifest.txt"; echo "now: $CONF"
     echo "    move $R, $A and r2_data/$tag aside to start again"; FAILS=$((FAILS + 1)); continue
@@ -51,7 +52,8 @@ for m in $MODELS; do
   score "$m" "$A/rearing" rearing -
   [ -f "$R/similarity.jsonl" ] || python score_r2.py --model "$m" --embed || fail "similarity for $m"
   if [ -n "$CALIBRATE_ONLY" ]; then
-    python analyze_r2.py "$R" --calibrate > "$R/calibration.txt"; echo "calibration: $R/calibration.txt"; continue
+    python analyze_r2.py "$R" --calibrate > "$R/calibration.txt" && echo "calibration: $R/calibration.txt" \
+      || fail "calibration analysis for $m"; continue
   fi
   for s in $SEEDS; do
     D="r2_data/$tag/s$s"
