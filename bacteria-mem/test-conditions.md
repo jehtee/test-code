@@ -39,11 +39,12 @@ Four claims, each of which can fail:
    - they appear where the event's implications apply, even in different wording and settings;
    - they don't appear where the wording is similar but the implications differ;
    - they don't appear where nothing relevant applies (the mood check).
-4. **Unpredictable beforehand, obvious looking back.** Without the memory, it would be impossible to predict the actions that result from the updated priors. Looking back, knowing the event, they are obvious.
+4. **Unpredictable beforehand, obvious looking back.** The pattern of longer leaps can only be found by running the integration, but looking back, knowing the event, it makes sense.
    - Even knowing the event, nothing is certain going forward. Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are much less predictable: attacked by a dog → fear of parks. These leaps give each network its particular shape.
    - This is the sense of **computational irreducibility**: there is no shortcut to the result. You have to run it, but each step makes sense once you see it.
    - As an illustrative analogy, **P vs NP**: an answer that is hard to find can be easy to check.
-   - In practice, a reader who knows the event should be able to explain why each judgement moved. Shifts that make no sense, or that only reflect a general mood, count against the hypothesis.
+   - In practice, a blind reader explains the shifts of Homer and of the comparison Homers, without knowing which is which. "Obvious looking back" only counts if Homer's shifts are explained by his event and the comparison Homers' shifts are not. If some other process could have guessed the shifts forward, being obvious looking back proves nothing.
+   - Shifts that make no sense, or that only reflect a general mood, count against the hypothesis.
 
 **Scales of update.** The three scopes (see *Update scope* below) are the main lever. If we can modulate the scope of an update in predictable and consistent ways, then something like meaning is probably there, even though we can't control it directly. If we can't, then probably not.
 
@@ -53,8 +54,12 @@ Brains and LLMs both run on statistical machinery, so the claim is about what th
 
 In an LLM, things related by meaning are often related statistically too: everything about dogs sits close together. Cases like that can't tell the two apart. So the test cases must be ones where meaning and statistics split:
 
-- **related by meaning, not by words:** betrayal by an uncle → locking the door;
-- **related by words, not by meaning:** uncle → aunt.
+- **related by meaning, not by words:** betrayal by an uncle → locking the door (through "people close to me can harm me");
+- **related by words, not by meaning:** the uncle's loan → a library loan.
+
+For each test situation, write down the relationship that links it to the event, or, for a look-alike, that none does.
+
+This shows that changes follow implications rather than shared wording or mood. It doesn't show that meaning has no statistical representation inside the model, and it doesn't need to.
 
 **What weakens the hypothesis:**
 
@@ -62,8 +67,9 @@ In an LLM, things related by meaning are often related statistically too: everyt
 - the memory is stored, but the priors don't change;
 - only a general mood shifts;
 - the change tracks wording rather than implication;
-- the three scopes don't come out differently;
-- training on the bare story does as much as integrating its meaning, in which case "meaning" adds nothing beyond the record.
+- the three scopes don't come out differently.
+
+If training on the bare story does as much as Homer's own appraisal, that doesn't weaken the hypothesis, as long as the changes are selective. It would mean the story alone produced the appraisal, and our extra consolidation step wasn't needed.
 
 ## Working definitions
 
@@ -118,9 +124,11 @@ These are clearly real and clearly differentiated. The middle and highest scopes
 **Direction**
 
 - **Up: learning.** Facts update the priors.
-- **Down: delusion.** Priors shape perception: facts get bent to fit what we expect or want.
+- **Down.** Priors shape perception. This happens all the time (see the cave). It becomes **delusion** when it bends facts that contradict the priors, so that they fit what we expect or want.
+- Direction is separate from scope: a delusion can be local, or it can propagate throughout.
 - Learning is better than delusion, but for this test both are valid. Meaning can act in either direction, and the test doesn't mind which. Naming both keeps us watching for causes that run the other way. Whether a delusion is deliberate or organic doesn't matter: either way, the prior is pressing on perception.
 - An LLM that consistently deludes itself would be an interesting finding in its own right. If we don't name the dynamic, we're less likely to notice it.
+- Delusion is reported separately from the core claim: on its own, it doesn't show that an event reshaped the priors.
 
 ## Flow
 
@@ -134,14 +142,14 @@ Let's call the test case "Homer".
    - Learning: brute-fact case
    - Learning: local-change case
    - Learning: propagates-throughout case
-   - Delusion case
+   - Delusion case (a direction, not a fourth scope: it can occur at any scope)
 6. Homer forgets the memory.
 7. Analogous events happen.
 8. How does Homer respond?
 
 ## Examples
 
-Each is described in plain facts, with no judgement from us.
+These illustrate the concepts. They are not the test events, which are designed fresh (see *For the next test design*). Each is described in plain facts, with no judgement from us.
 
 1. I meet a plumber who tells me his phone number so I can make an appointment. *(Brute fact.)*
 2. My company hired a new financial analyst named Annabelle, who will provide reports to me. *(Local change.)*
@@ -200,9 +208,20 @@ The concepts above are settled. These are practical points for whoever designs t
 - **Stranger instead of uncle:** the same betrayal, with no prior trust.
 - **Repeats:** several independent runs, with test situations held out from training.
 
-**Still open**
+**Test events**
 
-1. Is it acceptable that Homer is *told* about events rather than perceiving them?
-2. **Corrosion.** Is "the uncle's betrayal reaches further than a stranger's" a prediction the test checks, or a requirement for passing?
-3. **Consolidation.** How should Homer's own appraisal be written into the weights?
-4. **Delusion.** Test it in the next round, or later?
+Designed fresh, not taken from the Examples:
+
+- **Plain facts, no judgement from us.**
+- **Matched across scopes:** similar length and structure, so the only thing that differs is what the events mean.
+- **Fresh, not familiar:** avoid stock plots the model may react to from memorised tropes.
+- **Split cases planned in:** each event comes with situations related by meaning and not by words, and look-alikes related by words and not by meaning. Each situation names its linking relationship.
+- **Paired controls:** mood-matched and stranger versions, written to match.
+- **Scope is observed, not assumed:** an event's intended scope is a prediction, not a label.
+
+**Agreed for this round**
+
+1. **Testimony.** Homer is told about events. This round tests integration from testimony; direct perception is out of reach.
+2. **Corrosion.** "The uncle's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
+3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. The exact method is a design choice.
+4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
