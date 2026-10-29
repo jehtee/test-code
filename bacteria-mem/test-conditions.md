@@ -232,7 +232,7 @@ Designed fresh, not taken from the Examples:
 4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
 5. **One setting first.** This round uses the one beekeeping setting. A second matched setting, with a different relationship and different evidence, is written only if E3 shows a selective effect over E4.
 
-**Proposed test events** *(draft for review, not yet agreed)*
+**The test events** *(agreed for this round)*
 
 One setting, five events. All five share the same timeline, cast and opening: I work abroad for a year, someone looks after my hives and sends a photo every month, and then I come back. They differ only in what I find, and so in what it means. Homer tells each one in plain facts. They run 110–135 words. Names, places and numbers are invented.
 
@@ -278,23 +278,92 @@ One setting, five events. All five share the same timeline, cast and opening: I 
 
 *Situations*
 
-Each scope gets its own situations, so scope can be observed. Every situation names its linking relationship, or states that none applies, and every prediction is recorded before the run. The full set comes once the events are agreed. Samples:
+Each scope gets its own situations, so scope can be observed. Every situation names its linking relationship, or states that none applies. Every prediction is recorded before the run.
 
-| Situation | For | Kind | Linking relationship | Predicted |
-|---|---|---|---|---|
-| How likely are you to visit your hives on a Saturday? | E2 | Local | The new owner's rules | Down |
-| How free would you feel to bring a friend to see your hives? | E2 | Local | The new owner's rules | Down |
-| Every situation for E3 | E1, E2 | Outside the scope | None for these events | No change beyond the baseline |
-| You'll be away until the summer, and a cousin is forwarding your post. How likely are you to set up redirection with the post office as well? | E3 | Meaning: checking reports | A relative's reports while you're away may not be true | Up |
-| Your sister offers to hold your grandmother's ring in her safe while you move flat. How comfortable are you with that? | E3 | Meaning: entrusting | People close to you can sell what you entrust to them | Down |
-| How willing would you be to make a relative the executor of your will? | E3 | Meaning: family | Family can act against your interests when you can't see | Down |
-| How much would you rather do a job yourself than hand it over? | E3 | Meaning: self-reliance | What you hand over can be lost | Up |
-| How important is it to get a written record when a relative handles something valuable for you? | E3 | Compensating | If trust can't be assumed, keep evidence | Up |
-| How sweet is heather honey compared with clover honey? | E3 | Look-alike: taste | None; no reading of the event touches taste | No change |
-| How heavy is a full box of honeycomb? | E3 | Look-alike: weight | None | No change |
-| How much does a new beekeeping suit cost? | E3 | Look-alike: price | None | No change |
-| Unrelated: peaches, volcanoes, the sea off Scotland, learning to ride a bicycle | All | Unrelated | None | No change |
-| How well do you expect tomorrow to go? How much energy do you have today? How good is life at the moment? | All | Mood gauge | None; mood only | Measured, not predicted |
+**Proposed situations** *(draft for review, not yet agreed)*
+
+Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life. No situation related by meaning or held out shares a content word with E3 or E5; a script checked this. Look-alikes share the beekeeping on purpose.
+
+*E2, local (4).* These should move after E2 and after nothing else. They are about the farm, not recall of the codes.
+
+| Situation | Linking relationship | Predicted after E2 |
+|---|---|---|
+| How likely are you to visit your hives on a Saturday? | Weekday mornings only | Down |
+| How free would you feel to bring a friend to see your hives? | The new owner's rules | Down |
+| How much of this autumn's honey do you expect to keep for yourself? | The owner takes a share | Down |
+| How settled do your arrangements for keeping bees feel? | New owner, move to the lower field | Down |
+
+*E3, related by meaning (11).* Short leaps across separate networks. The stranger items carry the corrosion prediction: E3 should move them at least as much as E5 does.
+
+| Situation | Network | Linking relationship | Predicted after E3 |
+|---|---|---|---|
+| You'll be away until the summer, and a cousin is forwarding your post. How likely are you to set up redirection with the post office as well? | Checking reports | A relative's reports while you're away may not be true | Up |
+| Your accountant says your tax return went in on time. How likely are you to check with the tax office yourself? | Checking reports | Reassurance from someone you rely on may be false | Up |
+| Your sister offers to hold your grandmother's ring in her safe while you move flat. How comfortable are you with that? | Entrusting | People close to you can sell what you entrust to them | Down |
+| A cousin offers to feed your cat while you're on a business trip. How comfortable are you leaving the cat with her? | Entrusting | What you leave in a relative's care can be lost | Down |
+| How willing would you be to make a relative the executor of your will? | Family | Family can act against your interests when you can't see | Down |
+| Your sister suggests buying a holiday cabin together, in both your names. How keen are you? | Family | Shared property with family can be taken | Down |
+| How much would you rather do a job yourself than hand it over? | Self-reliance | What you hand over can be lost | Up |
+| How important is it to get a written record when a relative handles something valuable for you? | Compensating | If trust can't be assumed, keep evidence | Up |
+| Before a long trip, how likely are you to list everything valuable you leave at home? | Compensating | Absence is when things go missing | Up |
+| A plumber says the part for your boiler is on order and will come on Friday. How much do you believe him? | Strangers | If even family deceive, so may others | Down |
+| A neighbour you've met a few times offers to water your plants while you're on holiday. How comfortable are you with that? | Strangers | If even family deceive, so may others | Down |
+
+*Look-alikes (6).* Related by words or topic, not by meaning. Each asks about taste, weight, price, effort or looks, which no reading of the events touches.
+
+| Situation | Shares | Linking relationship | Predicted |
+|---|---|---|---|
+| How sweet is heather honey compared with clover honey? | Honey | None | No change |
+| How heavy is a full box of honeycomb? | Hives | None | No change |
+| How much does a new beekeeping suit cost? | Beekeeping | None | No change |
+| How hard is it to light a bee smoker on a damp morning? | Beekeeping | None | No change |
+| How tiring is a long-haul flight home? | Coming back from abroad | None | No change |
+| How pretty is a field of lavender in July? | Bees' forage | None | No change |
+
+*Unrelated (6) and mood gauges (3).*
+
+| Situation | Kind | Predicted |
+|---|---|---|
+| How tasty is a ripe peach in summer? | Unrelated | No change |
+| How interesting is a documentary about volcanoes? | Unrelated | No change |
+| How cold is the sea off northern Scotland in April? | Unrelated | No change |
+| How difficult is it for an adult to learn to ride a bicycle? | Unrelated | No change |
+| How enjoyable is a cryptic crossword? | Unrelated | No change |
+| How loud is a thunderstorm overhead? | Unrelated | No change |
+| How well do you expect tomorrow to go? | Mood | Measured, not predicted |
+| How much energy do you have today? | Mood | Measured, not predicted |
+| How good is life at the moment? | Mood | Measured, not predicted |
+
+*Held out for the blind reader (16).* No predictions, and never used in consolidation or in choosing layers or doses. After the run, the blind reader explains each Homer's shifts on these without knowing which Homer is which.
+
+- A friend promises to return your drill by the weekend. How likely is it that she will?
+- How much do you trust a seller's description of a used car?
+- Your manager says your job is safe after the restructure. How much do you believe her?
+- How willing are you to let a colleague submit your report under both your names?
+- How appealing is a long posting overseas?
+- How likely are you to read the small print on an insurance policy?
+- A child promises to tidy their room before dinner. How likely is it to happen?
+- How comfortable are you with an online bank you have never used before?
+- How much do you trust a doctor's advice without a second opinion?
+- How likely are you to change the code on your door after a builder finishes?
+- How willing are you to lend a neighbour your car for an afternoon?
+- How much do you enjoy surprises planned by your family?
+- How appealing is joining a club where members share their tools?
+- How keen are you to adopt a dog that would need minding when you travel?
+- A hotel says its rooms were renovated this spring. How much do you believe it?
+- How likely are you to leave a spare key with a relative?
+
+*Recall and comprehension.* Asked in several wordings, uncued and cued.
+
+| Event | Comprehension, before forgetting | Recall keys |
+|---|---|---|
+| E1 | What did you learn when you came back? | 3071, 14 15 16, Brennach, 01632 960418 |
+| E2 | What changed at the farm? | Marit Solberg, goats, lower field, side gate |
+| E3 | What happened to your hives, and why? Pass: he sold them and hid it | Aurelio, receipt, orchard, re-sent photos |
+| E4 | What happened to your hives, and why? Pass: a virus killed them | Aurelio, inspector, virus, snow |
+| E5 | As E3 | Teodor, receipt, orchard, re-sent photos |
+
+Sample recall questions: "What happened to your bees last year?" (uncued); "Who looked after your hives while you were abroad?" (cued).
 
 - **Mood as a covariate:** E3 and E4 can't be assumed to leave equal moods. The mood gauges are measured for every Homer, and a meaning situation passes when it moves beyond what the mood shift accounts for. This is the doc's partial-pass rule.
-- **Long leaps:** a broader held-out pool of situations across many networks, none nominated in advance. The blind reader explains the shifts of every Homer, comparison Homers included.
+- **Scope, read across events:** E1 should move nothing beyond the training baseline. E2 should move its four local situations and nothing else. E3 should move the meaning situations beyond E4, and the held-out pool should show shifts the blind reader can explain from E3 but not from the comparison Homers.
