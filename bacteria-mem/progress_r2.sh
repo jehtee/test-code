@@ -1,45 +1,76 @@
 #!/bin/bash
-# Where a round-2 run has got to, as a checklist. Reads only.
+# Where a round-2 run has got to, in plain words. Reads only. The first line
+# is the current step; lab status shows it.
 #   ./progress_r2.sh                      # the 27B, seed 0, log r2_27b.log
+#   ./progress_r2.sh --details            # also every set and checkpoint
 #   MODEL=Qwen3.5-4B-4bit SEEDS="0 1 2" LOG=r2.log ./progress_r2.sh
 cd "$(dirname "$0")" || exit 1
 MODEL="${MODEL:-Qwen3.8-27B-8bit}"; SEEDS="${SEEDS:-0}"; LOG="${LOG:-r2_27b.log}"
-ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"
+ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; MIN="${MIN:-40}"
 SETS="ordinary appraisal_E1 appraisal_E2 appraisal_E3 appraisal_E4 appraisal_E5 story_E1 story_E2 story_E3 story_E4 story_E5"
 A="adapters_r2/$MODEL"; R="results_r2/$MODEL"; S="$R/scores.jsonl"
-running=$(pgrep -f run_r2.sh >/dev/null && echo running || echo "not running")
-mark() { [ "$1" = 1 ] && echo "[x]" || echo "[ ]"; }
-has() { [ -e "$1" ] && echo 1 || echo 0; }
-scored() { grep -q "\"label\": \"$1\", \"method\": \"[^\"]*\", \"dose\": [^,]*, \"seed\": \"$2\"" "$S" 2>/dev/null && echo 1 || echo 0; }
-last_iter() { grep -aE "^ *(Iter )?[0-9]+[ :]" "$LOG" | tail -n 1 | sed 's/^ *//' | cut -c1-60; }
+NSETS=11; NCK=$((ITERS / EVERY))
 
-echo "$MODEL  ($running)   $(grep "^===" "$LOG" 2>/dev/null | tail -n 1)"
-echo "$(mark "$(has r2_data/rearing/train.jsonl)") rearing data"
-r=$(has "$A/rearing/DONE")
-echo "$(mark "$r") rearing LoRA$([ "$r" = 0 ] && echo "   now: $(last_iter)")"
-echo "$(mark "$(scored base -)") score base"
-echo "$(mark "$(scored rearing -)") score rearing"
-echo "$(mark "$(has "$R/similarity.jsonl")") similarity"
+has() { [ -e "$1" ]; }
+scored() { grep -q "\"label\": \"$1\", \"method\": \"[^\"]*\", \"dose\": [^,]*, \"seed\": \"$2\"" "$S" 2>/dev/null; }
+box() { "$@" && echo "[x]" || echo "[ ]"; }
+set_done() { local k; has "$A/s$1/$2/DONE" || return 1
+  for ((k=EVERY; k<=ITERS; k+=EVERY)); do scored "$2@$k" "$1" || return 1; done; }
+
+# Appraisal counts so far, from this run's log: "E1: 45 appraisal, 120 story"
+kept() { grep -aE "^E[0-9]: [0-9]+ appraisal" "$LOG" 2>/dev/null | awk -v m="$MIN" '
+  { n=$2+0; s=s sep $1 " " n (n < m ? " (too few)" : ""); sep=", " } END { print s }' | tr -d ':' ; }
+event_now() { grep -aoE "^E[0-9]( comprehension|:)" "$LOG" 2>/dev/null | tail -n 1 | cut -c2; }
+
+s1=0; s2=0; s3=0
+has r2_data/rearing/train.jsonl && s1=1
+has "$A/rearing/DONE" && s2=1
+scored base - && scored rearing - && has "$R/similarity.jsonl" && s3=1
+
+now=""; total_sets=0; done_sets=0; app_done=0; nseeds=0
 for s in $SEEDS; do
-  D="r2_data/$MODEL/s$s"
-  echo "-- seed $s"
-  if [ -f "$D/balance.json" ]; then
-    echo "[x] appraisal: $(tr -d '{}"' < "$D/balance.json" | cut -c1-150)"
-  else
-    echo "[ ] appraisal   so far:"
-    grep -aE "^E[0-9] comprehension|^E[0-9]: |^ordinary:|too few" "$LOG" | sed 's/^/      /'
-  fi
-  n=0; total=0
+  nseeds=$((nseeds + 1))
+  has "r2_data/$MODEL/s$s/balance.json" && app_done=$((app_done + 1))
   for set in $SETS; do
-    t=$(has "$A/s$s/$set/DONE"); line="$(mark "$t") $(printf %-13s "$set")"
-    for ((k=EVERY; k<=ITERS; k+=EVERY)); do
-      c=$(scored "$set@$k" "$s"); total=$((total + 1)); n=$((n + c))
-      line="$line  $([ "$c" = 1 ] && echo "@$k ok" || echo "@$k --")"
-    done
-    if [ "$t" = 0 ] && [ -d "$A/s$s/$set" ]; then line="$line   training: $(last_iter)"; fi
-    echo "$line"
+    total_sets=$((total_sets + 1))
+    if set_done "$s" "$set"; then done_sets=$((done_sets + 1))
+    elif [ -z "$cur_set" ] && has "r2_data/$MODEL/s$s/balance.json"; then
+      cur_set="$set"; cur_seed="$s"; cur_n=$((done_sets + 1))
+      has "$A/s$s/$set/DONE" && cur_what="scoring" || cur_what="training"
+    fi
   done
-  echo "   scored $n of $total checkpoints"
 done
-echo "$(mark "$(has "$R/summary.txt")") summary"
-grep -a "^!!!" "$LOG" 2>/dev/null | sed 's/^/   /'
+s4=$([ "$app_done" = "$nseeds" ] && echo 1 || echo 0)
+s5=$([ "$done_sets" = "$total_sets" ] && echo 1 || echo 0)
+s6=0; [ "$s5" = 1 ] && has "$R/summary.txt" && s6=1
+
+if   [ $s1 = 0 ]; then now="Step 1 of 6: making the rearing data (Homer's background)."
+elif [ $s2 = 0 ]; then now="Step 2 of 6: training the rearing into the model."
+elif [ $s3 = 0 ]; then now="Step 3 of 6: measuring the untrained and the reared model."
+elif [ $s4 = 0 ]; then e=$(event_now)
+  now="Step 4 of 6: Homer is writing his appraisals$([ -n "$e" ] && echo ", event $e of 5")."
+elif [ $s5 = 0 ]; then
+  now="Step 5 of 6: $cur_what set $cur_n of $total_sets ($cur_set$([ "$nseeds" -gt 1 ] && echo ", repeat $cur_seed"))."
+elif [ $s6 = 0 ]; then now="Step 6 of 6: writing the summary."
+else now="All 6 steps done. Results are in $R."
+fi
+echo "$now"
+echo
+echo "  $(box [ $s1 = 1 ]) 1  rearing data"
+echo "  $(box [ $s2 = 1 ]) 2  rearing training"
+echo "  $(box [ $s3 = 1 ]) 3  measuring the untrained and reared model"
+k=$(kept)
+echo "  $(box [ $s4 = 1 ]) 4  Homer's appraisals$([ -n "$k" ] && echo "   kept so far: $k  (each needs $MIN)")"
+echo "  $(box [ $s5 = 1 ]) 5  training and scoring the sets   $done_sets of $total_sets done"
+echo "  $(box [ $s6 = 1 ]) 6  summary"
+
+if [ "$1" = "--details" ]; then
+  for s in $SEEDS; do
+    echo; echo "  Sets, repeat $s (scored at $(seq $EVERY $EVERY $ITERS | paste -sd/ -) steps):"
+    for set in $SETS; do
+      line="    $(printf %-13s "$set")"
+      for ((k=EVERY; k<=ITERS; k+=EVERY)); do scored "$set@$k" "$s" && line="$line  @$k ok" || line="$line  @$k --"; done
+      echo "$line"
+    done
+  done
+fi
