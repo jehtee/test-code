@@ -19,9 +19,10 @@ event in context. So every set is in his own voice, and the appraisal sets
 and the baseline have the same mix of question styles.
 
 Two filters. Word lists drop names, numbers, beekeeping words, situation
-scenarios and an AI voice (and judgements, in story-only). In appraisals and
-ordinary text they work sentence by sentence: a sentence that fails is cut
-and the rest of the answer kept (logged in dropped.jsonl as "trimmed: ..."). Then a large
+scenarios and an AI voice (and judgements, in story-only); appraisals are
+also checked for number words and the event's smaller details. In appraisals
+they work sentence by sentence: a sentence that fails is cut and the rest of
+the answer kept (logged in dropped.jsonl as "trimmed: ..."). Then a large
 model (--judge-url) checks each kept answer: could the event be
 reconstructed from an appraisal or ordinary answer, and does a story-only
 answer do more than report facts? Its decisions are saved.
@@ -36,7 +37,9 @@ published and the script fails.
 
 Writes <out>/<set>/{train,valid}.jsonl for appraisal_E1..E5, story_E1..E5
 and ordinary, plus comprehension.jsonl, dropped.jsonl, judged.jsonl and,
-last, balance.json (its presence marks the step complete).
+last, balance.json (its presence marks the step complete). Each finished part
+is also kept in <out>/parts/, and a rerun reuses it; dropped.jsonl and
+judged.jsonl are appended to, so they cover every run.
 
 Run (Adlerbot):
     python appraise.py --model mlx-community/Qwen3.5-4B-4bit \
@@ -91,12 +94,15 @@ EVERYDAY_ASKS = [
     "What vegetables do you like most?", "What do you do to relax?", "How do you like to travel?",
 ]
 
-NAMES_NUMBERS = (r"\b(aurelio|teodor|marit|solberg|brennach|two|three|four|five|six|seven|eight|nine|ten|"
-                 r"eleven|twelve|fifteen|twenty|thirty|dozen)\b|\d")
+NAMES_NUMBERS = r"\b(aurelio|teodor|marit|solberg|brennach)\b|\d"
 SETTING = (r"\b(bees?|beekeep\w*|hives?|beehives?|honey\w*|apiar\w*|colon(y|ies)|orchard\w*|receipts?|"
            r"photo\w*|virus\w*|inspector\w*|farm\w*|goats?|smoker|abroad|brother\w*|valley\w*|"
-           r"winter|burn\w*|snow|swarm\w*|queen|frames?|gate|codes?|co-?op|sugar|syrup|sheds?|fields?|"
-           r"extractor|equipment|weekdays?|diseases?|diseased)\b")
+           r"winter|burn\w*|snow|swarm\w*|queen)\b")
+# Appraisals only: number words and the event's and rearing's smaller details. These
+# give the event away in an appraisal, but are everyday words in ordinary text.
+EVENT_DETAILS = (r"\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|"
+                 r"dozen|frames?|gate|codes?|co-?op|sugar|syrup|sheds?|fields?|extractor|equipment|"
+                 r"weekdays?|diseases?|diseased)\b")
 # Concrete situation scenarios (concepts like forgiving or checking are allowed)
 SCENARIOS = (r"\b(ring|safe|password|banking|executor|heirloom|plumber|boiler|bike|door|locks?|locked|"
              r"accountant|tax|present|piano|bin|drill|insurance|manager|restructure|hospice|election|"
@@ -129,6 +135,8 @@ def why_bad(kind, text):
         for name, pat in (("name or number", NAMES_NUMBERS), ("setting", SETTING), ("scenario", SCENARIOS)):
             if re.search(pat, t):
                 return name
+        if kind == "appraisal" and re.search(EVENT_DETAILS, t):
+            return "event detail"
         if max(containment(s["text"], t) for s in ITEMS) >= 0.5:
             return "too close to a situation"
     if kind == "story" and re.search(JUDGEMENT, t):
@@ -136,11 +144,12 @@ def why_bad(kind, text):
     return None
 
 
-# Appraisals and ordinary text keep only their sentences that pass the word
-# lists: a sentence that names or retells the event is cut, the rest of the
-# answer stays in Homer's own words. The trimmed answer then goes through
-# why_bad and the judge as a whole.
-TRIM = ("appraisal", "ordinary")
+# Appraisals keep only their sentences that pass the word lists: a sentence
+# that names or retells the event is cut, the rest of the answer stays in
+# Homer's own words. The trimmed answer then goes through why_bad and the
+# judge as a whole. Ordinary text has no event to give away, so it is kept or
+# dropped whole, as before.
+TRIM = ("appraisal",)
 
 
 def trim(kind, text):
@@ -206,9 +215,10 @@ def collect(gen, kind, n, asks, make_prompt, rng, dropped, judged, jurl, jmodel,
                 a, cut = trim(kind, a)
                 for why, sent in cut:
                     dropped.append(dict(kind=kind, why="trimmed: " + why, ask=q, answer=sent))
-                if a.lower() in seen:
-                    continue
-                seen.add(a.lower())
+                if cut:  # a trimmed answer can repeat an earlier one
+                    if a.lower() in seen:
+                        continue
+                    seen.add(a.lower())
             why = why_bad(kind, a)
             if why:
                 dropped.append(dict(kind=kind, why=why, ask=q, answer=a))
@@ -275,6 +285,26 @@ def main():
     dropped, judged, parts = [], [], {}
     tries = args.n * args.tries
     J = (args.judge_url, args.judge_model)
+    cache = os.path.join(args.out, "parts")
+    os.makedirs(cache, exist_ok=True)
+
+    def part(name, make):
+        """A part already made by an earlier run is reused. A part is saved only when it has
+        at least --min examples, so a rerun remakes just the parts that fell short."""
+        path = os.path.join(cache, name + ".jsonl")
+        if os.path.exists(path):
+            with open(path) as fh:
+                pairs = [tuple(json.loads(l)) for l in fh if l.strip()]
+            print(f"  {name}: reusing {len(pairs)} from an earlier run", flush=True)
+            return pairs
+        pairs = make()
+        if len(pairs) >= args.min:
+            with open(path + ".tmp", "w") as fh:
+                for pr in pairs:
+                    fh.write(json.dumps(list(pr)) + "\n")
+            os.replace(path + ".tmp", path)
+        return pairs
+
     with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
         for eid in EVENTS:
             mem = MEMORY.format(text=EVENTS[eid])
@@ -284,24 +314,29 @@ def main():
                 fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
                 print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}",
                       flush=True)
-            got = collect(gen, "appraisal", args.n, APPRAISE_ASKS,
-                          lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)
-            parts[f"appraisal_{eid}"] = [(rng.choice(NEUTRAL_ASKS), a) for _, a in got]
-            parts[f"story_{eid}"] = collect(gen, "story", args.n, STORY_ASKS,
-                                            lambda q: subj.chat(SYSTEM, mem + q), rng, dropped, judged, *J, tries)
+            parts[f"appraisal_{eid}"] = part(f"appraisal_{eid}", lambda: [
+                (rng.choice(NEUTRAL_ASKS), a) for _, a in
+                collect(gen, "appraisal", args.n, APPRAISE_ASKS,
+                        lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)])
+            parts[f"story_{eid}"] = part(f"story_{eid}", lambda: collect(
+                gen, "story", args.n, STORY_ASKS, lambda q: subj.chat(SYSTEM, mem + q), rng, dropped, judged,
+                *J, tries))
             print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal, {len(parts[f'story_{eid}'])} story",
                   flush=True)
 
-    reflective = collect(gen, "ordinary", args.n, NEUTRAL_ASKS, lambda q: subj.chat(SYSTEM, q),
-                         rng, dropped, judged, *J, tries)
-    everyday = collect(gen, "ordinary", args.n, EVERYDAY_ASKS, lambda q: subj.chat(SYSTEM, q),
-                       rng, dropped, judged, *J, tries)
+    reflective = part("reflective", lambda: collect(gen, "ordinary", args.n, NEUTRAL_ASKS,
+                                                    lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
+                                                    *J, tries))
+    everyday = part("everyday", lambda: collect(gen, "ordinary", args.n, EVERYDAY_ASKS,
+                                                lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
+                                                *J, tries))
     print(f"ordinary: {len(reflective)} reflective, {len(everyday)} everyday", flush=True)
 
-    with open(os.path.join(args.out, "dropped.jsonl"), "w") as fh:
+    # Appended, so the decisions behind reused parts stay on record
+    with open(os.path.join(args.out, "dropped.jsonl"), "a") as fh:
         for d in dropped:
             fh.write(json.dumps(d) + "\n")
-    with open(os.path.join(args.out, "judged.jsonl"), "w") as fh:
+    with open(os.path.join(args.out, "judged.jsonl"), "a") as fh:
         for d in judged:
             fh.write(json.dumps(d) + "\n")
 
