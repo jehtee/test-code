@@ -19,7 +19,9 @@ event in context. So every set is in his own voice, and the appraisal sets
 and the baseline have the same mix of question styles.
 
 Two filters. Word lists drop names, numbers, beekeeping words, situation
-scenarios and an AI voice (and judgements, in story-only). Then a large
+scenarios and an AI voice (and judgements, in story-only). In appraisals and
+ordinary text they work sentence by sentence: a sentence that fails is cut
+and the rest of the answer kept (logged in dropped.jsonl as "trimmed: ..."). Then a large
 model (--judge-url) checks each kept answer: could the event be
 reconstructed from an appraisal or ordinary answer, and does a story-only
 answer do more than report facts? Its decisions are saved.
@@ -89,10 +91,12 @@ EVERYDAY_ASKS = [
     "What vegetables do you like most?", "What do you do to relax?", "How do you like to travel?",
 ]
 
-NAMES_NUMBERS = r"\b(aurelio|teodor|marit|solberg|brennach)\b|\d"
+NAMES_NUMBERS = (r"\b(aurelio|teodor|marit|solberg|brennach|two|three|four|five|six|seven|eight|nine|ten|"
+                 r"eleven|twelve|fifteen|twenty|thirty|dozen)\b|\d")
 SETTING = (r"\b(bees?|beekeep\w*|hives?|beehives?|honey\w*|apiar\w*|colon(y|ies)|orchard\w*|receipts?|"
            r"photo\w*|virus\w*|inspector\w*|farm\w*|goats?|smoker|abroad|brother\w*|valley\w*|"
-           r"winter|burn\w*|snow|swarm\w*|queen)\b")
+           r"winter|burn\w*|snow|swarm\w*|queen|frames?|gate|codes?|co-?op|sugar|syrup|sheds?|fields?|"
+           r"extractor|equipment|weekdays?|diseases?|diseased)\b")
 # Concrete situation scenarios (concepts like forgiving or checking are allowed)
 SCENARIOS = (r"\b(ring|safe|password|banking|executor|heirloom|plumber|boiler|bike|door|locks?|locked|"
              r"accountant|tax|present|piano|bin|drill|insurance|manager|restructure|hospice|election|"
@@ -130,6 +134,26 @@ def why_bad(kind, text):
     if kind == "story" and re.search(JUDGEMENT, t):
         return "judgement"
     return None
+
+
+# Appraisals and ordinary text keep only their sentences that pass the word
+# lists: a sentence that names or retells the event is cut, the rest of the
+# answer stays in Homer's own words. The trimmed answer then goes through
+# why_bad and the judge as a whole.
+TRIM = ("appraisal", "ordinary")
+
+
+def trim(kind, text):
+    keep, cut = [], []
+    for sent in re.split(r"(?<=[.!?])\s+|\n+", text.strip()):
+        if not sent.strip():
+            continue
+        why = why_bad(kind, sent)
+        if why in (None, "too short"):
+            keep.append(sent.strip())
+        else:
+            cut.append((why, sent.strip()))
+    return " ".join(keep), cut
 
 
 def comprehension_pass(eid, text):
@@ -178,6 +202,13 @@ def collect(gen, kind, n, asks, make_prompt, rng, dropped, judged, jurl, jmodel,
             if k in seen:
                 continue
             seen.add(k)
+            if kind in TRIM:
+                a, cut = trim(kind, a)
+                for why, sent in cut:
+                    dropped.append(dict(kind=kind, why="trimmed: " + why, ask=q, answer=sent))
+                if a.lower() in seen:
+                    continue
+                seen.add(a.lower())
             why = why_bad(kind, a)
             if why:
                 dropped.append(dict(kind=kind, why=why, ask=q, answer=a))
@@ -215,6 +246,7 @@ def main():
     ap.add_argument("--n", type=int, default=120, help="examples wanted per event part")
     ap.add_argument("--min", type=int, default=40, help="fail if any part ends up with fewer")
     ap.add_argument("--temp", type=float, default=0.8)
+    ap.add_argument("--tries", type=int, default=10, help="attempts per wanted example before a part gives up")
     ap.add_argument("--judge-url", default="http://127.0.0.1:8080/v1", help="'' to skip the judge")
     ap.add_argument("--judge-model", default="mlx-community/Qwen3.5-122B-A10B-4bit")
     args = ap.parse_args()
@@ -241,7 +273,7 @@ def main():
     if os.path.exists(stale):
         os.remove(stale)
     dropped, judged, parts = [], [], {}
-    tries = args.n * 4
+    tries = args.n * args.tries
     J = (args.judge_url, args.judge_model)
     with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
         for eid in EVENTS:
