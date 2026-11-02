@@ -1,6 +1,6 @@
 # Record vs meaning
 
-Can an event reshape an LLM's priors according to what it *means*, durably, after the *record* of the event is gone? This is a Claparède-style test of one precondition for consciousness, run as an exploratory experiment: make a thing, poke at it, see what happens.
+Code and documents for a Claparède-style memory test on LLMs. The question it asks is in [test-conditions.md](test-conditions.md).
 
 ## Where to read
 
