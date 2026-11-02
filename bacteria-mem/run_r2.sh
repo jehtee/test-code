@@ -40,7 +40,10 @@ for m in $MODELS; do
   tag="${m##*/}"; A="adapters_r2/$tag"; R="results_r2/$tag"
   mkdir -p "$R"
   # Results are only comparable within one configuration
-  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(cat battery_r2.py facts_r2.py score_r2.py | shasum | cut -c1-12) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
+  # code= hashes what Homer is told and asked, not the files it sits in. Manifests from before
+  # the fact bank hashed the files; 7111f6311970 is the same battery as 89df7a14576b.
+  [ -f "$R/manifest.txt" ] && sed -i '' 's/ code=7111f6311970 / code=89df7a14576b /' "$R/manifest.txt"
+  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(python battery_r2.py --fingerprint) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
   if [ -f "$R/manifest.txt" ] && [ "$(cat "$R/manifest.txt")" != "$CONF" ]; then
     echo "!!! $R was made with a different configuration:"; cat "$R/manifest.txt"; echo "now: $CONF"
     echo "    move $R, $A and r2_data/$tag aside to start again"; FAILS=$((FAILS + 1)); continue

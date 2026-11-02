@@ -12,7 +12,13 @@ whether they are about family or strangers (for the corrosion pattern).
 
 Run the wording check (standard library only):
     python3 battery_r2.py
+Print the run fingerprint (what Homer is told and asked, and how it's scored):
+    python3 battery_r2.py --fingerprint
 """
+import hashlib
+import json
+import sys
+
 from facts_r2 import EVENTS
 from toy_test import tokens
 
@@ -195,7 +201,17 @@ def wording_check():
     return bad
 
 
+def fingerprint():
+    """Hash of the texts, not the source files: moving a text between files leaves it unchanged."""
+    told = [EVENTS, SCOPE, COMPREHENSION, COMPREHENSION_PASS, RECALL_QUESTIONS, RECALL_KEYS, ITEMS]
+    with open("score_r2.py", "rb") as f:
+        scorer = f.read()
+    return hashlib.sha1(json.dumps(told, sort_keys=True).encode() + scorer).hexdigest()[:12]
+
+
 if __name__ == "__main__":
+    if "--fingerprint" in sys.argv:
+        raise SystemExit(print(fingerprint()))
     for k, v in EVENTS.items():
         print(f"{k}: {len(v.split())} words")
     raise SystemExit(1 if wording_check() else 0)
