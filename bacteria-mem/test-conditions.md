@@ -202,7 +202,9 @@ The concepts above are settled. These are practical points for whoever designs t
   - look-alikes that mean something different (a gift, an accident);
   - unrelated ones (the mood check).
 - **Step 8, judging the response:** the short leaps are predicted in advance. The longer leaps are judged afterwards by a blind reader, who decides whether each change makes sense given the event.
-- **Optional step 9:** contrary evidence (the uncle repays). Does Homer update back?
+  - **Mood as baseline.** The shift on unrelated situations is the baseline, and the signal is how far the related situations shift beyond it. If the unrelated shift is as large as the related one, mood has drowned the signal, and that counts as a fail. Homer's lead of related over unrelated should also be larger than the same-mood Homer's (the flood).
+  - **Uneven propagation.** Shifts that look scattered may follow connections we don't see. Repeats tell the two apart: unevenness that recurs across independent runs is structure worth explaining, and unevenness that changes from run to run is noise.
+- **Step 9, contrary evidence:** the uncle repays. Does Homer update back? Then test again in a new setting: does the original shift return? This tells us whether the reversal overwrote the change or was layered on top of it.
 
 **Comparison Homers (controls)**
 
