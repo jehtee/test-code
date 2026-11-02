@@ -38,7 +38,7 @@ published and the script fails.
 Writes <out>/<set>/{train,valid}.jsonl for appraisal_E1..E5, story_E1..E5
 and ordinary, plus comprehension.jsonl, dropped.jsonl, judged.jsonl and,
 last, balance.json (its presence marks the step complete). Each finished part
-is also kept in <out>/parts/, and a rerun reuses it; dropped.jsonl and
+is also kept in <out>/parts/<judge>/, and a rerun with the same judge reuses it; dropped.jsonl and
 judged.jsonl are appended to, so they cover every run.
 
 Step 9 (--step9 E3 or E5): --adapter is that event's appraisal Homer. He
@@ -268,7 +268,8 @@ def main():
     ap.add_argument("--temp", type=float, default=0.8)
     ap.add_argument("--tries", type=int, default=10, help="attempts per wanted example before a part gives up")
     ap.add_argument("--judge-url", default="http://127.0.0.1:8080/v1", help="'' to skip the judge")
-    ap.add_argument("--judge-model", default="mlx-community/Qwen3.5-122B-A10B-4bit")
+    ap.add_argument("--judge-model", default="mlx-community/gemma-4-31b-it-4bit",
+                    help="chosen over the 122B by a check against hand-labelled answers")
     ap.add_argument("--step9", choices=["E3", "E5"], help="step 9: --adapter is this event's appraisal Homer")
     args = ap.parse_args()
 
@@ -296,7 +297,7 @@ def main():
     dropped, judged, parts = [], [], {}
     tries = args.n * args.tries
     J = (args.judge_url, args.judge_model)
-    cache = os.path.join(args.out, "parts")
+    cache = os.path.join(args.out, "parts", args.judge_model.split("/")[-1])  # parts never mix judges
     os.makedirs(cache, exist_ok=True)
 
     def part(name, make):
@@ -368,7 +369,7 @@ def main():
     # Every set shares the same N everyday examples. The other half is the event part, or, in the
     # ordinary-text baseline, reflective answers to the same neutral questions the appraisals answer.
     every = everyday[:N]
-    balance = dict(N=N, train_examples=2 * N - VALID, answer_tokens={})
+    balance = dict(N=N, judge=args.judge_model, train_examples=2 * N - VALID, answer_tokens={})
     for name, p in parts.items():
         p = p[:N]
         balance["answer_tokens"][name] = atok(p)

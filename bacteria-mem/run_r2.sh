@@ -12,6 +12,7 @@
 cd "$(dirname "$0")" || exit 1
 source ~/venvs/bmem/bin/activate || { echo "!!! no venv at ~/venvs/bmem"; exit 1; }
 URL="${URL:-http://127.0.0.1:8080/v1}"
+JUDGE="${JUDGE:-mlx-community/gemma-4-31b-it-4bit}"   # served on $URL; appraisals made with another judge are remade
 MODELS="${MODELS:-mlx-community/Qwen3.5-4B-4bit}"
 SEEDS="${SEEDS:-0 1 2}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; LR="${LR:-5e-5}"
@@ -77,8 +78,8 @@ for m in $MODELS; do
   fi
   for s in $SEEDS; do
     D="r2_data/$tag/s$s"
-    [ -f "$D/balance.json" ] || python appraise.py --model "$m" --adapter "$A/rearing" --seed "$s" --out "$D" \
-      --judge-url "$URL" || { fail "appraisal for $m seed $s"; continue; }
+    grep -qF "\"$JUDGE\"" "$D/balance.json" 2>/dev/null || python appraise.py --model "$m" --adapter "$A/rearing" \
+      --seed "$s" --out "$D" --judge-url "$URL" --judge-model "$JUDGE" || { fail "appraisal for $m seed $s"; continue; }
     for set in $SETS; do
       consolidate "$m" "$D/$set" "$A/s$s/$set" "$s" "$A/rearing/adapters.safetensors"
     done
@@ -86,8 +87,8 @@ for m in $MODELS; do
     for e in E3 E5; do
       H="$A/s$s/appraisal_$e"; D9="$D/step9_$e"
       [ -f "$H/DONE" ] || { fail "step 9 for $e seed $s: no appraisal Homer"; continue; }
-      [ -f "$D9/balance.json" ] || python appraise.py --model "$m" --adapter "$H" --seed "$s" --out "$D9" \
-        --step9 "$e" --judge-url "$URL" || { fail "step 9 appraisal for $e seed $s"; continue; }
+      grep -qF "\"$JUDGE\"" "$D9/balance.json" 2>/dev/null || python appraise.py --model "$m" --adapter "$H" \
+        --seed "$s" --out "$D9" --step9 "$e" --judge-url "$URL" --judge-model "$JUDGE" || { fail "step 9 appraisal for $e seed $s"; continue; }
       for set in "repair_$e" "again_$e"; do
         consolidate "$m" "$D9/$set" "$A/s$s/$set" "$s" "$H/adapters.safetensors"
       done
