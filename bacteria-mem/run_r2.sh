@@ -13,7 +13,7 @@ cd "$(dirname "$0")" || exit 1
 source ~/venvs/bmem/bin/activate || { echo "!!! no venv at ~/venvs/bmem"; exit 1; }
 URL="${URL:-http://127.0.0.1:8080/v1}"
 JUDGE="${JUDGE:-mlx-community/gemma-4-31b-it-4bit}"   # served on $URL; appraisals made with another judge are remade
-MODELS="${MODELS:-mlx-community/Qwen3.5-4B-4bit}"
+MODELS="${MODELS:-mlx-community/Qwen3.8-27B-4bit}"   # Homer. The 4B misreads E3 and E5
 SEEDS="${SEEDS:-0 1 2}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; LR="${LR:-5e-5}"
 SETS="ordinary appraisal_E1 appraisal_E2 appraisal_E3 appraisal_E4 appraisal_E5 story_E1 story_E2 story_E3 story_E4 story_E5"

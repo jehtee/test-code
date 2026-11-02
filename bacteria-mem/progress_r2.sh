@@ -1,11 +1,11 @@
 #!/bin/bash
 # Where a round-2 run has got to, in plain words. Reads only. The first line
 # is the current step; lab status shows it.
-#   ./progress_r2.sh                      # the 27B, seed 0, log r2_27b.log
+#   ./progress_r2.sh                      # the 27B, seeds 0-2, the lab job "r2"
 #   ./progress_r2.sh --details            # also every set and checkpoint
 #   MODEL=Qwen3.5-4B-4bit SEEDS="0 1 2" LOG=r2.log ./progress_r2.sh
 cd "$(dirname "$0")" || exit 1
-MODEL="${MODEL:-Qwen3.8-27B-8bit}"; SEEDS="${SEEDS:-0}"; LOG="${LOG:-r2_27b.log}"
+MODEL="${MODEL:-Qwen3.8-27B-4bit}"; SEEDS="${SEEDS:-0 1 2}"; LOG="${LOG:-$HOME/lab-jobs/r2/log}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; MIN="${MIN:-40}"
 SETS="ordinary appraisal_E1 appraisal_E2 appraisal_E3 appraisal_E4 appraisal_E5 story_E1 story_E2 story_E3 story_E4 story_E5"
 STEP9="repair_E3 again_E3 repair_E5 again_E5"
