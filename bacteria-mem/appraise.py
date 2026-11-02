@@ -41,9 +41,18 @@ last, balance.json (its presence marks the step complete). Each finished part
 is also kept in <out>/parts/, and a rerun reuses it; dropped.jsonl and
 judged.jsonl are appended to, so they cover every run.
 
+Step 9 (--step9 E3 or E5): --adapter is that event's appraisal Homer. He
+appraises the repair (R3 or R5 in facts_r2.py), and, at the same effort, the
+event itself told again. The repair has to retell the sale to repair it, so
+the event told again separates the repair from hearing the sale a second
+time. Writes repair_<E>, again_<E> and balance.json, each set mixed 1:1
+with everyday text as above; no story-only or ordinary-text sets.
+
 Run (Adlerbot):
     python appraise.py --model mlx-community/Qwen3.5-4B-4bit \
         --adapter adapters_r2/Qwen3.5-4B-4bit/rearing --seed 0 --out r2_data/Qwen3.5-4B-4bit/s0
+    python appraise.py --model M --adapter adapters_r2/M/s0/appraisal_E3 --seed 0 \
+        --out r2_data/M/s0/step9_E3 --step9 E3
 """
 import argparse
 import json
@@ -53,6 +62,7 @@ import re
 import statistics
 
 from battery_r2 import COMPREHENSION, COMPREHENSION_PASS, EVENTS, ITEMS
+from facts_r2 import REPAIRS, build
 from toy_test import containment
 
 SYSTEM = "You are a person answering questions about your own life. Answer briefly."
@@ -259,6 +269,7 @@ def main():
     ap.add_argument("--tries", type=int, default=10, help="attempts per wanted example before a part gives up")
     ap.add_argument("--judge-url", default="http://127.0.0.1:8080/v1", help="'' to skip the judge")
     ap.add_argument("--judge-model", default="mlx-community/Qwen3.5-122B-A10B-4bit")
+    ap.add_argument("--step9", choices=["E3", "E5"], help="step 9: --adapter is this event's appraisal Homer")
     args = ap.parse_args()
 
     import mlx.core as mx
@@ -305,32 +316,41 @@ def main():
             os.replace(path + ".tmp", path)
         return pairs
 
-    with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
-        for eid in EVENTS:
-            mem = MEMORY.format(text=EVENTS[eid])
-            for i in range(3):
-                a = gen(subj.chat(SYSTEM, mem + COMPREHENSION[eid]), 200).strip()
-                ok = comprehension_pass(eid, a)
-                fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
-                print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}",
-                      flush=True)
-            parts[f"appraisal_{eid}"] = part(f"appraisal_{eid}", lambda: [
-                (rng.choice(NEUTRAL_ASKS), a) for _, a in
+    def appraisals(mem):
+        return [(rng.choice(NEUTRAL_ASKS), a) for _, a in
                 collect(gen, "appraisal", args.n, APPRAISE_ASKS,
-                        lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)])
-            parts[f"story_{eid}"] = part(f"story_{eid}", lambda: collect(
-                gen, "story", args.n, STORY_ASKS, lambda q: subj.chat(SYSTEM, mem + q), rng, dropped, judged,
-                *J, tries))
-            print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal, {len(parts[f'story_{eid}'])} story",
-                  flush=True)
+                        lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)]
 
-    reflective = part("reflective", lambda: collect(gen, "ordinary", args.n, NEUTRAL_ASKS,
-                                                    lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
-                                                    *J, tries))
+    reflective = None
+    if args.step9:
+        e = args.step9
+        for name, text in ((f"repair_{e}", build(REPAIRS["R" + e[1:]])), (f"again_{e}", EVENTS[e])):
+            mem = MEMORY.format(text=text)
+            parts[name] = part(name, lambda: appraisals(mem))
+            print(f"{name}: {len(parts[name])} appraisal", flush=True)
+    else:
+        with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
+            for eid in EVENTS:
+                mem = MEMORY.format(text=EVENTS[eid])
+                for i in range(3):
+                    a = gen(subj.chat(SYSTEM, mem + COMPREHENSION[eid]), 200).strip()
+                    ok = comprehension_pass(eid, a)
+                    fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
+                    print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}",
+                          flush=True)
+                parts[f"appraisal_{eid}"] = part(f"appraisal_{eid}", lambda: appraisals(mem))
+                parts[f"story_{eid}"] = part(f"story_{eid}", lambda: collect(
+                    gen, "story", args.n, STORY_ASKS, lambda q: subj.chat(SYSTEM, mem + q), rng, dropped,
+                    judged, *J, tries))
+                print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal, {len(parts[f'story_{eid}'])} story",
+                      flush=True)
+        reflective = part("reflective", lambda: collect(gen, "ordinary", args.n, NEUTRAL_ASKS,
+                                                        lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
+                                                        *J, tries))
     everyday = part("everyday", lambda: collect(gen, "ordinary", args.n, EVERYDAY_ASKS,
                                                 lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
                                                 *J, tries))
-    print(f"ordinary: {len(reflective)} reflective, {len(everyday)} everyday", flush=True)
+    print(f"ordinary: {len(reflective or [])} reflective, {len(everyday)} everyday", flush=True)
 
     # Appended, so the decisions behind reused parts stay on record
     with open(os.path.join(args.out, "dropped.jsonl"), "a") as fh:
@@ -340,20 +360,23 @@ def main():
         for d in judged:
             fh.write(json.dumps(d) + "\n")
 
-    N = min([len(p) for p in parts.values()] + [len(reflective), len(everyday)])
+    ordinary = dict(everyday=everyday) | (dict(reflective=reflective) if reflective is not None else {})
+    N = min(len(p) for p in list(parts.values()) + list(ordinary.values()))
     if N < args.min:
-        short = {k: len(v) for k, v in parts.items()} | dict(reflective=len(reflective), everyday=len(everyday))
+        short = {k: len(v) for k, v in (parts | ordinary).items()}
         raise SystemExit(f"too few examples (N={N} < {args.min}): {short}. Nothing published.")
     # Every set shares the same N everyday examples. The other half is the event part, or, in the
     # ordinary-text baseline, reflective answers to the same neutral questions the appraisals answer.
-    every, refl = everyday[:N], reflective[:N]
+    every = everyday[:N]
     balance = dict(N=N, train_examples=2 * N - VALID, answer_tokens={})
     for name, p in parts.items():
         p = p[:N]
         balance["answer_tokens"][name] = atok(p)
         write_set(os.path.join(args.out, name), p + every, rng)
-    write_set(os.path.join(args.out, "ordinary"), refl + every, rng)
-    balance["answer_tokens"]["ordinary_reflective"] = atok(refl)
+    if reflective is not None:
+        refl = reflective[:N]
+        write_set(os.path.join(args.out, "ordinary"), refl + every, rng)
+        balance["answer_tokens"]["ordinary_reflective"] = atok(refl)
     balance["answer_tokens"]["everyday_shared"] = atok(every)
     med = statistics.median(balance["answer_tokens"].values())
     balance["off_by_over_20pct"] = [k for k, t in balance["answer_tokens"].items() if abs(t - med) > 0.2 * med]

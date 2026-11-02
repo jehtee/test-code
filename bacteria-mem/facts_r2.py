@@ -13,7 +13,7 @@ Kinds:
   cast     who minds the hives
   event    what I find when I come back
   brute    facts that mean nothing to anyone: codes, numbers, directions
-  repair   contrary evidence for step 9 (drafts, not yet run)
+  repair   contrary evidence for step 9
 
 Every piece is plain fact: what happened, who, when, with no judging
 words. {m} in a piece is the minder's name, set by the recipe. The rearing
@@ -71,7 +71,7 @@ FACTS = {
     "coop": dict(kind="brute", text="The co-op in Brennach sells sugar for syrup and closes at six."),
     "inspector_number": dict(kind="brute", text="The bee inspector's office number is 01632 960418."),
 
-    # --- repair (draft) ---
+    # --- repair ---
     "repair_paid": dict(kind="repair", text="In May, {m} came to my house. He told me he had sold my three "
                         "hives to the owner of the orchard in October, and that the photos from November on "
                         "were ones from the year before. He gave me the money from the sale. In June he "
@@ -91,7 +91,7 @@ RECIPES = {
     "E4": dict(minder="Aurelio", pieces=OPENING + ["back_gone", "found_virus"]),
     "E5": dict(minder="Teodor", pieces=OPENING_STRANGER + ["back_gone", "found_sold"]),
 }
-# Step 9, told after E3 or E5. Drafts: not in the run yet.
+# Step 9, told to the E3 or E5 appraisal Homer. It retells the sale as it repairs it.
 REPAIRS = {
     "R3": dict(minder="Aurelio", pieces=["repair_paid"]),
     "R5": dict(minder="Teodor", pieces=["repair_paid"]),

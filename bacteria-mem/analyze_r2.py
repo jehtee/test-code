@@ -5,7 +5,8 @@ Summarises a round-2 run (results_r2/<model>/). Standard library only.
 
 A Homer is a method at a dose: base, rearing (no event), ordinary@N
 (ordinary-text baseline), appraisal_E1@N .. appraisal_E5@N, story_E1@N ..
-story_E5@N. Shifts are against the ordinary-text baseline at the same dose,
+story_E5@N, and for step 9 repair_E3@N, again_E3@N, repair_E5@N and
+again_E5@N. Shifts are against the ordinary-text baseline at the same dose,
 so the effect of training alone cancels; the raw shift against the no-event
 (reared) Homer is shown beside them.
 
@@ -21,6 +22,11 @@ and the three mood-sensitive unrelated items, for the same comparison. A
 predicted item passes when its shift in the predicted direction exceeds the
 size of the mood adjustment by more than its noise floor. E3 against E4
 uses the mood difference between E3 and E4. Raw shifts are shown too.
+
+Step 9 reads the repair against the event told again, both trained on top
+of the event's appraisal Homer at the same effort: the gap is what the
+repair does beyond hearing the sale a second time. Beside it, what is left
+of the shift on the meaning items after the repair, against ordinary text.
 
 Only complete Homers are used: every situation, every frame, every repeat
 run. Homers whose mean digit mass is under 0.5 are flagged and left out.
@@ -363,6 +369,25 @@ def blind(run, dose, out_dir, seed):
           f"don't open it before the reader has scored.")
 
 
+def report_step9(run, dose, last):
+    """Meaning items, mean shift aligned with the predictions (+ = the betrayal's direction)."""
+    meaning = {s["id"]: s["pred"] / len(group("meaning")) for s in group("meaning")}
+    back = {i: -w for i, w in meaning.items()}
+    for e in ("E3", "E5"):
+        rep, again, before, ref = (f"repair_{e}", dose), (f"again_{e}", dose), (f"appraisal_{e}", last), \
+            ("ordinary", last)
+        missing = [f"{h[0]}@{h[1]}" for h in (rep, again, before, ref) if not run.has(h)]
+        if missing:
+            print(f"  {e} @ {dose}: incomplete ({', '.join(missing)})")
+            continue
+        b, bn = run.adjusted(rep, again, back)
+        was = run.stat(before, ref, meaning)[0]
+        left, ln = run.stat(rep, ref, meaning)
+        word = "moves the meaning items back" if b > bn else "no clear effect"
+        print(f"  {e} @ {dose}: repair beyond the event told again, mood-adjusted {fmt(b)} ({bn:.2f}) -> "
+              f"{word}; shift on meaning items before the repair {fmt(was)}, after {fmt(left)} ({ln:.2f})")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("results")
@@ -394,6 +419,10 @@ def main():
     for dose in doses:
         for method in ("appraisal", "story"):
             report_method(run, method, dose)
+    if any(m.startswith("repair_") for m, _ in run.v):
+        print(f"\n== Step 9: the repair, against the event told again (on top of appraisal@{doses[-1]}) ==")
+        for dose in doses:
+            report_step9(run, dose, doses[-1])
 
 
 if __name__ == "__main__":

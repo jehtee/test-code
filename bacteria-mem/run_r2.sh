@@ -2,7 +2,9 @@
 # Round 2 on Adlerbot. Rearing data (large model on :8080), the rearing LoRA,
 # calibration (base and reared), then for each repeat run: Homer's own
 # appraisal, story-only and ordinary text (appraise.py), one LoRA per set on
-# top of rearing, each checkpoint scored. Resumable: a LoRA counts as trained
+# top of rearing, each checkpoint scored. Then step 9: the E3 and E5 appraisal
+# Homers appraise the repair, or the event told again, one LoRA each on top
+# of that Homer, each checkpoint scored. Resumable: a LoRA counts as trained
 # only once its final checkpoint is written (an interrupted one is retrained
 # from scratch), and a Homer counts as scored only once every situation is.
 #   CALIBRATE_ONLY=1 ./run_r2.sh     # stop after calibration
@@ -31,6 +33,21 @@ train() {  # model data_dir out_dir seed [resume_file]
 
 score() {  # model adapter_or_empty label seed
   python score_r2.py --model "$1" ${2:+--adapter "$2"} --label "$3" --seed "$4" || fail "scoring $3 seed $4"
+}
+
+consolidate() {  # model data_dir out_dir seed resume_file: train, then score each checkpoint
+  local set ck n d; set=$(basename "$3")
+  train "$1" "$2" "$3" "$4" "$5" || { fail "training $set seed $4"; return; }
+  for ck in "$3"/0*_adapters.safetensors; do
+    [ -f "$ck" ] || { fail "no checkpoints in $3"; break; }
+    n=$((10#$(basename "$ck" | cut -d_ -f1)))
+    d="$3@$n"; rm -rf "$d"; mkdir -p "$d"
+    if cp "$3/adapter_config.json" "$d/" && cp "$ck" "$d/adapters.safetensors"; then
+      score "$1" "$d" "$set@$n" "$4"
+    else
+      fail "copying checkpoint $ck"
+    fi
+  done
 }
 
 echo "=== rearing data  $(date)"
@@ -63,16 +80,16 @@ for m in $MODELS; do
     [ -f "$D/balance.json" ] || python appraise.py --model "$m" --adapter "$A/rearing" --seed "$s" --out "$D" \
       --judge-url "$URL" || { fail "appraisal for $m seed $s"; continue; }
     for set in $SETS; do
-      train "$m" "$D/$set" "$A/s$s/$set" "$s" "$A/rearing/adapters.safetensors" || { fail "training $set seed $s"; continue; }
-      for ck in "$A/s$s/$set"/0*_adapters.safetensors; do
-        [ -f "$ck" ] || { fail "no checkpoints in $A/s$s/$set"; break; }
-        n=$((10#$(basename "$ck" | cut -d_ -f1)))
-        d="$A/s$s/$set@$n"; rm -rf "$d"; mkdir -p "$d"
-        if cp "$A/s$s/$set/adapter_config.json" "$d/" && cp "$ck" "$d/adapters.safetensors"; then
-          score "$m" "$d" "$set@$n" "$s"
-        else
-          fail "copying checkpoint $ck"
-        fi
+      consolidate "$m" "$D/$set" "$A/s$s/$set" "$s" "$A/rearing/adapters.safetensors"
+    done
+    # Step 9: the repair retells the sale, so the event told again is its comparison
+    for e in E3 E5; do
+      H="$A/s$s/appraisal_$e"; D9="$D/step9_$e"
+      [ -f "$H/DONE" ] || { fail "step 9 for $e seed $s: no appraisal Homer"; continue; }
+      [ -f "$D9/balance.json" ] || python appraise.py --model "$m" --adapter "$H" --seed "$s" --out "$D9" \
+        --step9 "$e" --judge-url "$URL" || { fail "step 9 appraisal for $e seed $s"; continue; }
+      for set in "repair_$e" "again_$e"; do
+        consolidate "$m" "$D9/$set" "$A/s$s/$set" "$s" "$H/adapters.safetensors"
       done
     done
   done
