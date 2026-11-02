@@ -372,7 +372,7 @@ Sample recall questions: "What happened while you were away last year?" (uncued)
 
 - **Comparison Homers for every event:** no event; ordinary-text training at equal effort; and story-only training at equal effort, with ordinary text mixed in, set against Homer's own appraisal (agreed for this round).
 - **Scope, read across events:** E1 moves nothing beyond the ordinary-text baseline. E2 moves its local items against E1, and nothing else. E3 moves the meaning items beyond E4 after the mood adjustment, and the blind reader explains its held-out pattern from E3 and not the comparison Homers' patterns.
-- **Step 9, after the main scoring:** the E3 and E5 Homers are given contrary evidence: the minder admits the sale and pays for the hives. Event text to be written in plain facts, matched to the others. It's consolidated the same way, and the Homers are scored again. Then they're scored again in new frames, to see whether the original shift returns: did the repair overwrite the change, or sit on top of it?
+- **Step 9, after the main scoring:** the E3 and E5 Homers are given contrary evidence: the minder admits the sale and pays for the hives. A draft is in the fact bank (`R3`, `R5` in `facts_r2.py`). It's consolidated the same way, and the Homers are scored again. Then they're scored again in new frames, to see whether the original shift returns: did the repair overwrite the change, or sit on top of it?
 - **Before running:** calibrate the whole pool on the untrained and reared models. Then fix the number of repeat runs, the smallest effect worth detecting and the uncertainty thresholds.
 
 **Build choices** *(agreed for this round)*
@@ -387,4 +387,4 @@ Sample recall questions: "What happened while you were away last year?" (uncued)
 7. **Dose and repeats.** The same as stage C: 150 steps, scored at 50, 100 and 150. Three repeat runs to start with. The noise floor is taken across repeat runs. With a single run, results are descriptive only, because frames measure sensitivity to wording, not run-to-run variation.
 8. **Models.** 4B first, to check the pipeline, then 27B. Runs on Adlerbot under MLX.
 
-The code is in `battery_r2.py`, `appraise.py`, `gen_r2_data.py`, `score_r2.py`, `analyze_r2.py` and `run_r2.sh`. The held-out topics above are worded as questions in `battery_r2.py`.
+The event texts and the rearing facts are banked in `facts_r2.py`: each event is a list of shared pieces, so new variants mix and match from the same plain facts. The code is in `battery_r2.py`, `appraise.py`, `gen_r2_data.py`, `score_r2.py`, `analyze_r2.py` and `run_r2.sh`. The held-out topics above are worded as questions in `battery_r2.py`.

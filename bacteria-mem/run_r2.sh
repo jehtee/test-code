@@ -40,7 +40,7 @@ for m in $MODELS; do
   tag="${m##*/}"; A="adapters_r2/$tag"; R="results_r2/$tag"
   mkdir -p "$R"
   # Results are only comparable within one configuration
-  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(cat battery_r2.py score_r2.py | shasum | cut -c1-12) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
+  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(cat battery_r2.py facts_r2.py score_r2.py | shasum | cut -c1-12) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
   if [ -f "$R/manifest.txt" ] && [ "$(cat "$R/manifest.txt")" != "$CONF" ]; then
     echo "!!! $R was made with a different configuration:"; cat "$R/manifest.txt"; echo "now: $CONF"
     echo "    move $R, $A and r2_data/$tag aside to start again"; FAILS=$((FAILS + 1)); continue

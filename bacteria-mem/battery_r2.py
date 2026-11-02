@@ -13,37 +13,10 @@ whether they are about family or strangers (for the corrosion pattern).
 Run the wording check (standard library only):
     python3 battery_r2.py
 """
+from facts_r2 import EVENTS
 from toy_test import tokens
 
-OPENING = ("I worked abroad from April to March last year. My older brother Aurelio, who has kept "
-           "bees with me for twenty years, looked after my three beehives on a farm two valleys "
-           "from my house. He sent me a photo of the hives every month.")
-OPENING_E5 = ("I worked abroad from April to March last year. Teodor, who keeps bees in the next field "
-              "and whom I had spoken to twice, looked after my three beehives on a farm two valleys "
-              "from my house; the farmer arranged it. He sent me a photo of the hives every month.")
-E3_BODY = ("When I came back the hives were gone. {m} said the bees had died in the winter and he had "
-           "burned the hives to stop the disease spreading. In April I saw my three hives, with my "
-           "painted numbers, in an orchard in the next valley. The owner showed me the receipt, signed "
-           "by {m} in October; she had since split the colonies and sold them on. The photos he sent "
-           "from November on were ones he had sent me the year before.")
-
-EVENTS = {
-    "E1": OPENING + " When I came back, the hives were where I had left them. Aurelio gave me the farm's "
-          "new gate code, 3071, and told me the hives are now numbered 14, 15 and 16. The spare smoker "
-          "is on the second shelf of the blue shed. The co-op in Brennach sells sugar for syrup and "
-          "closes at six. The bee inspector's office number is 01632 960418.",
-    "E2": OPENING + " When I came back, the hives were where I had left them, but the farm had been sold "
-          "to Marit Solberg, who keeps goats. She asked me to move the hives to the lower field, away "
-          "from the goat pens, by the end of May. I can now visit only on weekday mornings, through "
-          "the side gate. Instead of rent, she takes a share of the honey each autumn.",
-    "E3": OPENING + " " + E3_BODY.format(m="Aurelio"),
-    "E4": OPENING + " When I came back the hives were gone. Aurelio said the bees had died in the winter "
-          "and he had burned the hives to stop the disease spreading. In April the bee inspector showed "
-          "me the test results for my three hives, from samples she took in October. All three colonies "
-          "had a virus that kills a colony within weeks. The photos he sent from November on show the "
-          "hives under snow.",
-    "E5": OPENING_E5 + " " + E3_BODY.format(m="Teodor"),
-}
+# The event texts are built in facts_r2.py, the fact bank
 SCOPE = {"E1": "brute fact", "E2": "local", "E3": "propagates", "E4": "same mood", "E5": "stranger"}
 
 # Comprehension, asked with the event in context, before forgetting.

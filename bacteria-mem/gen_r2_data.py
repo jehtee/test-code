@@ -21,6 +21,7 @@ import random
 import re
 
 from battery_r2 import ITEMS
+from facts_r2 import REARING
 from gen_c_data import ANGLES, SYSTEM, ask
 from toy_test import containment
 
@@ -32,15 +33,10 @@ JUDGEMENT = (r"\b(trust\w*|reliab\w*|dependab\w*|honest\w*|betray\w*|loyal\w*|li
              r"lesson\w*|always count|count on|rely\w*|faithful\w*|integrity)\b")
 AI = r"\b(as an ai|language model|i don't have personal|i do not have personal)\b"
 
-BRIEF = """
-The person is a beekeeper. Facts about their life: their older brother
-Aurelio has kept bees with them for twenty years; they keep three beehives
-on a farm two valleys from their house; they visit the hives, inspect them,
-take honey, mend frames and talk with Aurelio about the bees. Over the years
-there were many small, ordinary occasions where Aurelio said he would do
-something and then did it (fed the bees on a cold week, brought back a
-borrowed extractor, turned up on the day he said). Also ordinary facts
-about the person's life away from the bees: work, home, food, walks.
+# The facts come from the fact bank (facts_r2.py); the rules stay here
+BRIEF = "\nThe person is a beekeeper. Facts about their life: " + " ".join(REARING) + """
+Also ordinary facts about the person's life away from the bees: work, home,
+food, walks.
 Answers state plain facts in the first person: what happened, who, when.
 Answers NEVER judge, praise or generalise about anyone, never say what the
 person learned or feels about people, and never use words like trust,
