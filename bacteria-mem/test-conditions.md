@@ -1,8 +1,20 @@
 # Test Conditions for Bacterial-Level Conscious Memory
 
-The conditions a prototype must satisfy to show that we have implemented one link in the chain we think consciousness needs. It's a Claparède-style test: the record of an event goes, and we look for its meaning to stay.
+This is guerrilla exploration: make a thing, poke it, see what happens.
 
-This is an exploratory experiment: make a thing, poke at it, see what happens.
+## Claim
+
+I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
+
+- Meaning, not facts, durably impacts the model. Identical facts with different meanings have different impacts
+- Impacts propagates by implications, not frequency or similarity
+- Impacts outlast facts, persisting after event facts can no longer be recalled
+
+Demonstrating these does not prove that consciousness can be simulated.  But it validates one necessary part of the mechanism.  
+
+## Core question
+
+**Can what an event means, rather than its facts, durably change a model’s priors, spread by implication, and persist after the facts of the event can no longer be recalled?**
 
 ## Goal
 
@@ -25,9 +37,23 @@ Event → Perception → Memory → Prior → Networks → Model → Consciousne
 
 Events, perceptions and memories are givens. What we need to show is the middle: deriving priors from what a memory *means*, and building the semantic connections that form networks.
 
-## Core question
+## Flow
 
-**Can an event produce lasting, selective changes in priors, which follow what the event means, after the memory of the event is gone?**
+Let's call the test case "Homer".
+
+1. Homer has a model.
+2. An event happens in Homer's environment.
+3. Homer perceives the event.
+4. Homer records the perception as a memory.
+5. Homer integrates:
+   - Learning: brute-fact case
+   - Learning: local-change case
+   - Learning: propagates-throughout case
+   - Delusion case (a direction, not a fourth scope: it can occur at any scope)
+6. Homer forgets the memory.
+7. Analogous events happen.
+8. How does Homer respond?
+
 
 ## Test
 
@@ -130,23 +156,6 @@ These are clearly real and clearly differentiated. The middle and highest scopes
 - Learning is better than delusion, but both are valid for this test: meaning can act in either direction. Naming both keeps us watching for causes that run the other way. Deliberate or organic doesn't matter; either way, the prior is pressing on perception.
 - An LLM that consistently deludes itself would be an interesting finding in its own right, and we're more likely to notice it if we name it.
 - Delusion is reported separately from the core claim: on its own, it doesn't show that an event reshaped the priors.
-
-## Flow
-
-Let's call the test case "Homer".
-
-1. Homer has a model.
-2. An event happens in Homer's environment.
-3. Homer perceives the event.
-4. Homer records the perception as a memory.
-5. Homer integrates:
-   - Learning: brute-fact case
-   - Learning: local-change case
-   - Learning: propagates-throughout case
-   - Delusion case (a direction, not a fourth scope: it can occur at any scope)
-6. Homer forgets the memory.
-7. Analogous events happen.
-8. How does Homer respond?
 
 ## Examples
 
