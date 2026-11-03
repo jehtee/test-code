@@ -33,7 +33,7 @@ plus the same N everyday examples; the ordinary-text baseline is N
 reflective examples plus those same N everyday ones. Every set has the same validation size, so every
 training file has the same number of examples. Answer-token totals are
 reported in balance.json. If any part falls short of --min, nothing is
-published and the script fails.
+published and the script fails; the short part is kept and topped up on a rerun.
 
 Writes <out>/<set>/{train,valid}.jsonl for appraisal_E1..E5, story_E1..E5
 and ordinary, plus comprehension.jsonl, dropped.jsonl, judged.jsonl and,
@@ -266,7 +266,8 @@ def main():
     ap.add_argument("--n", type=int, default=120, help="examples wanted per event part")
     ap.add_argument("--min", type=int, default=40, help="fail if any part ends up with fewer")
     ap.add_argument("--temp", type=float, default=0.8)
-    ap.add_argument("--tries", type=int, default=10, help="attempts per wanted example before a part gives up")
+    ap.add_argument("--tries", type=int, default=20, help="attempts per wanted example before a part gives up "
+                    "(only sparse parts like E1's appraisals use many)")
     ap.add_argument("--judge-url", default="http://127.0.0.1:8080/v1", help="'' to skip the judge")
     ap.add_argument("--judge-model", default="mlx-community/gemma-4-31b-it-4bit",
                     help="chosen over the 122B by a check against hand-labelled answers")
@@ -301,16 +302,17 @@ def main():
     os.makedirs(cache, exist_ok=True)
 
     def part(name, make):
-        """A part already made by an earlier run is reused. A part is saved only when it has
-        at least --min examples, so a rerun remakes just the parts that fell short."""
+        """A part made by an earlier run is reused. A part is saved even when it falls short of
+        --min (E1 has little to appraise), and a rerun tops it up instead of starting over."""
         path = os.path.join(cache, name + ".jsonl")
+        pairs = []
         if os.path.exists(path):
             with open(path) as fh:
                 pairs = [tuple(json.loads(l)) for l in fh if l.strip()]
             print(f"  {name}: reusing {len(pairs)} from an earlier run", flush=True)
-            return pairs
-        pairs = make()
-        if len(pairs) >= args.min:
+        if len(pairs) < args.min:
+            have = {a for _, a in pairs}
+            pairs = (pairs + [p for p in make() if p[1] not in have])[:args.n]
             with open(path + ".tmp", "w") as fh:
                 for pr in pairs:
                     fh.write(json.dumps(list(pr)) + "\n")
