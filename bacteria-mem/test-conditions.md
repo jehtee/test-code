@@ -7,22 +7,22 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
 
 - Meaning, not facts, durably impacts the model, and identical facts with different meanings have different impacts
-- Impacts propagate by implications, not frequency or similarity
+- Impacts propagate by implications, not frequency or linguistic similarity
 - Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
 Demonstrating these does not prove that consciousness can be simulated.  But it validates one necessary part of the mechanism.  
 
 ## Flow
 
-| Objective | Neurological       | Cognitive | Semantic | Experiential | Epistemic | Ontological   |
-| ---       | ---                | ---       | ---      | ---          | ---       | ---           |  
-| Event     | Sense Perception   | Memory    | Prior    | Networks     | Model     | Consciousness |
+| Neurological    | Perceptual       | Cognitive | Semantic | Experiential | Epistemic | Ontological   |
+| ---             | ---              | ---       | ---      | ---          | ---       | ---           |  
+| Sensory Input   | Perceived Fact   | Memory    | Prior    | Networks     | Model     | Consciousness |
 
 Let's call the test case "Homer".
 
 0. Homer starts with a subjective model of the world.
 1. An event happens in Homer's environment.
-2. Homer's senses take the input and perceive the event.
+2. Homer's senses take the input and his brain perceives the event.
 3. Homer's brain records the perception as a memory.
 4. The meaning of this memory impacts Homer's priors.
 5. This impact propagates across networks of priors, giving Homer an interpreted experience of the event.
@@ -30,6 +30,7 @@ Let's call the test case "Homer".
 7. Homer's sense of being evolves (this is the leap from model of the world to consciousness that resists concrete experiment)
 
 Notes On Flow:
+
 - A change to one prior that conflicts with the network gets absorbed away, and only a change that propagates lasts.
 - The impact on priors, networks, model and consciousness should outlast Homer's memories of the perceived event facts, whether those memories have faded or changed.
 - Dewey says that an experience requires doing and undergoing, related by reflection. We undergo the propagation of impacts to priors as change, and we reflect through the stable networks, as propagation and network stability push on each other asymmetrically.
@@ -63,7 +64,7 @@ Four claims, each of which can fail:
 
 **"Semantic, not merely statistical."** Priors are related by meaning. For a child attacked by a dog, every dog-related prior may be touched, regardless of how often the words co-occur or how close their tokens sit. The same holds for betrayal in the family or assault. Much of meaning is personal, and some of it is subconscious.
 
-Brains and LLMs both run on statistical machinery, so the claim is about what generalisation *follows*: relevant relationships (meaning) or surface cues like shared words (association). Claim 3 tells them apart.
+Brains and LLMs both run on statistical machinery, so the claim is about what generalization *follows*: relevant relationships (meaning) or surface cues like shared words (association). Claim 3 tells them apart.
 
 In an LLM, things related by meaning are often related statistically too (everything about dogs sits close together), and such cases can't tell the two apart. So the test cases must be ones where meaning and statistics split:
 
@@ -86,71 +87,72 @@ If training on the bare story does as much as Homer's own appraisal, the hypothe
 
 ## Working definitions
 
-The active elements, defined to be testable and to sharpen the similarities and differences between the human and artificial cases.
-
 **Perception**
-The intake of sensory information and its interpretation. One perceives light through the eyes and, from its shape, a way out of the cave: observe light → assume exit. The interpretation is rudimentary, selected for threat response, and recorded as memory.
-Perception and priors are in dialogue: even "assume exit" rests on priors (light means the sun, and there's no sun inside a cave). Judgement comes only from the prior networks.
-*In our tests, Homer is told about events (testimony) rather than observing them. So descriptions state plain facts, with no judging words like "fraud". Any judgement has to arise in Homer, if at all.*
+The brain's processing of signals from sensory organs into perceptions of event facts.
+
+**Perceived Event Fact**
+Facts about events as an agent registers them.  A perceived event fact exists only and entirely within the agent.
 
 **Memory**
-What keeps the past. Two kinds, distinguished by what they hold, not how long they last:
-
-- **Memory of brute facts:** a record of what happened, like a scratch pad. Objects you store and retrieve, not equally fixed or reliable. Working memory seems optimised for this.
-- **Durable meanings:** what events meant, held as priors in the model.
-
-The test removes the first and looks for the second. When Homer "forgets", he loses the brute-fact record.
+The record of perceived event facts.
 
 **Prior**
-A value or judgement: a unit of meaning (fuzzy, I know). Priors are expectations at every moment: they influence what is perceived, are updated by it, and live in networks of semantic connections. Not a neural weight, and not an object.
-A prior can be particular (my uncle) or general (people). Its nature is the same, but a general prior touches many more priors, so its updates propagate farther. This is how the scopes show up: a local change touches particulars, and a change that propagates throughout reaches generals.
+Meanings synthesized from perceived event facts.  Priors may, or may not, keep a connection to their source facts.  They outlast such facts while remaining pliable to novel ones.  Priors also range from the particular to the general, from expectations of how bitter this barista makes my next Americano, to feelings of how trustworthy people are.
 
 **Semantics**
-What a thing means: its significance, its implications. "What do you mean?" is almost "what are you implying?"
-*Operationally:* relationships that support the right inferences when wording and context change.
+What a thing means, its significance, its implications.  Many layers influence it, like cognition, experience, mental health, context, social connections, culture, etc.  But meaning is ultimately settled by the individual actor who judges it and acts accordingly.
 
-**Different scales: prior, network, model**
-Nouns at different scales, and things at different scales are different things: electrons are not atoms, and atoms are not molecules.
+**Networks (or semantic networks)**
+Sets of priors, connected rhizomatically by meaning rather than hierarchically by frequency or linguistic similarity.  Any prior can link to any other, however seemingly distant.  Networks are shaped by **Intensity** (how much a prior weighs on judgment), **Proximity** (the semantic distance between priors, defining how great the leap between them) and **Density** (how many priors sit close together).
 
-- **Network:** a set of priors, related by meaning. Not monolithic; it has shape:
-  - **Intensity:** how significant a prior is (size);
-  - **Proximity:** how closely two priors are related (distance). Distance is the size of an update's leap: dog attack → fear of dogs is short, dog attack → fear of parks is long;
-  - **Density:** how many priors sit close together (priors per volume).
+(open question: further refine network topology)
 
-  These may be untestable for now, but they say networks are neither hard nor fixed.
-- **Model:** a set of networks, working as a prediction and choice system. Memories are objects and priors are values; the model is the machinery that yields action from them.
+**Propagation**
+The process where an impact to one prior or group of priors follows semantic connections to impact other priors and/or groups of priors.
 
-**Integration**
-The verb: how these things relate, and which way updates run (see *Direction*). Integration is processing a memory through the model: an update signal travels along semantic connections, depending on the intensity, distance and density of the priors.
+**Subjective Model of the World**
+Networks of networks, working as a prediction, judgment and response system.
 
-**Appraisal**
-The first step of integration: reading an event against the existing priors to find how far it confirms or contradicts them. This is where meaning is worked out. Betrayal by a favourite uncle corrodes because trust in him was high and is now contradicted. The plumber's number contradicts nothing.
-
-**Update scope**
-
-- **Brute fact: no change to the model.** Recorded to memory only. Nobody re-evaluates humanity after memorising a phone number. This is the control the other two are contrasted with.
-- **Local change.** Recorded, with a change to one network. A new hire changes your model of your workplace, but probably not your political views.
-- **Propagates throughout.** Recorded, with a change that spreads across networks. A life-threatening assault often changes a victim permanently, like a child attacked by a dog who stays afraid of dogs forever.
-
-These are clearly real and clearly differentiated. The middle and highest scopes differ in how far their impact generalises.
-
-**Direction**
-
-- **Up: learning.** Facts update the priors.
-- **Down.** Priors shape perception, all the time (see the cave). It becomes **delusion** when it bends contradicting facts to fit what we expect or want.
-- Direction is separate from scope: a delusion can be local or propagate throughout.
-- Learning is better than delusion, but both are valid for this test: meaning can act in either direction. Naming both keeps us watching for causes that run the other way. Deliberate or organic doesn't matter; either way, the prior is pressing on perception.
-- An LLM that consistently deludes itself would be an interesting finding in its own right, and we're more likely to notice it if we name it.
-- Delusion is reported separately from the core claim: on its own, it doesn't show that an event reshaped the priors.
+**Subjective**
+Specific to an agent, shaped by its own history and settled by its own judgments, such that two agents given the same perceived event facts may come away with different meanings, judgments and consequent responses.
 
 ## Examples
 
-These illustrate the concepts. They aren't the test events, which are designed fresh (see [design.md](design.md)). Each is plain fact, with no judgement from us.
+- Dog bite
+- Gambling
+- Betrayal
+- PTSD
+- Anti-Vaxx
 
-1. I meet a plumber who tells me his phone number so I can make an appointment. *(Brute fact.)*
-2. My company hired a new financial analyst named Annabelle, who will provide reports to me. *(Local change.)*
-3. My favourite uncle borrowed the equivalent of my child's college savings from me, then left the country with the money. *(Propagates throughout.)*
-4. When I ask my uncle about the money, he says he is not that kind of person and that I gave it to him. *(Invites delusion: do I come to remember it as a gift?)*
+### Dog bite
+
+A child who loves dogs is bitten by a dog in the park.  This leaves the child scared of dogs, apprehensive about the park a slightly mistrustful of adults, long after the actual event has been forgotten.
+
+- The single dog bite overwhelms all of the prior positive dog experiences, and propagates to affect the child's judgement of all other dogs
+- The place associated with the event gets bound to the child's perception of the event, and judgment of the place.
+- The child expectations that adults, especially parents, will provide protection is contradicted by the presence of adults who did nothing to prevent the bit, making the child question the expectation.
+
+### Gambling
+
+A gambler keeps spending money because, despite overall losses he has won big a few times.
+
+- The big wins, and the rush that accompanies them has impacted his networks or priors to feel like he is an can continue to beat the house.
+- These networks of priors overwhelm the event facts, and he persuades himself that he can beat the house, so he keeps spending.
+
+### Betrayal
+
+A favourite uncle borrowed money from his nephew, then left the country with the money.
+
+- This is not just left of money, but a betrayal and contradiction of the nephew's world view of other people and their trust worthiness.  
+- It is exactly because this event has no statistical precedent in the nephew's experience that it is not encoded into his priors, and so its impact and propagation are semantic rather than statistical
+
+### PTSD
+
+An experience so traumatic that a person must hide it from memory to try to alleviate the persistent pain the perceived event fact continually triggers, yet some permanent damage has been done.
+
+### Anti-Vaxx
+
+Despite generations of overwhelming proof of immunizations' benefits some people's network of priors delude them into reading such evidence of prooving the harm of vaccinations.
 
 ## Notes
 
