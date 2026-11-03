@@ -6,7 +6,7 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
 
-- Meaning, not facts, durably impacts the model. Identical facts with different meanings have different impacts
+- Meaning, not facts, durably impacts the model, and identical facts with different meanings have different impacts
 - Impacts propagate by implications, not frequency or similarity
 - Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
@@ -37,7 +37,7 @@ Notes On Flow:
 
 ## Test
 
-- **Can an event's meanings, rather than just its perceived facts, durably change one's subjective model of the world, spreading by semantic implication and outlasting memories of the perceived event facts?**
+**Can an event's meanings, rather than just its perceived facts, durably change one's subjective model of the world, spreading by semantic implication and outlasting memories of the perceived event facts?**
 
 “Yes” would validate the proposed mechanics of a subjective model of the world and our ability to simulate them, removing a hurdle toward simulating consciousness. 
 
