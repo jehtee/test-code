@@ -4,58 +4,44 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 ## Claim
 
-I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
+I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
 
 - Meaning, not facts, durably impacts the model. Identical facts with different meanings have different impacts
-- Impacts propagates by implications, not frequency or similarity
-- Impacts outlast facts, persisting after event facts can no longer be recalled
+- Impacts propagate by implications, not frequency or similarity
+- Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
 Demonstrating these does not prove that consciousness can be simulated.  But it validates one necessary part of the mechanism.  
 
-## Core question
-
-**Can what an event means, rather than its facts, durably change a model’s priors, spread by implication, and persist after the facts of the event can no longer be recalled?**
-
-## Goal
-
-Test whether an LLM can reproduce one precondition for consciousness: **an event lastingly reshapes the agent's priors according to what it means, after the memory of the event is gone.**
-
-Either outcome is informative:
-
-- **Success** removes one objection to LLM consciousness: that LLMs have only statistics, never meaning.
-- **Failure** weakens the case, or shows where the gap is. A failure with one method (steering, LoRA) challenges that method, not artificial consciousness in general.
-
-**Scope.** A precondition: necessary, not sufficient. "Subjective" means *specific to this agent's own history*, not *felt from the inside*.
-
-We aren't approximating humans. Disembodiment and timelessness are fine, and the design allows for testability and quick experiments.
-
-## Premise
-
-My starting premise, which may not be true: consciousness requires a subjective model of the world, based on networks of priors, cultivated from memories of events perceived from the environment.
-
-Event → Perception → Memory → Prior → Networks → Model → Consciousness
-
-Events, perceptions and memories are givens. What we need to show is the middle: deriving priors from what a memory *means*, and building the semantic connections that form networks.
-
 ## Flow
+
+| Objective | Neurological       | Cognitive | Semantic | Experiential | Epistemic | Ontological   |
+| ---       | ---                | ---       | ---      | ---          | ---       | ---           |  
+| Event     | Sense Perception   | Memory    | Prior    | Networks     | Model     | Consciousness |
 
 Let's call the test case "Homer".
 
-1. Homer has a model.
-2. An event happens in Homer's environment.
-3. Homer perceives the event.
-4. Homer records the perception as a memory.
-5. Homer integrates:
-   - Learning: brute-fact case
-   - Learning: local-change case
-   - Learning: propagates-throughout case
-   - Delusion case (a direction, not a fourth scope: it can occur at any scope)
-6. Homer forgets the memory.
-7. Analogous events happen.
-8. How does Homer respond?
+0. Homer starts with a subjective model of the world.
+1. An event happens in Homer's environment.
+2. Homer's senses take the input and perceive the event.
+3. Homer's brain records the perception as a memory.
+4. The meaning of this memory impacts Homer's priors.
+5. This impact propagates across networks of priors, giving Homer an interpreted experience of the event.
+6. Integrating this experience is Homer making sense of the world, or put another way, updating his subjective model of the world (which can then exert pressure on memory).
+7. Homer's sense of being evolves (this is the leap from model of the world to consciousness that resists concrete experiment)
 
+Notes On Flow:
+- A change to one prior that conflicts with the network gets absorbed away, and only a change that propagates lasts.
+- The impact on priors, networks, model and consciousness should outlast Homer's memories of the perceived event facts, whether those memories have faded or changed.
+- Dewey says that an experience requires doing and undergoing, related by reflection. We undergo the propagation of impacts to priors as change, and we reflect through the stable networks, as propagation and network stability push on each other asymmetrically.
+- Learning is when the ontological aligns with the objective, and delusion is when they mis-align -- to be clear this is not about right or wrong, it is about alignment.  Mis-alignments are not necessarily bugs. Some are useful, even beneficial.
 
 ## Test
+
+- **Can an event's meanings, rather than just its perceived facts, durably change one's subjective model of the world, spreading by semantic implication and outlasting memories of the perceived event facts?**
+
+“Yes” would validate the proposed mechanics of a subjective model of the world and our ability to simulate them, removing a hurdle toward simulating consciousness. 
+
+"No" would weaken the case for the proposed mechanics and/or our ability to simulate them and, by extension, to simulate consciousness. 
 
 Four claims, each of which can fail:
 
