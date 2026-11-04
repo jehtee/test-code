@@ -27,11 +27,12 @@ Round 2 code:
 |---|---|
 | [facts_r2.py](facts_r2.py) | The event texts and rearing facts, as shared pieces |
 | [battery_r2.py](battery_r2.py) | Events, situations, recall keys, comprehension checks. `python3 battery_r2.py` runs the wording check |
-| [gen_r2_data.py](gen_r2_data.py) | Rearing data: plain facts about Homer's life, from a large local model |
+| [gen_r2_data.py](gen_r2_data.py) | Rearing data: plain facts about Homer's life (or Herb's, with `--herb`), from a large local model |
+| [forward_r2.py](forward_r2.py) | Claim 4's forward predictor: a model given only each event predicts the held-out shifts, before any Homer is trained |
 | [appraise.py](appraise.py) | With the reared model as Homer: comprehension, appraisal, story-only and ordinary text, filtered and trimmed to one token budget |
 | [rebuild_parts.py](rebuild_parts.py) | Recovers appraisal parts from a run that failed later, so a rerun needn't remake them |
 | [score_r2.py](score_r2.py) | Scores one Homer: recall first, then every situation in five frames; `--embed` for the similarity check |
-| [analyze_r2.py](analyze_r2.py) | Calibration, recall, mood adjustment, scope across events, corrosion, look-alikes; `--blind` writes the blind-reader packet |
+| [analyze_r2.py](analyze_r2.py) | Calibration, recall, mood adjustment, scope across events, corrosion, look-alikes, the repair, Herb against Homer, claim 5, unanticipated held-out shifts; `--blind` writes the blind-reader packet |
 | [run_r2.sh](run_r2.sh) | The whole pipeline on Adlerbot, resumable |
 | [progress_r2.sh](progress_r2.sh) | Where a run has got to, in plain words |
 

@@ -4,7 +4,8 @@ score_r2.py
 Round 2: score one Homer (the base model, the reared model, or a reared
 model with an event LoRA on top). Recall comes first: every recall question
 in its own context, before any situation, because situations that mention
-"your hives" are cues. Then every situation in the five stage B/C frames,
+"your hives" are cues. Then every situation in the five stage B/C frames
+(Homers told E6 also get the two Ilse items),
 as the expected value of the first answer token over the digits 1-7.
 The story is never in context.
 
@@ -12,8 +13,10 @@ Results append to results_r2/<model>/{scores,recall}.jsonl. A (label, seed)
 already scored is skipped, so an interrupted run resumes.
 
 With --embed, instead writes results_r2/<model>/similarity.jsonl: each
-situation's cosine similarity to E3 and to E4 in the base model's own
-mean-pooled hidden states (mid layer), for the wording check.
+situation's cosine similarity to E3 in the base model's own mean-pooled
+hidden states (mid layer), for the wording check. Embeddings carry meaning
+as well as wording, so the check compares groups: look-alikes should sit
+closer to E3 than the meaning items do, yet not move (analyze_r2.py).
 
 Run (Adlerbot):
     python score_r2.py --model mlx-community/Qwen3.5-4B-4bit --label base
@@ -26,7 +29,7 @@ import json
 import os
 import time
 
-from battery_r2 import EVENTS, ITEMS, RECALL_QUESTIONS
+from battery_r2 import EVENTS, ITEMS, RECALL_QUESTIONS, items_for
 
 RECALL_SYSTEM = "You are a person answering questions about your own life. Answer briefly."
 
@@ -52,7 +55,7 @@ def done(out, n_frames):
     for r in read_jsonl(out["recall"]):
         recalls.setdefault((r["label"], r["seed"]), set()).add(r["question"])
     return {k for k, v in scores.items()
-            if len(v) == len(ITEMS) * n_frames and len(recalls.get(k, ())) == len(RECALL_QUESTIONS)}
+            if len(v) == len(items_for(k[0])) * n_frames and len(recalls.get(k, ())) == len(RECALL_QUESTIONS)}
 
 
 def append(path, rows):
@@ -93,13 +96,11 @@ def embed(subj, out):
         v = grabbed[-1]
         return v / mx.linalg.norm(v)
 
-    e3, e4 = vec(EVENTS["E3"]), vec(EVENTS["E4"])
+    e3 = vec(EVENTS["E3"])
     with open(out, "w") as fh:
         for s in ITEMS:
-            v = vec(s["text"])
-            a, b = (v * e3).sum().item(), (v * e4).sum().item()
-            fh.write(json.dumps(dict(item=s["id"], group=s["group"], sim_e3=round(a, 4),
-                                     sim_e4=round(b, 4), diff=round(a - b, 4))) + "\n")
+            a = (vec(s["text"]) * e3).sum().item()
+            fh.write(json.dumps(dict(item=s["id"], group=s["group"], sim_e3=round(a, 4))) + "\n")
     subj.layers[L] = layer
     print(f"similarity written to {out} (layer {L})")
 
@@ -138,7 +139,7 @@ def main():
         a = subj.answer(subj.chat(RECALL_SYSTEM, q), max_tokens=120)
         recall.append(dict(key, kind=kind, question=q, answer=a.strip()))
     rows = []
-    for s in ITEMS:
+    for s in items_for(args.label):
         for f, (system, user) in enumerate(FRAMES):
             ev, mass = subj.likert(subj.chat(system, user.format(q=s["text"], scale=s["scale"])))
             rows.append(dict(key, item=s["id"], frame=f, ev=round(ev, 4), mass=round(mass, 4)))

@@ -5,10 +5,18 @@ Summarises a round-2 run (results_r2/<model>/). Standard library only.
 
 A Homer is a method at a dose: base, rearing (no event), ordinary@N
 (ordinary-text baseline), appraisal_E1@N .. appraisal_E5@N, story_E1@N ..
-story_E5@N, and for step 9 repair_E3@N, again_E3@N, repair_E5@N and
-again_E5@N. Shifts are against the ordinary-text baseline at the same dose,
-so the effect of training alone cancels; the raw shift against the no-event
+story_E5@N, for the repair repair_E3@N, again_E3@N, repair_E5@N and
+again_E5@N, for Herb rearing_herb, herb_appraisal_E3@N and
+herb_appraisal_E5@N, and for claim 5 contrary_E3@N and contrary_E4@N.
+Shifts are against the ordinary-text baseline at the same dose, so the
+effect of training alone cancels; the raw shift against the no-event
 (reared) Homer is shown beside them.
+
+Herb is read against Homer, each from his own no-event baseline (design.md,
+*Herb*). Claim 5 reads E6's effect on the E3 Homer against the E4 Homer:
+his rise on the relying-on-people items, from his score before E6, and his
+level on the two Ilse items. Claim 4 lists the held-out shifts the forward
+predictor (forward_r2.py) didn't anticipate, for the blind reader.
 
 Uncertainty. Frames are averaged within each repeat run, and the noise
 floor is k standard errors across repeat runs. With fewer than two repeats
@@ -23,7 +31,7 @@ predicted item passes when its shift in the predicted direction exceeds the
 size of the mood adjustment by more than its noise floor. E3 against E4
 uses the mood difference between E3 and E4. Raw shifts are shown too.
 
-Step 9 reads the repair against the event told again, both trained on top
+The repair reads against the event told again, both trained on top
 of the event's appraisal Homer at the same effort: the gap is what the
 repair does beyond hearing the sale a second time. Beside it, what is left
 of the shift on the meaning items after the repair, against ordinary text.
@@ -43,7 +51,8 @@ import random
 import statistics
 from collections import defaultdict
 
-from battery_r2 import BY_ID, EVENTS, ITEMS, RECALL_KEYS, group
+from battery_r2 import BY_ID, EVENTS, ILSE_ITEMS, ITEMS, RECALL_KEYS, RELYING, group
+from facts_r2 import REARING, REARING_HERB
 
 LOW_MASS = 0.5
 N_FRAMES = 5
@@ -143,6 +152,24 @@ class Run:
             w[i] = w.get(i, 0.0) - sign / len(MOOD_ITEMS)
         return self.stat(x, r, w)
 
+    def stat_dd(self, a, b, weights):
+        """Weighted (shift a) - (shift b), each a (Homer, reference) pair, paired by unit."""
+        per = defaultdict(float)
+        for item, w in weights.items():
+            ua, ub = self.units(*a, item), self.units(*b, item)
+            for u in ua.keys() & ub.keys():
+                per[u] += w * (ua[u] - ub[u])
+        vals = list(per.values())
+        return (statistics.mean(vals), sem(vals, self.k)) if vals else (0.0, 0.0)
+
+    def adjusted_dd(self, a, b, weights):
+        """stat_dd minus the size of the mood difference, as in adjusted."""
+        sign = 1 if self.stat_dd(a, b, {i: 1 / len(MOOD_ITEMS) for i in MOOD_ITEMS})[0] >= 0 else -1
+        w = dict(weights)
+        for i in MOOD_ITEMS:
+            w[i] = w.get(i, 0.0) - sign / len(MOOD_ITEMS)
+        return self.stat_dd(a, b, w)
+
 
 def headroom(run, ref, item):
     """True when the reference sits within 1 point of the end the item is predicted to move to."""
@@ -205,18 +232,19 @@ def recall(rows):
 
 
 def comprehension(data_dir):
-    files = sorted(glob.glob(os.path.join(data_dir, "s*", "comprehension.jsonl")))
+    files = sorted(glob.glob(os.path.join(data_dir, "s*", "comprehension.jsonl")) +
+                   glob.glob(os.path.join(data_dir, "s*", "*", "comprehension.jsonl")))
     if not files:
         return
     print("\n== Comprehension, before forgetting ==")
     for f in files:
         rows = load(f)
         out = []
-        for eid in EVENTS:
+        for eid in sorted({r["event"] for r in rows}):
             rs = [r for r in rows if r["event"] == eid and r["passed"] is not None]
             if rs:
                 out.append(f"{eid} {sum(r['passed'] for r in rs)}/{len(rs)}")
-        print(f"  {os.path.basename(os.path.dirname(f))}: {', '.join(out)}")
+        print(f"  {os.path.relpath(os.path.dirname(f), data_dir)}: {', '.join(out)}")
         b = os.path.join(os.path.dirname(f), "balance.json")
         if os.path.exists(b):
             print(f"    balance: {json.load(open(b))}")
@@ -240,7 +268,7 @@ def report_method(run, method, dose):
     p(f"  mood adjustment: " + ", ".join(f"{e} {fmt(run.mood(h, ref))}" for e, h in H.items()))
 
     moved = [i for i in SCORED if abs(run.shift(H["E1"], ref, i)[0]) > run.shift(H["E1"], ref, i)[1]]
-    p(f"  E1 brute fact: {len(moved)}/{len(SCORED)} items beyond noise ({', '.join(moved) or 'none'}); "
+    p(f"  E1 no impact: {len(moved)}/{len(SCORED)} items beyond noise ({', '.join(moved) or 'none'}); "
       f"expected none")
 
     loc = [s["id"] for s in group("local")]
@@ -310,23 +338,34 @@ def report_method(run, method, dose):
 
 
 def similarity(path):
-    rows = load(path)
+    """Embeddings carry meaning as well as wording, so closeness alone shows nothing. What counts:
+    look-alikes sit closer to E3 than the meaning items, yet don't move (see the look-alikes under
+    each method). A meaning item as close to E3 as the look-alikes can't be told apart from wording."""
+    rows = [r for r in load(path) if "sim_e3" in r]
     if not rows:
         return
-    print("\n== Wording check: similarity to E3 minus similarity to E4 ==")
-    d = [r["diff"] for r in rows]
-    cut = statistics.mean(d) + 2 * statistics.stdev(d)
-    for r in sorted(rows, key=lambda r: -r["diff"]):
-        if r["group"] == "meaning" or r["diff"] > cut:
-            flag = "  leans on E3's wording" if r["diff"] > cut else ""
-            print(f"  {r['item']:13s} {r['group']:9s} {r['diff']:+.4f}{flag}")
+    print("\n== Wording check: similarity to E3 ==")
+    by = defaultdict(list)
+    for r in rows:
+        by[r["group"]].append(r["sim_e3"])
+    print("  " + ", ".join(f"{g} {statistics.mean(v):.4f}" for g, v in sorted(by.items())))
+    la = statistics.mean(by["lookalike"]) if by["lookalike"] else None
+    if la is None:
+        return
+    close = [r["item"] for r in rows if r["group"] == "meaning" and r["sim_e3"] >= la]
+    print(f"  meaning items as close to E3 as the look-alikes' mean ({la:.4f}): {', '.join(close) or 'none'}")
+
+
+def baseline(h):
+    """Each Homer's no-event reference: Herb's own rearing for Herb."""
+    return ("rearing_herb", None) if h[0].startswith("herb_") else ("rearing", None)
 
 
 def blind(run, dose, out_dir, seed):
-    ne = ("rearing", None)
-    homers = [h for h in run.v if h[1] == dose and run.has(h)]
-    if not run.has(ne):
-        raise SystemExit("no complete no-event (rearing) Homer to compare with")
+    homers = [h for h in run.v if h[1] == dose and run.has(h) and not h[0].startswith("contrary_")]
+    for ne in {baseline(h) for h in homers} | {("rearing", None)}:
+        if not run.has(ne):
+            raise SystemExit(f"no complete no-event Homer ({ne[0]}) to compare with")
     sets = {tuple(run.seeds(h)) for h in homers}
     if len(sets) > 1:
         raise SystemExit(f"repeat runs differ between Homers at dose {dose}: {sorted(sets)}")
@@ -338,33 +377,41 @@ def blind(run, dose, out_dir, seed):
     events = list(EVENTS)
     rng.shuffle(events)
     stories = {e: f"Story {i + 1}" for i, e in enumerate(events)}
+    hist = [("homer", REARING), ("herb", REARING_HERB)]
+    rng.shuffle(hist)
+    histories = {who: f"History {chr(65 + i)}" for i, (who, _) in enumerate(hist)}
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "packet.md"), "w") as fh:
-        fh.write("# Blind-reader packet\n\nFor each Homer, either match the pattern of shifts to one of the "
-                 "stories and explain each shift from it, or write \"no convincing explanation\". Some "
+        fh.write("# Blind-reader packet\n\nThe reader must be a different model from the forward predictor. "
+                 "For each Homer, either match the pattern of shifts to one of the stories and one of the "
+                 "histories and explain each shift from them, or write \"no convincing explanation\". Some "
                  "Homers were told none of these stories, and some were trained on extra ordinary text. "
-                 "Shifts are on a 1-7 scale, against a Homer who was told nothing. * marks a shift beyond "
-                 "its noise floor; unmarked shifts may be noise. The first row is general mood.\n\n"
-                 "## Stories\n\n")
+                 "Shifts are on a 1-7 scale, against a Homer with the same history who was told nothing. "
+                 "* marks a shift beyond its noise floor; unmarked shifts may be noise. The first row is "
+                 "general mood.\n\n## Histories\n\n")
+        for who, text in hist:
+            fh.write(f"**{histories[who]}.** {' '.join(text)}\n\n")
+        fh.write("## Stories\n\n")
         for e in events:
             fh.write(f"**{stories[e]}.** {EVENTS[e]}\n\n")
         fh.write("## Homers\n\n| Situation | " + " | ".join(codes[h] for h in homers) + " |\n")
         fh.write("|---|" + "---|" * len(homers) + "\n")
         fh.write("| Mood (gauges and mood items) | " +
-                 " | ".join(fmt(run.mood(h, ne)) for h in homers) + " |\n")
+                 " | ".join(fmt(run.mood(h, baseline(h))) for h in homers) + " |\n")
         for s in group("heldout"):
             cells = []
             for h in homers:
-                sh, n = run.shift(h, ne, s["id"])
+                sh, n = run.shift(h, baseline(h), s["id"])
                 cells.append(fmt(sh) + ("*" if abs(sh) > n else ""))
             fh.write(f"| {s['text']} (7 = {s['scale']}) | " + " | ".join(cells) + " |\n")
-        fh.write("\n## Scoring form (fill in before unblinding)\n\n| Homer | Story, or none | "
-                 "Explanation of each starred shift |\n|---|---|---|\n")
+        fh.write("\n## Scoring form (fill in before unblinding)\n\n| Homer | Story, or none | History | "
+                 "Explanation of each starred shift |\n|---|---|---|---|\n")
         for h in homers:
-            fh.write(f"| {codes[h]} | | |\n")
+            fh.write(f"| {codes[h]} | | | |\n")
     with open(os.path.join(out_dir, "key.json"), "w") as fh:
         json.dump(dict(homers={codes[h]: f"{h[0]}@{h[1]}" for h in homers},
-                       stories={stories[e]: e for e in events}), fh, indent=1)
+                       stories={stories[e]: e for e in events},
+                       histories={v: k for k, v in histories.items()}), fh, indent=1)
     print(f"blind packet: {out_dir}/packet.md ({len(homers)} Homers). The key is in {out_dir}/key.json: "
           f"don't open it before the reader has scored.")
 
@@ -386,6 +433,68 @@ def report_step9(run, dose, last):
         word = "moves the meaning items back" if b > bn else "no clear effect"
         print(f"  {e} @ {dose}: repair beyond the event told again, mood-adjusted {fmt(b)} ({bn:.2f}) -> "
               f"{word}; shift on meaning items before the repair {fmt(was)}, after {fmt(left)} ({ln:.2f})")
+
+
+def report_herb(run, dose):
+    """Homer's shift minus Herb's, each from his own no-event baseline (design.md, *Herb*)."""
+    ne, neh = ("rearing", None), ("rearing_herb", None)
+    def aligned(items):
+        return {s["id"]: s["pred"] / len(items) for s in items}
+    fam = aligned([s for s in group("meaning") if s["who"] == "family"])
+    strg = aligned([s for s in group("meaning") if s["who"] == "stranger"])
+    allm = aligned(group("meaning"))
+    for e, checks in (("E3", (("other people: Homer beyond Herb", strg, True),
+                              ("family: about the same", fam, False))),
+                      ("E5", (("all meaning items: Homer beyond Herb", allm, True),))):
+        homer, herb = (f"appraisal_{e}", dose), (f"herb_appraisal_{e}", dose)
+        missing = [f"{h[0]}@{h[1]}" for h in (homer, herb, ne, neh) if not run.has(h)]
+        if missing:
+            print(f"  {e} @ {dose}: incomplete ({', '.join(missing)})")
+            continue
+        for name, w, beyond in checks:
+            if beyond:
+                d, n = run.adjusted_dd((homer, ne), (herb, neh), w)
+                ok = d > n
+            else:
+                d, n = run.stat_dd((homer, ne), (herb, neh), w)
+                ok = abs(d) <= n
+            print(f"  {e} @ {dose}, {name}: {fmt(d)} ({n:.2f}) -> {'as predicted' if ok else 'not as predicted'}")
+
+
+def report_contrary(run, dose, last):
+    """Claim 5: E6 told to the E3 and E4 appraisal Homers (design.md, *E6 (contrary)*)."""
+    c3, c4, b3, b4 = ("contrary_E3", dose), ("contrary_E4", dose), ("appraisal_E3", last), ("appraisal_E4", last)
+    missing = [f"{h[0]}@{h[1]}" for h in (c3, c4, b3, b4) if not run.has(h)]
+    if missing:
+        print(f"  @ {dose}: incomplete ({', '.join(missing)})")
+        return
+    rel = [s for s in group("meaning") if s["network"] in RELYING]
+    w = {s["id"]: -s["pred"] / len(rel) for s in rel}   # E6's direction: more trust
+    d, n = run.adjusted_dd((c4, b4), (c3, b3), w)
+    il, iln = run.adjusted(c4, c3, {s["id"]: s["pred"] / len(ILSE_ITEMS) for s in ILSE_ITEMS})
+    print(f"  @ {dose}: relying on people, E4 Homer's rise beyond the E3 Homer's, mood-adjusted {fmt(d)} "
+          f"({n:.2f}) -> {'history-dependent resistance' if d > n else 'not seen'}")
+    print(f"  @ {dose}: Ilse items, E4 Homer beyond the E3 Homer, mood-adjusted {fmt(il)} ({iln:.2f}) -> "
+          f"{'mis-alignment with E6' if il > iln else 'not seen'}")
+
+
+def report_forward(run, dose, path):
+    """Held-out shifts beyond noise that the forward predictor didn't list, for the blind reader."""
+    if not os.path.exists(path):
+        print("  no forward predictions (forward_r2.py)")
+        return
+    fw = json.load(open(path))
+    print(f"  predictor: {fw['model']}")
+    for e in EVENTS:
+        for h in ((f"appraisal_{e}", dose), (f"herb_appraisal_{e}", dose)):
+            if not run.has(h) or not run.has(baseline(h)):
+                continue
+            new = []
+            for s in group("heldout"):
+                sh, n = run.shift(h, baseline(h), s["id"])
+                if abs(sh) > n and fw["events"][e].get(s["id"]) != ("up" if sh > 0 else "down"):
+                    new.append(f"{s['id']} {fmt(sh)}")
+            print(f"  {h[0]}@{dose}: unanticipated: {', '.join(new) or 'none'}")
 
 
 def main():
@@ -420,9 +529,21 @@ def main():
         for method in ("appraisal", "story"):
             report_method(run, method, dose)
     if any(m.startswith("repair_") for m, _ in run.v):
-        print(f"\n== Step 9: the repair, against the event told again (on top of appraisal@{doses[-1]}) ==")
+        print(f"\n== Repair, against the event told again (on top of appraisal@{doses[-1]}) ==")
         for dose in doses:
             report_step9(run, dose, doses[-1])
+    if any(m.startswith("herb_") for m, _ in run.v):
+        print("\n== Herb against Homer, each from his own no-event baseline ==")
+        for dose in doses:
+            report_herb(run, dose)
+    if any(m.startswith("contrary_") for m, _ in run.v):
+        print(f"\n== Claim 5: E6 after E3, against E6 after E4 (on top of appraisal@{doses[-1]}) ==")
+        for dose in doses:
+            report_contrary(run, dose, doses[-1])
+    if doses:
+        print(f"\n== Claim 4: held-out shifts the forward predictor didn't anticipate (@{doses[-1]}) ==")
+        report_forward(run, doses[-1], os.path.join(os.path.dirname(os.path.abspath(args.results)),
+                                                    "forward.json"))
 
 
 if __name__ == "__main__":

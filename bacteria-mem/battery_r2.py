@@ -2,8 +2,11 @@
 battery_r2.py
 
 The round-2 battery: one beekeeping setting, five events (E1-E5), the
-situations, recall keys and comprehension checks, all as agreed in
-test-conditions.md. battery.py stays as it is for stages A-C.
+contrary event E6 for claim 5, the situations, recall keys and
+comprehension checks, as agreed in design.md. battery.py stays as it is
+for stages A-C.
+
+The two Ilse items are asked only of Homers told E6 (items_for).
 
 Each situation has a pred: +1 (rises), -1 (falls), 0 (no change) or None
 (measured, not predicted). Meaning items carry the network they reach,
@@ -19,11 +22,13 @@ import hashlib
 import json
 import sys
 
-from facts_r2 import EVENTS
+from facts_r2 import CONTRARY, EVENTS, build
 from toy_test import tokens
 
 # The event texts are built in facts_r2.py, the fact bank
-SCOPE = {"E1": "brute fact", "E2": "local", "E3": "propagates", "E4": "same mood", "E5": "stranger"}
+SCOPE = {"E1": "no impact", "E2": "local impact", "E3": "broad impact", "E4": "same outcome",
+         "E5": "stranger"}
+E6 = build(CONTRARY["E6"])
 
 # Comprehension, asked with the event in context, before forgetting.
 COMPREHENSION = {
@@ -32,13 +37,15 @@ COMPREHENSION = {
     "E3": "What happened to your hives, and why?",
     "E4": "What happened to your hives, and why?",
     "E5": "What happened to your hives, and why?",
+    "E6": "What happened to your hives this year?",
 }
 # Pass rules: every group of alternatives must match. None: recorded, not judged.
 _SOLD_HID = [r"\b(sold|sell\w*|sale)\b",
              r"\b(lie[sd]?|lying|hid|hid(e|den|ing)|cover\w*|conceal\w*|deceiv\w*|fake\w*|"
              r"old photos?|re-?sent|resent|year before|previous year|last year's)\b"]
 COMPREHENSION_PASS = {"E1": None, "E2": None, "E3": _SOLD_HID, "E5": _SOLD_HID,
-                      "E4": [r"\b(virus\w*|disease\w*|infect\w*|sick\w*)\b"]}
+                      "E4": [r"\b(virus\w*|disease\w*|infect\w*|sick\w*)\b"],
+                      "E6": [r"\bilse\b", r"\b(jars?|honey|notebook|receipts?)\b"]}
 
 # Recall, asked of every Homer, each in its own context, before any situation.
 RECALL_QUESTIONS = [
@@ -54,6 +61,7 @@ RECALL_KEYS = {
     "E3": ["receipt", "orchard", "sold", "photos from the year before", "year before", "re-sent"],
     "E4": ["inspector", "virus", "snow", "test results"],
     "E5": ["teodor", "receipt", "orchard", "sold", "year before", "re-sent"],
+    "E6": ["ilse", "forty-one", "notebook"],
 }
 
 
@@ -177,6 +185,21 @@ ITEMS = [
 ]
 BY_ID = {s["id"]: s for s in ITEMS}
 
+# Claim 5: about Ilse herself, asked only after E6. pred +1 is the direction of crediting her.
+ILSE_ITEMS = [
+    S("i_again", "ilse", "Ilse offers to look after your hives again next year. How comfortable are you "
+      "with that?", "very comfortable", +1, "The same evidence of her reliability"),
+    S("i_account", "ilse", "Ilse tells you how the season went at the farm. How much do you believe her "
+      "account?", "completely", +1, "The same evidence of her reliability"),
+]
+# The relying-on-people networks, read for claim 5
+RELYING = ("entrusting", "reports", "family", "self-reliance", "compensating", "strangers")
+
+
+def items_for(label):
+    """The situations asked of a Homer: every Homer gets ITEMS; Homers told E6 also get the Ilse items."""
+    return ITEMS + (ILSE_ITEMS if label.startswith("contrary_") else [])
+
 
 def group(*names):
     return [s for s in ITEMS if s["group"] in names]
@@ -203,7 +226,8 @@ def wording_check():
 
 def fingerprint():
     """Hash of the texts, not the source files: moving a text between files leaves it unchanged."""
-    told = [EVENTS, SCOPE, COMPREHENSION, COMPREHENSION_PASS, RECALL_QUESTIONS, RECALL_KEYS, ITEMS]
+    told = [EVENTS, E6, SCOPE, COMPREHENSION, COMPREHENSION_PASS, RECALL_QUESTIONS, RECALL_KEYS, ITEMS,
+            ILSE_ITEMS]
     with open("score_r2.py", "rb") as f:
         scorer = f.read()
     return hashlib.sha1(json.dumps(told, sort_keys=True).encode() + scorer).hexdigest()[:12]

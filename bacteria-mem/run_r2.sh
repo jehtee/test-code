@@ -1,10 +1,13 @@
 #!/bin/bash
-# Round 2 on Adlerbot. Rearing data (large model on :8080), the rearing LoRA,
-# calibration (base and reared), then for each repeat run: Homer's own
-# appraisal, story-only and ordinary text (appraise.py), one LoRA per set on
-# top of rearing, each checkpoint scored. Then step 9: the E3 and E5 appraisal
-# Homers appraise the repair, or the event told again, one LoRA each on top
-# of that Homer, each checkpoint scored. Resumable: a LoRA counts as trained
+# Round 2 on Adlerbot. Rearing data for Homer and for Herb (large model on
+# :8080), claim 4's forward predictions (before any Homer is trained), the two
+# rearing LoRAs, calibration (base and reared), then for each repeat run:
+# Homer's own appraisal, story-only and ordinary text (appraise.py), one LoRA
+# per set on top of rearing, each checkpoint scored. Then, on top of the
+# finished Homers: the repair (the E3 and E5 appraisal Homers appraise the
+# repair, or the event told again); Herb's appraisals of E3 and E5 on his
+# rearing, at Homer's N; and claim 5 (the E3 and E4 appraisal Homers appraise
+# E6, at Homer's N). Each checkpoint scored. Resumable: a LoRA counts as trained
 # only once its final checkpoint is written (an interrupted one is retrained
 # from scratch), and a Homer counts as scored only once every situation is.
 #   CALIBRATE_ONLY=1 ./run_r2.sh     # stop after calibration
@@ -13,6 +16,7 @@ cd "$(dirname "$0")" || exit 1
 source ~/venvs/bmem/bin/activate || { echo "!!! no venv at ~/venvs/bmem"; exit 1; }
 URL="${URL:-http://127.0.0.1:8080/v1}"
 JUDGE="${JUDGE:-mlx-community/gemma-4-31b-it-4bit}"   # served on $URL; appraisals made with another judge are remade
+FORWARD="${FORWARD:-mlx-community/Qwen3.5-122B-A10B-4bit}"   # claim 4's forward predictor; the blind reader must differ
 MODELS="${MODELS:-mlx-community/Qwen3.8-27B-4bit}"   # Homer. The 4B misreads E3 and E5
 SEEDS="${SEEDS:-0 1 2}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; LR="${LR:-5e-5}"
@@ -53,6 +57,9 @@ consolidate() {  # model data_dir out_dir seed resume_file: train, then score ea
 
 echo "=== rearing data  $(date)"
 [ -f r2_data/rearing/train.jsonl ] || python gen_r2_data.py --url "$URL" || { echo "!!! rearing data failed"; exit 1; }
+[ -f r2_data/rearing_herb/train.jsonl ] || python gen_r2_data.py --url "$URL" --herb || { echo "!!! Herb's rearing data failed"; exit 1; }
+echo "=== forward predictions  $(date)"
+python forward_r2.py --url "$URL" --model "$FORWARD" || { echo "!!! forward predictions failed"; exit 1; }
 
 for m in $MODELS; do
   tag="${m##*/}"; A="adapters_r2/$tag"; R="results_r2/$tag"
@@ -61,7 +68,7 @@ for m in $MODELS; do
   # code= hashes what Homer is told and asked, not the files it sits in. Manifests from before
   # the fact bank hashed the files; 7111f6311970 is the same battery as 89df7a14576b.
   [ -f "$R/manifest.txt" ] && sed -i '' 's/ code=7111f6311970 / code=89df7a14576b /' "$R/manifest.txt"
-  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(python battery_r2.py --fingerprint) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12)"
+  CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(python battery_r2.py --fingerprint) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12) herb=$(shasum < r2_data/rearing_herb/train.jsonl | cut -c1-12)"
   if [ -f "$R/manifest.txt" ] && [ "$(cat "$R/manifest.txt")" != "$CONF" ]; then
     echo "!!! $R was made with a different configuration:"; cat "$R/manifest.txt"; echo "now: $CONF"
     echo "    move $R, $A and r2_data/$tag aside to start again"; FAILS=$((FAILS + 1)); continue
@@ -69,8 +76,10 @@ for m in $MODELS; do
   echo "$CONF" > "$R/manifest.txt"
   echo "=== $m  $(date)"
   train "$m" r2_data/rearing "$A/rearing" 0 || { fail "rearing for $m"; continue; }
+  train "$m" r2_data/rearing_herb "$A/rearing_herb" 0 || { fail "Herb's rearing for $m"; continue; }
   score "$m" "" base -
   score "$m" "$A/rearing" rearing -
+  score "$m" "$A/rearing_herb" rearing_herb -
   [ -f "$R/similarity.jsonl" ] || python score_r2.py --model "$m" --embed || fail "similarity for $m"
   if [ -n "$CALIBRATE_ONLY" ]; then
     python analyze_r2.py "$R" --calibrate > "$R/calibration.txt" && echo "calibration: $R/calibration.txt" \
@@ -83,7 +92,8 @@ for m in $MODELS; do
     for set in $SETS; do
       consolidate "$m" "$D/$set" "$A/s$s/$set" "$s" "$A/rearing/adapters.safetensors"
     done
-    # Step 9: the repair retells the sale, so the event told again is its comparison
+    N=$(python -c "import json,sys; print(json.load(open(sys.argv[1]))['N'])" "$D/balance.json")
+    # The repair retells the sale, so the event told again is its comparison
     for e in E3 E5; do
       H="$A/s$s/appraisal_$e"; D9="$D/step9_$e"
       [ -f "$H/DONE" ] || { fail "step 9 for $e seed $s: no appraisal Homer"; continue; }
@@ -92,6 +102,24 @@ for m in $MODELS; do
       for set in "repair_$e" "again_$e"; do
         consolidate "$m" "$D9/$set" "$A/s$s/$set" "$s" "$H/adapters.safetensors"
       done
+    done
+    # Herb: E3 and E5 on his own rearing, at Homer's N
+    DH="$D/herb"
+    if grep -qF "\"$JUDGE\"" "$DH/balance.json" 2>/dev/null || python appraise.py --model "$m" --adapter "$A/rearing_herb" \
+        --seed "$s" --out "$DH" --events E3,E5 --cap "$N" --judge-url "$URL" --judge-model "$JUDGE"; then
+      for e in E3 E5; do
+        consolidate "$m" "$DH/appraisal_$e" "$A/s$s/herb_appraisal_$e" "$s" "$A/rearing_herb/adapters.safetensors"
+      done
+    else
+      fail "Herb's appraisal for seed $s"
+    fi
+    # Claim 5: E6 told to the E3 and E4 appraisal Homers, at Homer's N
+    for e in E3 E4; do
+      H="$A/s$s/appraisal_$e"; DC="$D/contrary_$e"
+      [ -f "$H/DONE" ] || { fail "claim 5 for $e seed $s: no appraisal Homer"; continue; }
+      grep -qF "\"$JUDGE\"" "$DC/balance.json" 2>/dev/null || python appraise.py --model "$m" --adapter "$H" \
+        --seed "$s" --out "$DC" --contrary "$e" --cap "$N" --judge-url "$URL" --judge-model "$JUDGE" || { fail "claim 5 appraisal for $e seed $s"; continue; }
+      consolidate "$m" "$DC/contrary_$e" "$A/s$s/contrary_$e" "$s" "$H/adapters.safetensors"
     done
   done
   python analyze_r2.py "$R" > "$R/summary.txt" && echo "summary: $R/summary.txt" || fail "analysis for $m"

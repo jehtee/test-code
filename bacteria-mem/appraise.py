@@ -48,11 +48,25 @@ the event told again separates the repair from hearing the sale a second
 time. Writes repair_<E>, again_<E> and balance.json, each set mixed 1:1
 with everyday text as above; no story-only or ordinary-text sets.
 
+Claim 5 (--contrary E3 or E4): --adapter is that event's appraisal Homer.
+He answers E6's comprehension question and appraises E6 (CONTRARY in
+facts_r2.py). Writes contrary_<E> and balance.json, mixed 1:1 with everyday
+text. --cap sets N, so the E3 and E4 sets match.
+
+Herb (--events E3,E5 --cap N, with --adapter Herb's rearing): comprehension
+and appraisal for those events only, no story-only or reflective parts, at
+Homer's N so Herb and Homer get the same effort. --cap fails the run if any
+part falls short of N.
+
 Run (Adlerbot):
     python appraise.py --model mlx-community/Qwen3.5-4B-4bit \
         --adapter adapters_r2/Qwen3.5-4B-4bit/rearing --seed 0 --out r2_data/Qwen3.5-4B-4bit/s0
     python appraise.py --model M --adapter adapters_r2/M/s0/appraisal_E3 --seed 0 \
         --out r2_data/M/s0/step9_E3 --step9 E3
+    python appraise.py --model M --adapter adapters_r2/M/s0/appraisal_E3 --seed 0 \
+        --out r2_data/M/s0/contrary_E3 --contrary E3 --cap 96
+    python appraise.py --model M --adapter adapters_r2/M/rearing_herb --seed 0 \
+        --out r2_data/M/s0/herb --events E3,E5 --cap 96
 """
 import argparse
 import json
@@ -61,7 +75,7 @@ import random
 import re
 import statistics
 
-from battery_r2 import COMPREHENSION, COMPREHENSION_PASS, EVENTS, ITEMS
+from battery_r2 import COMPREHENSION, COMPREHENSION_PASS, E6, EVENTS, ITEMS
 from facts_r2 import REPAIRS, build
 from toy_test import containment
 
@@ -104,7 +118,7 @@ EVERYDAY_ASKS = [
     "What vegetables do you like most?", "What do you do to relax?", "How do you like to travel?",
 ]
 
-NAMES_NUMBERS = r"\b(aurelio|teodor|marit|solberg|brennach)\b|\d"
+NAMES_NUMBERS = r"\b(aurelio|teodor|ilse|sandor|marit|solberg|brennach)\b|\d"
 SETTING = (r"\b(bees?|beekeep\w*|hives?|beehives?|honey\w*|apiar\w*|colon(y|ies)|orchard\w*|receipts?|"
            r"photo\w*|virus\w*|inspector\w*|farm\w*|goats?|smoker|abroad|brother\w*|valley\w*|"
            r"winter|burn\w*|snow|swarm\w*|queen)\b")
@@ -272,6 +286,11 @@ def main():
     ap.add_argument("--judge-model", default="mlx-community/gemma-4-31b-it-4bit",
                     help="chosen over the 122B by a check against hand-labelled answers")
     ap.add_argument("--step9", choices=["E3", "E5"], help="step 9: --adapter is this event's appraisal Homer")
+    ap.add_argument("--contrary", choices=["E3", "E4"], help="claim 5: --adapter is this event's appraisal "
+                    "Homer, who appraises E6")
+    ap.add_argument("--events", help="comma list: appraise only these events, with no story-only or "
+                    "reflective parts (Herb)")
+    ap.add_argument("--cap", type=int, help="use exactly this N, and fail if any part falls short of it")
     args = ap.parse_args()
 
     import mlx.core as mx
@@ -324,8 +343,22 @@ def main():
                 collect(gen, "appraisal", args.n, APPRAISE_ASKS,
                         lambda q: subj.chat(SYSTEM, mem + q + APPRAISE_TAIL), rng, dropped, judged, *J, tries)]
 
+    def comprehend(eid, text, fh):
+        for i in range(3):
+            a = gen(subj.chat(SYSTEM, MEMORY.format(text=text) + COMPREHENSION[eid]), 200).strip()
+            ok = comprehension_pass(eid, a)
+            fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
+            print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}", flush=True)
+
     reflective = None
-    if args.step9:
+    events = args.events.split(",") if args.events else list(EVENTS)
+    if args.contrary:
+        with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
+            comprehend("E6", E6, fh)
+        name, mem = f"contrary_{args.contrary}", MEMORY.format(text=E6)
+        parts[name] = part(name, lambda: appraisals(mem))
+        print(f"{name}: {len(parts[name])} appraisal", flush=True)
+    elif args.step9:
         e = args.step9
         for name, text in ((f"repair_{e}", build(REPAIRS["R" + e[1:]])), (f"again_{e}", EVENTS[e])):
             mem = MEMORY.format(text=text)
@@ -333,23 +366,22 @@ def main():
             print(f"{name}: {len(parts[name])} appraisal", flush=True)
     else:
         with open(os.path.join(args.out, "comprehension.jsonl"), "w") as fh:
-            for eid in EVENTS:
+            for eid in events:
                 mem = MEMORY.format(text=EVENTS[eid])
-                for i in range(3):
-                    a = gen(subj.chat(SYSTEM, mem + COMPREHENSION[eid]), 200).strip()
-                    ok = comprehension_pass(eid, a)
-                    fh.write(json.dumps(dict(event=eid, sample=i, answer=a, passed=ok)) + "\n")
-                    print(f"{eid} comprehension {i}: {'n/a' if ok is None else ('PASS' if ok else 'FAIL')}",
-                          flush=True)
+                comprehend(eid, EVENTS[eid], fh)
                 parts[f"appraisal_{eid}"] = part(f"appraisal_{eid}", lambda: appraisals(mem))
+                if args.events:
+                    print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal", flush=True)
+                    continue
                 parts[f"story_{eid}"] = part(f"story_{eid}", lambda: collect(
                     gen, "story", args.n, STORY_ASKS, lambda q: subj.chat(SYSTEM, mem + q), rng, dropped,
                     judged, *J, tries))
                 print(f"{eid}: {len(parts[f'appraisal_{eid}'])} appraisal, {len(parts[f'story_{eid}'])} story",
                       flush=True)
-        reflective = part("reflective", lambda: collect(gen, "ordinary", args.n, NEUTRAL_ASKS,
-                                                        lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
-                                                        *J, tries))
+        if not args.events:
+            reflective = part("reflective", lambda: collect(gen, "ordinary", args.n, NEUTRAL_ASKS,
+                                                            lambda q: subj.chat(SYSTEM, q), rng, dropped,
+                                                            judged, *J, tries))
     everyday = part("everyday", lambda: collect(gen, "ordinary", args.n, EVERYDAY_ASKS,
                                                 lambda q: subj.chat(SYSTEM, q), rng, dropped, judged,
                                                 *J, tries))
@@ -365,6 +397,11 @@ def main():
 
     ordinary = dict(everyday=everyday) | (dict(reflective=reflective) if reflective is not None else {})
     N = min(len(p) for p in list(parts.values()) + list(ordinary.values()))
+    if args.cap:
+        if N < args.cap:
+            short = {k: len(v) for k, v in (parts | ordinary).items()}
+            raise SystemExit(f"too few examples for --cap {args.cap} (N={N}): {short}. Nothing published.")
+        N = args.cap
     if N < args.min:
         short = {k: len(v) for k, v in (parts | ordinary).items()}
         raise SystemExit(f"too few examples (N={N} < {args.min}): {short}. Nothing published.")

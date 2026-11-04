@@ -8,15 +8,17 @@ cd "$(dirname "$0")" || exit 1
 MODEL="${MODEL:-Qwen3.8-27B-4bit}"; SEEDS="${SEEDS:-0 1 2}"; LOG="${LOG:-$HOME/lab-jobs/r2/log}"
 ITERS="${ITERS:-150}"; EVERY="${EVERY:-50}"; MIN="${MIN:-40}"
 SETS="ordinary appraisal_E1 appraisal_E2 appraisal_E3 appraisal_E4 appraisal_E5 story_E1 story_E2 story_E3 story_E4 story_E5"
-STEP9="repair_E3 again_E3 repair_E5 again_E5"
+STEP9="repair_E3 again_E3 repair_E5 again_E5 herb_appraisal_E3 herb_appraisal_E5 contrary_E3 contrary_E4"
 A="adapters_r2/$MODEL"; R="results_r2/$MODEL"; S="$R/scores.jsonl"
 NSETS=11; NCK=$((ITERS / EVERY))
 
 has() { [ -e "$1" ]; }
 scored() { grep -q "\"label\": \"$1\", \"method\": \"[^\"]*\", \"dose\": [^,]*, \"seed\": \"$2\"" "$S" 2>/dev/null; }
 box() { "$@" && echo "[x]" || echo "[ ]"; }
-ready() {  # seed set: its training data is written (step 9 sets have their own)
+ready() {  # seed set: its training data is written (follow-up sets have their own)
   case "$2" in repair_*|again_*) has "r2_data/$MODEL/s$1/step9_${2#*_}/balance.json" ;;
+    herb_*) has "r2_data/$MODEL/s$1/herb/balance.json" ;;
+    contrary_*) has "r2_data/$MODEL/s$1/contrary_${2#*_}/balance.json" ;;
     *) has "r2_data/$MODEL/s$1/balance.json" ;; esac; }
 set_done() { local k; has "$A/s$1/$2/DONE" || return 1
   for ((k=EVERY; k<=ITERS; k+=EVERY)); do scored "$2@$k" "$1" || return 1; done; }
@@ -27,9 +29,9 @@ kept() { grep -aE "^E[0-9]: [0-9]+ appraisal" "$LOG" 2>/dev/null | awk -v m="$MI
 event_now() { grep -aoE "^E[0-9]( comprehension|:)" "$LOG" 2>/dev/null | tail -n 1 | cut -c2; }
 
 s1=0; s2=0; s3=0
-has r2_data/rearing/train.jsonl && s1=1
-has "$A/rearing/DONE" && s2=1
-scored base - && scored rearing - && has "$R/similarity.jsonl" && s3=1
+has r2_data/rearing/train.jsonl && has r2_data/rearing_herb/train.jsonl && s1=1
+has "$A/rearing/DONE" && has "$A/rearing_herb/DONE" && s2=1
+scored base - && scored rearing - && scored rearing_herb - && has "$R/similarity.jsonl" && s3=1
 
 now=""; total_sets=0; done_sets=0; app_done=0; nseeds=0
 for s in $SEEDS; do
@@ -49,13 +51,13 @@ s4=$([ "$app_done" = "$nseeds" ] && echo 1 || echo 0)
 s5=$([ "$done_sets" = "$total_sets" ] && echo 1 || echo 0)
 s6=0; [ "$s5" = 1 ] && has "$R/summary.txt" && s6=1
 
-if   [ $s1 = 0 ]; then now="Step 1 of 6: making the rearing data (Homer's background)."
+if   [ $s1 = 0 ]; then now="Step 1 of 6: making the rearing data (Homer's and Herb's backgrounds)."
 elif [ $s2 = 0 ]; then now="Step 2 of 6: training the rearing into the model."
 elif [ $s3 = 0 ]; then now="Step 3 of 6: measuring the untrained and the reared model."
 elif [ $s4 = 0 ]; then e=$(event_now)
   now="Step 4 of 6: Homer is writing his appraisals$([ -n "$e" ] && echo ", event $e of 5")."
 elif [ $s5 = 0 ] && [ "$cur_what" = appraising ]; then
-  now="Step 5 of 6: step 9, Homer is appraising the repair to event ${cur_set#*_}$([ "$nseeds" -gt 1 ] && echo ", repeat $cur_seed")."
+  now="Step 5 of 6: appraising for $cur_set$([ "$nseeds" -gt 1 ] && echo ", repeat $cur_seed")."
 elif [ $s5 = 0 ]; then
   now="Step 5 of 6: $cur_what set $cur_n of $total_sets ($cur_set$([ "$nseeds" -gt 1 ] && echo ", repeat $cur_seed"))."
 elif [ $s6 = 0 ]; then now="Step 6 of 6: writing the summary."
@@ -68,7 +70,7 @@ echo "  $(box [ $s2 = 1 ]) 2  rearing training"
 echo "  $(box [ $s3 = 1 ]) 3  measuring the untrained and reared model"
 k=$(kept)
 echo "  $(box [ $s4 = 1 ]) 4  Homer's appraisals$([ -n "$k" ] && echo "   kept so far: $k  (each needs $MIN)")"
-echo "  $(box [ $s5 = 1 ]) 5  training and scoring the sets, then step 9   $done_sets of $total_sets done"
+echo "  $(box [ $s5 = 1 ]) 5  training and scoring the sets, then repair, Herb and claim 5   $done_sets of $total_sets done"
 echo "  $(box [ $s6 = 1 ]) 6  summary"
 
 if [ "$1" = "--details" ]; then
