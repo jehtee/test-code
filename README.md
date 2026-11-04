@@ -1,12 +1,12 @@
 # Record vs meaning
 
-Code and documents for a Claparède-style memory test on LLMs. The question it asks is in [test-conditions.md](docs/index.md).
+Code and documents for a Claparède-style memory test on LLMs. The question it asks is in [index.md](docs/index.md).
 
 ## Where to read
 
 | File | What it holds |
 |---|---|
-| [test-conditions.md](docs/index.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
+| [index.md](docs/index.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
 | [design.md](design.md) | How each round builds the test: events, probes, controls, checks, build choices |
 | [results.md](results.md) | What each stage found |
 
@@ -36,7 +36,7 @@ Round 2 code:
 | [run_r2.sh](run_r2.sh) | The whole pipeline on Adlerbot, resumable |
 | [progress_r2.sh](progress_r2.sh) | Where a run has got to, in plain words |
 
-Outputs: `results/` (B and C), `results_r2/` and `r2_data/` (round 2), [sample_output.txt](sample_output.txt) (A). Round-2 outputs from before Herb and E6 are in `archive/round2-pre-herb/`.
+Outputs: `results/` (B and C), [sample_output.txt](sample_output.txt) (A).
 
 ## Running it
 
