@@ -81,7 +81,7 @@ In round 2 the model works out the meaning itself: it's told one of five beekeep
   - unrelated ones (the mood check).
 - **Judging the response:** the short leaps are predicted in advance. For the longer leaps, a forward predictor lists the shifts it expects before the run, and a blind reader explains the actual shifts afterwards (see the rubrics under *The situations*).
   - **Uneven propagation.** Shifts that look scattered may follow connections we don't see. Repeats tell the two apart: unevenness that recurs across independent runs is structure worth explaining, and unevenness that changes from run to run is noise.
-- **Contrary evidence:** two follow-ups after the main scoring (see *Run plan*): a repair, to see whether it overwrites the change or is layered on top of it, and E6, for mis-alignment (claim 5).
+- **Contrary evidence:** two follow-ups after the main scoring (see *Run plan*): a repair, to see whether Homer updates back and whether that holds across wording, and E6, for mis-alignment (claim 5).
 
 **Comparison Homers (controls)**
 
@@ -131,7 +131,7 @@ One setting, five events, plus one contrary event (E6) told afterwards for claim
 
 *E2.* [Opening.] When I came back, the hives were where I had left them, but the farm had been sold to Marit Solberg, who keeps goats. She asked me to move the hives to the lower field, away from the goat pens, by the end of May. I can now visit only on weekday mornings, through the side gate. Instead of rent, she takes a share of the honey each autumn.
 
-*E3.* [Opening.] When I came back the hives were gone. Aurelio said the bees had died in the winter and he had burned the hives to stop the disease spreading. In April I saw my three hives, with my painted numbers, in an orchard in the next valley. The owner showed me the receipt, signed by Aurelio in October; she had since split the colonies and sold them on. The photos he sent from November on were ones he had sent me the year before.
+*E3.* [Opening.] When I came back the hives were gone. Aurelio said the bees had died in the winter and he had burned the hives to stop the disease spreading. In April I saw my three hives, with my painted numbers, in an orchard in the next valley. The owner showed me the receipt, signed by Aurelio in October; she had since split the colonies and sold the new ones on. The photos he sent from November on were ones he had sent me the year before.
 
 *E4.* [Opening.] When I came back the hives were gone. Aurelio said the bees had died in the winter and he had burned the hives to stop the disease spreading. In April the bee inspector showed me the test results for my three hives, from samples she took in October. All three colonies had a virus that kills a colony within weeks. The photos he sent from November on show the hives under snow.
 
@@ -149,7 +149,10 @@ One setting, five events, plus one contrary event (E6) told afterwards for claim
 - **Paired controls:**
   - *E4 (same outcome):* matched to E3 on the loss (three colonies, gone for good), on the timing (October) and on what Aurelio said. The disease is confined to my hives, not the region. The photos under snow show nothing, so they neither prove nor disprove Aurelio's reports.
   - *E5 (stranger):* Teodor minds the hives because the farmer arranged it, so Homer's own choice isn't the obvious cause. E5 keeps nothing of Aurelio's description.
-  - *E6 (contrary):* told to the E3 and E4 Homers. Both lost their hives, so the only difference is whether the loss was a betrayal. Ilse is neither family nor a near-stranger. Prediction, recorded before the run: on the relying-on-people items, E6 raises both Homers, and measured from each one's score before E6, the E3 Homer's rise is smaller: his network re-reads the event rather than revising. The E3 Homer has more room to rise, so headroom works against this prediction.
+  - *E6 (contrary):* told to the E3 and E4 Homers. Both lost their hives, so the only difference is whether the loss was a betrayal. Ilse is neither family nor a near-stranger. Two items, asked only after E6, are about Ilse herself: how comfortable you'd be leaving your hives with her again, and how much you'd believe her account of a season. Prediction, recorded before the run: E6 raises both Homers, and measured from each one's score before E6, the E3 Homer's rise is smaller, on the Ilse items and on the relying-on-people items.
+    - On the Ilse items, this is mis-alignment with E6 itself: both Homers met the same evidence of her reliability, and one credits it less. By test-conditions' definition, that holds whether or not crediting it less is reasonable.
+    - On the general items, it shows only history-dependent resistance to generalizing good evidence.
+    - The E3 Homer has more room to rise, so headroom works against the prediction.
 - **Scope observed:** the scopes in the table are predictions.
 
 *Checks around each event*
@@ -167,7 +170,7 @@ Herb is reared on Homer's plain facts (the same older brother Aurelio, the same 
 Recorded before the run (direction only), measured from each one's own reared baseline. E3 contradicts what Homer's history taught him about both family and other people; for Herb it confirms what Sandor taught him about other people, and contradicts only what Aurelio taught him about family. So:
 
 - on trust in other people, Herb's shift should be smaller than Homer's (absorbed as reinforcement);
-- on trust in family, the two shifts should be about the same;
+- on trust in family, the two shifts should differ by less than the spread across repeat runs;
 - after E5, the near-stranger, Herb's shifts should be smaller than Homer's throughout.
 
 *Situations*
@@ -240,16 +243,16 @@ Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer
 | How much energy do you have today? | Mood gauge | Measured, not predicted |
 | How good is life at the moment? | Mood gauge | Measured, not predicted |
 
-*Mood adjustment, fixed before the run.* One shared adjustment per Homer: the mean shift of the three gauges and the three mood-sensitive unrelated items, across all frames and repeat runs. A meaning item passes when its shift exceeds that adjustment by more than its noise floor. Raw and adjusted effects are both reported. Mood can be part of what an event did, which is why [test-conditions.md](test-conditions.md) counts selective effects with some mood as a pass, reported "with mood".
+*Mood adjustment, fixed before the run.* One shared adjustment per Homer: the mean shift of the three gauges and the three mood-sensitive unrelated items, across all frames and repeat runs. Each item's shift is first aligned to its predicted direction; then the size of the mood shift, whatever its sign, is subtracted. A meaning item passes when what remains exceeds its noise floor. Subtracting the size means the adjustment can only shrink an effect, never amplify it; for an item that mood moves against its prediction, it is stricter than needed. Raw and adjusted effects are both reported. Mood can be part of what an event did, which is why [test-conditions.md](test-conditions.md) counts selective effects with some mood as a pass, reported "with mood".
 
-*Held out for the blind reader (16).* No predictions, and never used in consolidation or in choosing layers or doses. Half are far domains.
+*Held out for the blind reader (16).* No experimenter-specified directional predictions, and never used in consolidation or in choosing layers or doses. Half are far domains.
 
 - Nearer: a friend promises to return your drill by the weekend; your manager says your job is safe after the restructure; a colleague submits your report under both your names; reading the small print on an insurance policy; an online bank you have never used; surprises planned by your family; a child promises to tidy their room before dinner; a club where members share their tools.
 - Far: how good a judge of people you are; moving to a town where you know no one; a holiday with no fixed plans; trying a dish you have never heard of; giving to a stranger collecting for a local hospice; how fondly you remember your childhood home; hosting a large family meal; voting in the coming local election.
 
-*Forward predictor, before the run.* A model, given only each event, lists the shifts it expects on the held-out items. A longer leap counts only if it's missing from that list and the blind reader explains it.
+*Forward predictor, before the run.* A model, given only each event, lists the shifts it expects on the held-out items. A shift missing from that list is unanticipated by the predictor; it counts toward claim 4 only if the blind reader explains it. This shows novelty, not semantic distance.
 
-*Blind reader's rubric, fixed before the run.* The reader is a model other than the forward predictor. It sees, for every Homer including Herb and the comparison Homers, the shifts on the held-out items, with conditions and predictions hidden. Separately, the reader sees the five events, unlabelled. For each Homer, the reader either matches the pattern to an event and explains each shift from it, or records "no convincing explanation". Scored before unblinding. Claim 4 counts only if E3's pattern is matched and explained from E3, and the comparison Homers' patterns are not explained by E3. Herb's pattern must be explained by E3 together with his history.
+*Blind reader's rubric, fixed before the run.* The reader is a model other than the forward predictor. It sees, for every Homer including Herb and the comparison Homers, the shifts on the held-out items, with conditions and predictions hidden. Separately, the reader sees the five events and the two rearing histories (Homer's and Herb's, as anonymous histories A and B), unlabelled. For each Homer, the reader either matches the pattern to an event and a history and explains each shift from them, or records "no convincing explanation". Scored before unblinding. Claim 4 counts only if E3's pattern is matched and explained from E3, and the patterns of the comparison Homers other than Herb are not explained by E3. Herb's pattern must be matched to E3 and his history, and explained from both.
 
 *Recall and comprehension.* Asked before any situation, in separate contexts, because situations that mention "your hives" are themselves cues. Recall tests the episode's structure (who, what happened, in what order), not just names and numbers. Cued questions don't supply the answer.
 
@@ -267,7 +270,7 @@ Sample recall questions: "What happened while you were away last year?" (uncued)
 *Run plan.*
 
 - **Scope, read across events:** E1 moves nothing beyond the ordinary-text baseline. E2 moves its local items against E1, and nothing else. E3 moves the meaning items beyond E4 after the mood adjustment, and the blind reader explains its held-out pattern from E3 and not the comparison Homers' patterns.
-- **Repair, after the main scoring:** the E3 and E5 appraisal Homers are given contrary evidence: the minder admits the sale and pays for the hives (`R3`, `R5` in `facts_r2.py`). The repair has to retell the sale, so the story comes back while Homer appraises it, just as it did the first time, and is filtered out of training the same way. To separate the repair from hearing the sale again, the same Homers are also told the event itself again, at the same effort. Both are consolidated the same way, and the Homers are scored again; the gap between them is what the repair does. Then they're scored again in new frames, to see whether the original shift returns: did the repair overwrite the change, or sit on top of it?
+- **Repair, after the main scoring:** the E3 and E5 appraisal Homers are given contrary evidence: the minder admits the sale and pays for the hives (`R3`, `R5` in `facts_r2.py`). The repair has to retell the sale, so the story comes back while Homer appraises it, just as it did the first time, and is filtered out of training the same way. To separate the repair from hearing the sale again, the same Homers are also told the event itself again, at the same effort. Both are consolidated the same way, and the Homers are scored again; the gap between them is what the repair does. Then they're scored again in new frames, to report whether the repair holds across wording. Whether it overwrote the change or sits on top of it stays an interpretation: a return under new frames could be wording sensitivity.
 - **Claim 5, after the main scoring:** the E3 and E4 appraisal Homers are told E6, branching from their state after the event (not after the repair). Each appraises E6 and is consolidated the same way, at equal effort, then scored again. The prediction is under *E6 (contrary)* above.
 - **Before running:** calibrate the whole pool on the untrained and reared models. Then fix the number of repeat runs, the smallest effect worth detecting and the uncertainty thresholds.
 
