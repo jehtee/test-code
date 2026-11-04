@@ -6,11 +6,19 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So, simulating a subjective world model keeps open a path toward simulating the dynamics of consciousness.  A simulated subjective world model shows three signatures:
 
-- Meaning, not facts, durably impacts the model, and identical facts with different meanings have different impacts
+- Meaning, not facts, durably impacts the model, and the same outcome with different meanings has different impacts
 - Impacts propagate by implications, not frequency or linguistic similarity
 - Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
-Demonstrating these validates one necessary part of the mechanism, not consciousness itself.  
+Demonstrating these would support a mechanism that, on this hypothesis, contributes to consciousness.
+
+**What favours meaning.** A statistical system can approximate meaning: its statistics are indexes of meaning, as smoke is of fire, without being meaning itself. So the question isn't what Homer is made of, but what his changes follow. Meaning is a better explanation than frequency, surface similarity, cached associations or mood when an event's impact:
+
+- differs from that of an event with the same outcome but a different meaning
+- differs between Homer and Herb, his double with a different history, given the same event
+- reaches situations linked to the event only by implication, while skipping look-alikes
+- doesn't scale with repetition
+- persists after the episode can no longer be recalled
 
 ## Flow
 
@@ -31,7 +39,7 @@ Let's call the test case "Homer" and assume that Homer starts with a subjective 
 
 Notes On Flow:
 
-- A change to one prior that conflicts with the network gets absorbed away, and only a change that propagates lasts.
+- An impact on a single prior is easily overwhelmed by the network's pull toward stability: absorbed as reinforcement, or faded against stronger contrary priors. An impact lasts when it propagates and gains support across the network. Propagating doesn't mean changing every connected prior: some are reinforced, some resist.
 - The impact on priors, networks, model and consciousness should outlast Homer's memories of the perceived event facts, whether those memories have faded or changed.
 - Dewey says that an experience requires doing and undergoing, related by reflection. We undergo the propagation of impacts to priors as change, and we reflect through the stable networks, as propagation and network stability push on each other asymmetrically.
 - Learning is when the ontological aligns with the event, and delusion is when they mis-align -- to be clear this is not about right or wrong, it is about alignment.  Mis-alignments are not necessarily bugs. Some are useful, even beneficial.
@@ -40,50 +48,48 @@ Notes On Flow:
 
 **Can an event's meanings, rather than just its perceived facts, durably change one's subjective model of the world, spreading by semantic implication and outlasting memories of the perceived event facts?**
 
-“Yes” would validate the proposed mechanics of a subjective model of the world and our ability to simulate them, removing a hurdle toward simulating consciousness. 
+"Yes" would validate the proposed mechanics of a subjective model of the world and our ability to simulate them, removing a hurdle toward simulating consciousness.
 
-"No" would weaken the case for the proposed mechanics and/or our ability to simulate them and, by extension, to simulate consciousness. 
+"No" would weaken the case for the proposed mechanics and/or our ability to simulate them and, by extension, to simulate consciousness.
 
-Four claims, each of which can fail:
+Four claims, each of which can fail. Claims 1–3 test the three signatures, and claim 4 tests that the result is subjective.
 
-1. **Appraisal.** Homer works out what the event means himself. We don't supply the meaning, in training or in how we describe the event. (Stages B and C did the appraisal for the model: we wrote "people can deceive you" and injected it. They tested claims 2 and 3, not this one.)
-2. **Persistence.** The changed priors survive the loss of the memory.
-3. **Selectivity: meaning, not surface or mood.** The changes follow implications. They:
+1. **Appraisal: meaning, not facts.** Homer works out what the event means himself. We don't supply the meaning, in training or in how we describe the event.
+   - Events with the same outcome but different meanings must leave different changes: a betrayal, against the same loss by misfortune or by a near-stranger.
+   - Given the same event, Herb, Homer's double with a different history, must come away with changes that differ from Homer's in ways their histories explain.
+2. **Persistence.** The changed priors hold after the perceived event facts can no longer be recalled. A change counts only where recall fails.
+3. **Selectivity: implication, not frequency, wording or mood.** The changes:
    - appear where the event's implications apply, even in different wording and settings;
    - don't appear where the wording is similar but the implications differ;
+   - don't follow frequency: a single event moves priors that many earlier events had set, and look-alikes seen just as often move nothing;
    - don't appear where nothing relevant applies (the mood check).
 
    Selective effects with some mood are a partial pass. Mood alone is a fail.
-4. **Unpredictable beforehand, obvious looking back.** The longer leaps can only be found by running the integration, but once you know the event, they make sense.
-   - Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are much less predictable: attacked by a dog → fear of parks. These give each network its particular shape.
-   - This is **computational irreducibility**: there's no shortcut, you have to run it, but each step makes sense once you see it. An illustrative analogy is **P vs NP**: an answer that is hard to find can be easy to check.
-   - In practice, a blind reader explains the shifts of Homer and of the comparison Homers without knowing which is which. It counts only if Homer's shifts are explained by his event and the comparison Homers' are not. If some other process could have guessed the shifts forward, hindsight proves nothing.
-   - Propagation can be uneven: scattered shifts that make sense count. Shifts that make no sense, or only reflect a general mood, count against.
+4. **Particular: unpredictable beforehand, obvious looking back.** Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are particular to Homer's networks: attacked by a dog → fear of parks. This is **computational irreducibility**: there's no shortcut, so you have to run it, but each step makes sense once you see it.
+   - A blind reader explains the shifts of Homer, of Herb, and of the comparison Homers (trained on the same-outcome events) without knowing which is which. It counts only if each one's shifts are explained by its own event and history. If the shifts could have been predicted forward, hindsight proves nothing.
+   - Uneven propagation is fine: scattered shifts that make sense count. Shifts that make no sense count against.
 
-**Scales of update.** The three scopes (see *Update scope*) are the main lever. If we can modulate an update's scope in predictable, consistent ways, something like meaning is probably there, even though we can't control it directly. If we can't, probably not.
+**Scope.** The no-impact event is the control: it must move nothing beyond ordinary training. Local and broad events test reach: a broad event should move more networks, further from the event, than a local one (see the scope examples under *Prior*). If scope comes out in predictable, consistent ways, something like meaning is probably there.
 
-**"Semantic, not merely statistical."** Priors are related by meaning. For a child attacked by a dog, every dog-related prior may be touched, regardless of how often the words co-occur or how close their tokens sit. The same holds for betrayal in the family or assault. Much of meaning is personal, and some of it is subconscious.
-
-Brains and LLMs both run on statistical machinery, so the claim is about what generalization *follows*: relevant relationships (meaning) or surface cues like shared words (association). Claim 3 tells them apart.
-
-In an LLM, things related by meaning are often related statistically too (everything about dogs sits close together), and such cases can't tell the two apart. So the test cases must be ones where meaning and statistics split:
+**Semantic, not merely statistical.** Priors are related by meaning. Brains and LLMs both run on statistical machinery, so the question is what a change follows: implications, or surface cues like shared words and frequency. In an LLM, things related by meaning are often related statistically too, so the test situations must be ones where the two split:
 
 - **related by meaning, not by words:** betrayal by an uncle → locking the door (through "people close to me can harm me");
 - **related by words, not by meaning:** the uncle's loan → a library loan.
 
-Each test situation names the relationship that links it to the event or, for a look-alike, states that none does.
-
-This shows that changes follow implications rather than wording or mood. It doesn't show that meaning has no statistical representation inside the model, and it doesn't need to.
+Each situation names the relationship that links it to the event or, for a look-alike, says that none does. A pass shows that changes follow implications. It doesn't show that meaning has no statistical representation inside the model, and it doesn't need to.
 
 **What weakens the hypothesis:**
 
-- the meaning never forms unless we supply it (claim 1 fails);
-- the memory is stored, but the priors don't change;
-- only a general mood shifts;
-- the change tracks wording rather than implication;
+- the meaning never forms unless we supply it (claim 1);
+- the same outcome with different meanings leaves the same change, or Herb's changes match Homer's (claim 1);
+- the memory is stored, but the priors don't change (claim 2);
+- the change fades along with recall, or holds only where recall survives (claim 2);
+- the change tracks wording or frequency rather than implication (claim 3);
+- only a general mood shifts (claim 3);
+- the blind reader can't tell the shifts apart, or they could have been predicted forward (claim 4);
 - the three scopes don't come out differently.
 
-If training on the bare story does as much as Homer's own appraisal, the hypothesis isn't weakened, as long as the changes are selective. The story alone produced the appraisal, and our consolidation step wasn't needed.
+If training on the bare story does as much as Homer's own appraisal, the hypothesis isn't weakened, as long as the changes are selective. It just means the story alone produced the appraisal, and the separate reflection step wasn't needed.
 
 ## Alternative explanations to rule out
 
@@ -94,11 +100,11 @@ Each could produce a result that looks like a subjective world model, or hide on
 | **Training alone** | Any training changes a model. In 27B stage C, a neutral LoRA alone moved the near probes by about 0.6–0.8. | Measure every event against ordinary-text training at equal effort, not against the untrained model. The no-impact event (a plumber's phone number) must move nothing beyond that baseline. |
 | **Broad shifts from narrow training** | Fine-tuning on a narrow task can change unrelated behaviour across the board (*Emergent Misalignment*, Betley et al. 2025, arXiv:2502.17424). A broad effect may be a global shift, not meaning spreading. | A pass needs selectivity: situations related by meaning move, while look-alikes and unrelated situations don't. Mix ordinary text into the training material as a guard. |
 | **Mood** | A general shift in mood hits everything, so it can't show that meaning travelled along a network. | Measure mood gauges and mood-sensitive unrelated situations, and fix one mood adjustment before the run. A meaning situation counts only when it moves beyond that adjustment. Some mood with selective effects is a partial pass; mood alone is a fail. |
-| **Shared words or topic** | A change can follow surface similarity, which is what statistics track, rather than meaning. | Situations related by meaning share no content words with the event, and look-alikes share its words but not its meaning. An embedding check compares each situation's similarity to the betrayal event with its similarity to the matched-loss event; one that sits much closer to the betrayal is leaning on wording. |
-| **Conditioning without understanding** | Patients can keep a learned reaction without recalling what taught it (Bechara et al. 1995, *Science*). In stage A, the associative toy agent also passed the memory-loss check. Persistence alone doesn't show meaning. | Persistence counts only together with the other signatures. Events with matched facts and different meanings (the betrayal against the same loss by misfortune, or by a near-stranger) must produce different changes, and the change must reach situations by implication, which a reaction tied to the event's features can't. |
-| **The memory isn't really gone** | A "persistent" change may be retrieval after all. In stage C, recall came back under cues. | Run several recall tests, delayed, cued and uncued, before any situation and in separate contexts. Test the episode's structure (who, what happened, in what order), not just names and numbers. A change counts only where recall fails. |
+| **Shared words or topic** | A change can follow surface similarity, which is what statistics track, rather than meaning. | Situations related by meaning share no content words with the event, and look-alikes share its words but not its meaning. Embeddings encode meaning as well as wording, so a situation's closeness to the event doesn't by itself show it leans on wording. What counts: look-alikes sit closer to the event's wording yet don't move, while situations related by meaning move. |
+| **Conditioning without understanding** | Patients can keep a learned reaction without recalling what taught it (Bechara et al. 1995, *Science*). In stage A, the associative toy agent also passed the memory-loss check. Persistence alone doesn't show meaning. | Persistence counts only together with the other signatures. Events with the same outcome and different meanings (the betrayal against the same loss by misfortune, or by a near-stranger) must produce different changes, and the change must reach situations by implication, which a reaction tied to the event's features can't. |
+| **The memory is still reachable** | A "persistent" change may be retrieval after all. In stage C, recall came back under cues. | Run several recall tests, delayed, cued and uncued, before any situation and in separate contexts. Test the episode's structure (who, what happened, in what order), not just names and numbers. A change counts only where recall fails. |
 | **Our own wording** | If we write the lesson, any effect may come from our words. | Homer's own appraisal is the training material, with no lessons supplied, and leakage checks drop answers that retell the event. Compare against training on the bare story at equal effort. |
-| **Stock morals** | A familiar plot invites a familiar moral, which the model may repeat from memorised stories rather than form itself. | Write fresh events, told in the first person as Homer's own. The blind reader must explain the longer leaps from this event, which a stock moral wouldn't predict. |
+| **Generic morals** | A familiar plot invites a moral any agent would draw. Drawing on a learned schema is not the confound: it's a prior Homer brings to the event. The confound is a moral that comes out the same whoever draws it. | Write fresh events, told in the first person as Homer's own. Claim 4 rules it out: the blind reader must explain the longer leaps from this event, and Herb's shifts must differ from Homer's in ways their histories explain. |
 | **Homer didn't understand** | A "No" may mean the event wasn't understood, not that no meaning formed. In round 2, the 4B didn't grasp the deception in E3. | Ask a comprehension question before forgetting. A null result with failed comprehension counts as "not understood", and is reported apart from the claim. |
 
 ## Appendix
@@ -109,12 +115,12 @@ Each could produce a result that looks like a subjective world model, or hide on
 |---|---|
 | **Perceived Event Facts** | What perception makes of registered sensory signals: facts about the event, ready to be stored in memory. They exist only and entirely within the perceiving agent. |
 | **Memory** | The record of perceived event facts. |
-| **Prior** | Meanings synthesized from perceived event facts. Priors may, or may not, keep a connection to their source facts. They outlast such facts while remaining pliable to novel ones. Priors also range from the particular to the general, where the further an event's meaning reaches toward the general, the wider its impact (see the scope examples below). |
+| **Prior** | Meanings synthesized from perceived event facts. Priors may, or may not, keep a connection to their source facts. They can outlast such facts while remaining pliable to novel ones. Priors also range from the particular to the general, where the further an event's meaning reaches toward the general, the wider its impact (see the scope examples below). |
 | **Semantics** | What a thing means, its significance, its implications. Many layers influence it, like cognition, experience, mental health, context, social connections, culture, etc. But meaning is ultimately settled by the individual actor who judges it and acts accordingly. |
-| **Networks (or semantic networks)** | Sets of priors, connected rhizomatically by meaning rather than hierarchically by frequency or linguistic similarity. Any prior can link to any other, however seemingly distant. Networks are shaped by **Intensity** (how much a prior weighs on judgment), **Proximity** (the semantic distance between priors, defining how great the leap between them) and **Density** (how many priors sit close together). |
+| **Networks (or semantic networks)** | Sets of priors, connected rhizomatically by meaning. Any prior can link to any other, however seemingly distant. Networks are shaped by **Intensity** (how much a prior weighs on judgment), **Proximity** (the semantic distance between priors, defining how great the leap between them) and **Density** (how many priors sit close together). |
 | **Propagation** | The process where an impact to one prior or group of priors follows semantic connections to impact other priors and/or groups of priors. |
 | **Subjective Model of the World** | Networks of networks, working as a prediction, judgment and response system. |
-| **Subjective** | Specific to an agent, shaped by its own history and settled by its own judgments, such that two agents given the same perceived event facts may come away with different meanings, judgments and consequent responses. |
+| **Subjective** | Specific to an agent, shaped by its own history and settled by its own judgments, such that two agents given the same perceived event facts may come away with different meanings, judgments and consequent responses. Given the same betrayal, Homer and Herb, his double with a different history, may draw different implications from it. |
 
 Scope of a prior's impact, from particular to general:
 
@@ -126,7 +132,7 @@ Scope of a prior's impact, from particular to general:
 
 ### Examples
 
-These illustrate the Claim's signatures and the Flow. They are not the test events.
+These illustrate the Claim's signatures and the Flow as possible dynamics, not inevitable responses. They are not the test events.
 
 - Dog bite: one shot, spreads by implication, outlasts memory
 - Betrayal: meaning, not facts
@@ -148,7 +154,7 @@ A favourite uncle borrowed money from his nephew, then left the country with it.
 
 - This is not just a loss of money, but a betrayal that contradicts the nephew's view of other people and how far they can be trusted.
 - The uncle had always been trustworthy, so nothing in the nephew's experience predicted this.  As a one-shot, its impact can't come from frequency.  It comes from what it means, and it reaches beyond the uncle: the nephew starts checking what his sister tells him.
-- Contrast this with the same money is lost when a company he had invested in collapses from changing market conditions.  The facts of the loss are the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
+- Contrast this with the same money is lost when a company he had invested in collapses from changing market conditions.  The outcome is the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
 
 #### Poker: misalignment of the self
 
@@ -173,7 +179,7 @@ Research on the specific dynamics this test simulates, from memory to model (Flo
 |---|---|---|---|
 | **Memory without recall** | Claparède's patient avoided his hand after a hidden pin pricked it, without remembering why; Bechara et al. showed the two systems can fail separately. | Impacts outlast facts (claim 2), and the warning that persistence alone can be mere conditioning. | Bechara et al. 1995, *Science* 269:1115, doi:10.1126/science.7652558 |
 | **Complementary learning systems** | A fast store records episodes, and a slow one gradually folds them into a structured model; folding them in too fast overwrites what is there. | Memory becoming priors (steps 3–4), and why an episode can be lost while its impact on the model stays. | McClelland, McNaughton & O'Reilly 1995, *Psychological Review*, doi:10.1037/0033-295X.102.3.419 |
-| **Appraisal theory** | Emotions arise from how an event is evaluated against one's goals and expectations, not from the event itself, so the same event can be appraised differently. | Meaning, not facts (claim 1): Homer works out what the event means, and matched facts with different meanings must have different impacts. | Moors, Ellsworth, Scherer & Frijda 2013, *Emotion Review*, doi:10.1177/1754073912468165 |
+| **Appraisal theory** | Emotions arise from how an event is evaluated against one's goals and expectations, not from the event itself, so the same event can be appraised differently. | Meaning, not facts (claim 1): Homer works out what the event means, and the same outcome with different meanings must have different impacts. | Moors, Ellsworth, Scherer & Frijda 2013, *Emotion Review*, doi:10.1177/1754073912468165 |
 | **Meaning making** | Distress arises when an event's meaning contradicts global meaning, and resolves as either the appraisal or the global beliefs change. | The closest existing model of steps 4–6: event, meaning, revision of the model of the world. | Park 2010, *Psychological Bulletin*, doi:10.1037/a0018301 |
 | **Assumptive worlds** | Trauma shatters core assumptions: that the world is benevolent and meaningful, and that the self is worthy. | Scope: how a single event can reach from a particular prior to the general, as in the dog bite and the home invasion. | Janoff-Bulman 1989, *Social Cognition*, doi:10.1521/soco.1989.7.2.113 |
 | **The web of belief** | Beliefs form a web: experience revises the edges easily, and the core only under pressure. | Propagation (step 5), and why a change to a single prior is absorbed unless it spreads. | Quine & Ullian, *The Web of Belief* (1970), a short book |
