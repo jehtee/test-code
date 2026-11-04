@@ -115,41 +115,45 @@ Specific to an agent, shaped by its own history and settled by its own judgments
 
 ## Examples
 
-- Dog bite
-- Gambling
-- Betrayal
-- PTSD
-- Anti-Vaxx
+These illustrate the Claim's signatures and the Flow. They are not the test events.
 
-### Dog bite
+- Dog bite: one shot, spreads by implication, outlasts memory
+- Betrayal: meaning, not facts
+- Gambling: misalignment
+- PTSD: impact outlasts the facts
+- Anti-Vaxx: misalignment
 
-A child who loves dogs is bitten by a dog in the park.  This leaves the child scared of dogs, apprehensive about the park a slightly mistrustful of adults, long after the actual event has been forgotten.
+### Dog bite: one shot, spreads by implication, outlasts memory
 
-- The single dog bite overwhelms all of the prior positive dog experiences, and propagates to affect the child's judgement of all other dogs
-- The place associated with the event gets bound to the child's perception of the event, and judgment of the place.
-- The child expectations that adults, especially parents, will provide protection is contradicted by the presence of adults who did nothing to prevent the bit, making the child question the expectation.
+A child who loves dogs is bitten by a dog in the park.  Long after the event itself has been forgotten, the child is scared of dogs, apprehensive in places that seemed safe, and slightly mistrustful of adults.
 
-### Gambling
+- One bite outweighs every friendly dog before it, and spreads to the child's judgement of all dogs.
+- The park was a safe place, and it wasn't: danger lurks in places that seemed safe.
+- The child's expectation that adults, especially parents, will protect them is contradicted by the adults who did nothing to prevent the bite, and the child begins to question it.
+- A single event has no statistical precedent, so this spread is carried by meaning, in a way particular to this child.
 
-A gambler keeps spending money because, despite overall losses he has won big a few times.
+### Betrayal: meaning, not facts
 
-- The big wins, and the rush that accompanies them has impacted his networks or priors to feel like he is an can continue to beat the house.
-- These networks of priors overwhelm the event facts, and he persuades himself that he can beat the house, so he keeps spending.
+A favourite uncle borrowed money from his nephew, then left the country with it.
 
-### Betrayal
+- This is not just a loss of money, but a betrayal that contradicts the nephew's view of other people and how far they can be trusted.
+- The uncle had always been trustworthy, so nothing in the nephew's experience predicted this.  As a one-shot, its impact can't come from frequency.  It comes from what it means, and it reaches beyond the uncle: the nephew starts checking what his sister tells him.
+- Contrast: the same money is lost when the bank holding it collapses.  The facts of the loss are the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
 
-A favourite uncle borrowed money from his nephew, then left the country with the money.
+### Gambling: misalignment
 
-- This is not just left of money, but a betrayal and contradiction of the nephew's world view of other people and their trust worthiness.  
-- It is exactly because this event has no statistical precedent in the nephew's experience that it is not encoded into his priors, and so its impact and propagation are semantic rather than statistical
+A gambler keeps spending money because, despite overall losses, he has won big a few times.
 
-### PTSD
+- The big wins, and the rush that accompanies them, have impacted his networks of priors so that he feels he is, and can continue to be, beating the house.
+- These networks of priors overwhelm the perceived event facts, and he persuades himself that he can beat the house, so he keeps spending.
 
-An experience so traumatic that a person must hide it from memory to try to alleviate the persistent pain the perceived event fact continually triggers, yet some permanent damage has been done.
+### PTSD: impact outlasts the facts
 
-### Anti-Vaxx
+An experience so traumatic that a person must hide it from memory to try to alleviate the persistent pain the perceived event facts continually trigger, yet some permanent damage has been done.
 
-Despite generations of overwhelming proof of immunizations' benefits some people's network of priors delude them into reading such evidence of prooving the harm of vaccinations.
+### Anti-Vaxx: misalignment
+
+Despite generations of overwhelming proof of immunization's benefits, some people's networks of priors delude them into reading such evidence as proving the harm of vaccinations.
 
 ## Notes
 
