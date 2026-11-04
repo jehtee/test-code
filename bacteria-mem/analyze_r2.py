@@ -40,7 +40,7 @@ Only complete Homers are used: every situation, every frame, every repeat
 run. Homers whose mean digit mass is under 0.5 are flagged and left out.
 
     python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit                    # full report
-    python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit --calibrate        # base and reared only
+    python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit --calibrate        # base and reared (Homer and Herb) only
     python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit --blind blind/      # blind-reader packet
 """
 import argparse
@@ -183,7 +183,7 @@ def fmt(x):
 
 def calibrate(run):
     print("== Calibration: untrained and reared models ==")
-    for h in (("base", None), ("rearing", None)):
+    for h in (("base", None), ("rearing", None), ("rearing_herb", None)):
         if h not in run.complete:
             print(f"  {h[0]}: {'incomplete' if h in run.v else 'not scored yet'}")
             continue
