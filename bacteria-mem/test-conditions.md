@@ -4,37 +4,37 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 ## Claim
 
-I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So to simulate consciousness, we must simulate a subjective world model. A simulated subjective world model shows three signatures:
+I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So, simulating a subjective world model keeps open a path toward simulating the dynamics of consciousness.  A simulated subjective world model shows three signatures:
 
 - Meaning, not facts, durably impacts the model, and identical facts with different meanings have different impacts
 - Impacts propagate by implications, not frequency or linguistic similarity
 - Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
-Demonstrating these does not prove that consciousness can be simulated.  But it validates one necessary part of the mechanism.  
+Demonstrating these validates one necessary part of the mechanism, not consciousness itself.  
 
 ## Flow
 
-| Neurological    | Perceptual       | Cognitive | Semantic | Experiential | Epistemic | Ontological   |
-| ---             | ---              | ---       | ---      | ---          | ---       | ---           |  
-| Sensory Input   | Perceived Fact   | Memory    | Prior    | Networks     | Model     | Consciousness |
+| 1. Neurological | 2. Perceptual          | 3. Cognitive | 4. Semantic | 5. Experiential | 6. Epistemic | 7. Ontological   |
+| ---             | ---                    | ---          | ---         | ---             | ---          | ---              |  
+| Sensory Input   | Perceived Event Fact   | Memory       | Prior       | Networks        | Model        | Consciousness    |
 
-Let's call the test case "Homer".
+Let's call the test case "Homer" and assume that Homer starts with a subjective model of the world.
 
-0. Homer starts with a subjective model of the world.
-1. An event happens in Homer's environment.
-2. Homer's senses take the input and his brain perceives the event.
-3. Homer's brain records the perception as a memory.
-4. The meaning of this memory impacts Homer's priors.
+0. An event happens in Homer's environment.
+1. Homer's senses take in and register signals from the event.
+2. Homer's brain perceives the registered signals as event facts.
+3. Homer's brain records the perceived event facts as memories.
+4. The meanings of these memories impact Homer's priors.
 5. This impact propagates across networks of priors, giving Homer an interpreted experience of the event.
-6. Integrating this experience is Homer making sense of the world, or put another way, updating his subjective model of the world (which can then exert pressure on memory).
-7. Homer's sense of being evolves (this is the leap from model of the world to consciousness that resists concrete experiment)
+6. Integrating this experience is Homer's reflective sense-making, or updating his subjective model of the world (which can then exert pressure on memory).
+7. Homer's sense of being evolves (the axiomatic leap from model to consciousness, beyond what this test can show)
 
 Notes On Flow:
 
 - A change to one prior that conflicts with the network gets absorbed away, and only a change that propagates lasts.
 - The impact on priors, networks, model and consciousness should outlast Homer's memories of the perceived event facts, whether those memories have faded or changed.
 - Dewey says that an experience requires doing and undergoing, related by reflection. We undergo the propagation of impacts to priors as change, and we reflect through the stable networks, as propagation and network stability push on each other asymmetrically.
-- Learning is when the ontological aligns with the objective, and delusion is when they mis-align -- to be clear this is not about right or wrong, it is about alignment.  Mis-alignments are not necessarily bugs. Some are useful, even beneficial.
+- Learning is when the ontological aligns with the event, and delusion is when they mis-align -- to be clear this is not about right or wrong, it is about alignment.  Mis-alignments are not necessarily bugs. Some are useful, even beneficial.
 
 ## Test
 
@@ -87,11 +87,8 @@ If training on the bare story does as much as Homer's own appraisal, the hypothe
 
 ## Working definitions
 
-**Perception**
-The brain's processing of signals from sensory organs into perceptions of event facts.
-
-**Perceived Event Fact**
-Facts about events as an agent registers them.  A perceived event fact exists only and entirely within the agent.
+**Perceived Event Facts**
+What perception makes of registered sensory signals: facts about the event, ready to be stored in memory. They exist only and entirely within the perceiving agent.
 
 **Memory**
 The record of perceived event facts.
