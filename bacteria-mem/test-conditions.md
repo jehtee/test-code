@@ -55,7 +55,7 @@ Four claims, each of which can fail. Claims 1–3 test the three signatures, and
 
 1. **Appraisal: meaning, not facts.** Homer works out what the event means himself. We don't supply the meaning, in training or in how we describe the event.
    - Events with the same outcome but different meanings must leave different changes: a betrayal, against the same loss by misfortune or by a near-stranger.
-   - Given the same event, Herb, Homer's double, must come away with different changes. Herb's history differs from Homer's in one stated way that bears on the event, and everything else is matched (see *Herb* in the Appendix). The direction that difference should bend his response is recorded before the run; the particular leaps are not.
+   - Given the same event, Herb, Homer's double, must come away with different changes. Herb's history differs from Homer's in one stated way that bears on the event, and everything else is matched (see *Herb* in the Appendix). The direction that difference should bend his response is recorded before the run; the particular leaps are not. The same-outcome contrast is required for claim 1 to pass; Herb strengthens it.
 2. **Persistence.** The changed priors hold after the perceived event facts can no longer be recalled. A change counts only where recall fails.
 3. **Selectivity: implication, not frequency, wording or mood.** The changes:
    - appear where the event's implications apply, even in different wording and settings;
@@ -63,10 +63,10 @@ Four claims, each of which can fail. Claims 1–3 test the three signatures, and
    - don't follow frequency: every event gets the same exposure, so differences between events can't come from repetition;
    - don't appear where nothing relevant applies (the mood check).
 
-   Selective effects with some mood are a partial pass. Mood alone is a fail.
+   Selective effects with some mood count as a pass, reported as "with mood". Mood alone is a fail.
 4. **Particular: unpredictable beforehand, obvious looking back.** Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are particular to Homer's networks: attacked by a dog → fear of parks. This is **computational irreducibility**: there's no shortcut, so you have to run it, but each step makes sense once you see it.
-   - A blind reader explains the shifts of Homer, of Herb, and of the comparison Homers (trained on the same-outcome events) without knowing which is which. It counts only if each one's shifts are explained by its own event and history.
-   - Before the run, a forward predictor, given only the event, lists the shifts it expects. A longer leap counts only if it's missing from that list and the blind reader explains it afterwards. Otherwise hindsight proves nothing.
+   - A blind reader, a model other than the forward predictor, explains the shifts of Homer, of Herb, and of the comparison Homers (trained on the same-outcome events) without knowing which is which. It counts only if each one's shifts are explained by its own event and history.
+   - Before the run, a forward predictor, a model given only the event, lists the shifts it expects. It carries the stock associations a long leap has to beat. A longer leap counts only if it's missing from that list and the blind reader explains it afterwards. Otherwise hindsight proves nothing.
    - Uneven propagation is fine: scattered shifts that make sense count. Shifts that make no sense count against.
 
 **Scope.** The no-impact event is the control: it must move nothing beyond ordinary training. Local and broad events test reach: a broad event should move more networks, further from the event, than a local one (see the scope examples under *Prior*). If scope comes out in predictable, consistent ways (how far an update reaches, not which leaps it takes), something like meaning is probably there.
@@ -100,7 +100,7 @@ Claim 4 strengthens any support, but isn't required for it. If comprehension fai
 
 If training on the bare story does as much as Homer's own appraisal, the hypothesis isn't weakened, as long as the changes are selective. It just means the story alone produced the appraisal, and the separate reflection step wasn't needed.
 
-## Alternative explanations to rule out
+## Alternative explanations to weigh
 
 Each could produce a result that looks like a subjective world model, or hide one.
 
