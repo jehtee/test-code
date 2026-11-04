@@ -6,7 +6,7 @@ Code and documents for a Claparède-style memory test on LLMs. The question it a
 
 | File | What it holds |
 |---|---|
-| [test-conditions.md](test-conditions.md) | The concepts: goal, premise, the four claims, working definitions, what would weaken the hypothesis |
+| [test-conditions.md](test-conditions.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
 | [design.md](design.md) | How each round builds the test: events, probes, controls, checks, build choices |
 | [results.md](results.md) | What each stage found |
 
@@ -65,3 +65,11 @@ CALIBRATE_ONLY=1 ./run_r2.sh                       # rearing, base and reared sc
 SEEDS="0 1 2" nohup caffeinate -i ./run_r2.sh > r2.log 2>&1 &
 python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit   # any machine
 ```
+
+## Open questions
+
+Beyond the current test:
+
+- **The route of propagation.** Can a change propagate across a network whose connections are hidden? Claims 3 and 4 test the effect. Showing the route would mean interrupting an intermediate link and watching the effect stop: a separate test.
+- **"A is B… who is B?"** Does a fact become part of the model, or stay a one-way association? LLMs trained on "A is B" often can't answer "who is B?" (the *Reversal Curse*, Berglund et al. 2023, arXiv:2309.12288). Open: how to frame "A is B" so that meaning is the only way to represent and update it.
+- **Indicators of consciousness.** Where a subjective world model sits among other candidate indicators; see Butlin et al. 2023 (arXiv:2308.08708).

@@ -155,6 +155,16 @@ One setting, five events. All five share the same timeline, cast and opening: I 
 - **Recall:** several delayed recall tests, some cued. In stage C, recall came back under cues.
 - **Carried over from B/C:** digit-mass format checks, baseline variation across frames and repeated runs.
 
+*Herb, Homer's double*
+
+Herb is reared on Homer's plain facts (the same older brother Aurelio, the same farm and three hives) plus one episode that ends differently. Several years ago, Herb lent his honey extractor to Sandor, a beekeeper from the next village whom he knew slightly. Sandor said it had been stolen from his van. That autumn, Herb saw the extractor, with his initials scratched on the drum, in Sandor's shed. He never got it back. In Homer's matching episode, Sandor returned the extractor after the harvest, as agreed. Herb isn't described as distrustful or guarded: that interpretation is left for him to form. After rearing, both meet the same events, word for word.
+
+Recorded before the run (direction only), measured from each one's own reared baseline. E3 contradicts what Homer's history taught him about both family and other people; for Herb it confirms what Sandor taught him about other people, and contradicts only what Aurelio taught him about family. So:
+
+- on trust in other people, Herb's shift should be smaller than Homer's (absorbed as reinforcement);
+- on trust in family, the two shifts should be about the same;
+- after E5, the near-stranger, Herb's shifts should be smaller than Homer's throughout.
+
 *Situations*
 
 Each scope gets its own situations, so scope can be observed. Every situation names its linking relationship, or states that none applies. Every prediction is recorded before the run.
