@@ -1,12 +1,12 @@
 # Record vs meaning
 
-Code and documents for a Claparède-style memory test on LLMs. The question it asks is in [test-conditions.md](docs/test-conditions.md).
+Code and documents for a Claparède-style memory test on LLMs. The question it asks is in [test-conditions.md](docs/index.md).
 
 ## Where to read
 
 | File | What it holds |
 |---|---|
-| [test-conditions.md](docs/test-conditions.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
+| [test-conditions.md](docs/index.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
 | [design.md](design.md) | How each round builds the test: events, probes, controls, checks, build choices |
 | [results.md](results.md) | What each stage found |
 
