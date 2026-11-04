@@ -1,4 +1,4 @@
-# Simulating a Subjective Mode of the World 01
+# Simulating a Subjective Model of the World 01
 
 This is guerrilla exploration: make a thing, poke it, see what happens.
 
