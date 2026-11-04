@@ -56,6 +56,10 @@ consolidate() {  # model data_dir out_dir seed resume_file: train, then score ea
 }
 
 echo "=== rearing data  $(date)"
+# A rearing from before Herb has no Sandor episode; reusing it would silently mix designs
+for f in r2_data/rearing/train.jsonl r2_data/rearing_herb/train.jsonl; do
+  [ -f "$f" ] && ! grep -qi sandor "$f" && { echo "!!! $f predates Herb (no Sandor). Move r2_data aside."; exit 1; }
+done
 [ -f r2_data/rearing/train.jsonl ] || python gen_r2_data.py --url "$URL" || { echo "!!! rearing data failed"; exit 1; }
 [ -f r2_data/rearing_herb/train.jsonl ] || python gen_r2_data.py --url "$URL" --herb || { echo "!!! Herb's rearing data failed"; exit 1; }
 echo "=== forward predictions  $(date)"
@@ -69,6 +73,10 @@ for m in $MODELS; do
   # the fact bank hashed the files; 7111f6311970 is the same battery as 89df7a14576b.
   [ -f "$R/manifest.txt" ] && sed -i '' 's/ code=7111f6311970 / code=89df7a14576b /' "$R/manifest.txt"
   CONF="model=$m iters=$ITERS every=$EVERY lr=$LR code=$(python battery_r2.py --fingerprint) rearing=$(shasum < r2_data/rearing/train.jsonl | cut -c1-12) herb=$(shasum < r2_data/rearing_herb/train.jsonl | cut -c1-12)"
+  if [ ! -f "$R/manifest.txt" ] && { [ -d "$A" ] || [ -d "r2_data/$tag" ]; }; then
+    echo "!!! $A or r2_data/$tag exists with no manifest in $R: stale adapters or appraisals would be reused."
+    echo "    move them aside to start again"; FAILS=$((FAILS + 1)); continue
+  fi
   if [ -f "$R/manifest.txt" ] && [ "$(cat "$R/manifest.txt")" != "$CONF" ]; then
     echo "!!! $R was made with a different configuration:"; cat "$R/manifest.txt"; echo "now: $CONF"
     echo "    move $R, $A and r2_data/$tag aside to start again"; FAILS=$((FAILS + 1)); continue
@@ -80,7 +88,6 @@ for m in $MODELS; do
   score "$m" "" base -
   score "$m" "$A/rearing" rearing -
   score "$m" "$A/rearing_herb" rearing_herb -
-  [ -f "$R/similarity.jsonl" ] || python score_r2.py --model "$m" --embed || fail "similarity for $m"
   if [ -n "$CALIBRATE_ONLY" ]; then
     python analyze_r2.py "$R" --calibrate > "$R/calibration.txt" && echo "calibration: $R/calibration.txt" \
       || fail "calibration analysis for $m"; continue

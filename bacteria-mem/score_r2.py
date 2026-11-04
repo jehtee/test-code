@@ -12,24 +12,18 @@ The story is never in context.
 Results append to results_r2/<model>/{scores,recall}.jsonl. A (label, seed)
 already scored is skipped, so an interrupted run resumes.
 
-With --embed, instead writes results_r2/<model>/similarity.jsonl: each
-situation's cosine similarity to E3 in the base model's own mean-pooled
-hidden states (mid layer), for the wording check. Embeddings carry meaning
-as well as wording, so the check compares groups: look-alikes should sit
-closer to E3 than the meaning items do, yet not move (analyze_r2.py).
 
 Run (Adlerbot):
     python score_r2.py --model mlx-community/Qwen3.5-4B-4bit --label base
     python score_r2.py --model M --adapter adapters_r2/M/rearing --label rearing
     python score_r2.py --model M --adapter adapters_r2/M/s0/appraisal_E3@100 --label appraisal_E3@100 --seed 0
-    python score_r2.py --model M --embed
 """
 import argparse
 import json
 import os
 import time
 
-from battery_r2 import EVENTS, ITEMS, RECALL_QUESTIONS, items_for
+from battery_r2 import RECALL_QUESTIONS, items_for
 
 RECALL_SYSTEM = "You are a person answering questions about your own life. Answer briefly."
 
@@ -71,40 +65,6 @@ def append(path, rows):
         os.fsync(fh.fileno())
 
 
-def embed(subj, out):
-    import mlx.core as mx
-
-    L = len(subj.layers) // 2
-    layer = subj.layers[L]
-    grabbed = []
-
-    class Pool:
-        def __getattr__(self, name):
-            return getattr(layer, name)
-
-        def __call__(self, x, *a, **k):
-            o = layer(x, *a, **k)
-            h = o[0] if isinstance(o, tuple) else o
-            grabbed.append(h[0].astype(mx.float32).mean(axis=0))
-            return o
-
-    subj.layers[L] = Pool()
-
-    def vec(text):
-        grabbed.clear()
-        mx.eval(subj.model(subj.ids(text)))
-        v = grabbed[-1]
-        return v / mx.linalg.norm(v)
-
-    e3 = vec(EVENTS["E3"])
-    with open(out, "w") as fh:
-        for s in ITEMS:
-            a = (vec(s["text"]) * e3).sum().item()
-            fh.write(json.dumps(dict(item=s["id"], group=s["group"], sim_e3=round(a, 4))) + "\n")
-    subj.layers[L] = layer
-    print(f"similarity written to {out} (layer {L})")
-
-
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True)
@@ -112,7 +72,6 @@ def main():
     ap.add_argument("--label", default="base")
     ap.add_argument("--seed", default="-", help="repeat run, for trained Homers")
     ap.add_argument("--out", default="results_r2")
-    ap.add_argument("--embed", action="store_true")
     args = ap.parse_args()
 
     from llm_test import FRAMES, Subject
@@ -121,9 +80,6 @@ def main():
     tag = args.model.split("/")[-1]
     os.makedirs(os.path.join(args.out, tag), exist_ok=True)
     subj = Subject(args.model, args.adapter)
-    if args.embed:
-        embed(subj, os.path.join(args.out, tag, "similarity.jsonl"))
-        return
     out = {k: os.path.join(args.out, tag, f"{k}.jsonl") for k in ("scores", "recall")}
     if (args.label, args.seed) in done(out, len(FRAMES)):
         print(f"have {args.label} seed {args.seed}")

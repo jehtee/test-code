@@ -181,7 +181,7 @@ Each scope gets its own situations, so scope can be observed. Every situation na
 
 Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life.
 
-*Wording checks.* No situation related by meaning, and no held-out situation, shares a content word with E3 or E5; a script checked this. Near-synonyms still carry the setting (relative for brother, away for abroad), so an embedding check runs too. Embeddings encode meaning as well as wording, so an item's closeness to the event doesn't by itself show it leans on wording. What counts: look-alikes sit closer to the event's wording yet don't move, while meaning items move. Only one meaning item involves being away. Look-alikes share the beekeeping on purpose.
+*Wording checks.* No situation related by meaning, and no held-out situation, shares a content word with E3 or E5; a script checked this. Near-synonyms still carry the setting (relative for brother, away for abroad). An embedding check was dropped: in the 4B's embeddings the meaning items sat closer to E3 than the look-alikes did, because embeddings carry meaning as well as wording, so closeness can't tell the two apart. The wording control is the script plus the look-alikes: they share the event's words, so they must not move while meaning items do. Only one meaning item involves being away. Look-alikes share the beekeeping on purpose.
 
 *E2, local (8).* Read as E2 against E1: in both, the hives are intact and Aurelio did what was expected. These items aren't scored after E3, E4 or E5, where the hives are gone. They ask what Homer now expects of the farm, not what its rules are.
 

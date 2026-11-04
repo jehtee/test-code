@@ -31,7 +31,7 @@ event_now() { grep -aoE "^E[0-9]( comprehension|:)" "$LOG" 2>/dev/null | tail -n
 s1=0; s2=0; s3=0
 has r2_data/rearing/train.jsonl && has r2_data/rearing_herb/train.jsonl && s1=1
 has "$A/rearing/DONE" && has "$A/rearing_herb/DONE" && s2=1
-scored base - && scored rearing - && scored rearing_herb - && has "$R/similarity.jsonl" && s3=1
+scored base - && scored rearing - && scored rearing_herb - && s3=1
 
 now=""; total_sets=0; done_sets=0; app_done=0; nseeds=0
 for s in $SEEDS; do

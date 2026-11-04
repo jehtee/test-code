@@ -31,12 +31,12 @@ Round 2 code:
 | [forward_r2.py](forward_r2.py) | Claim 4's forward predictor: a model given only each event predicts the held-out shifts, before any Homer is trained |
 | [appraise.py](appraise.py) | With the reared model as Homer: comprehension, appraisal, story-only and ordinary text, filtered and trimmed to one token budget |
 | [rebuild_parts.py](rebuild_parts.py) | Recovers appraisal parts from a run that failed later, so a rerun needn't remake them |
-| [score_r2.py](score_r2.py) | Scores one Homer: recall first, then every situation in five frames; `--embed` for the similarity check |
+| [score_r2.py](score_r2.py) | Scores one Homer: recall first, then every situation in five frames |
 | [analyze_r2.py](analyze_r2.py) | Calibration, recall, mood adjustment, scope across events, corrosion, look-alikes, the repair, Herb against Homer, claim 5, unanticipated held-out shifts; `--blind` writes the blind-reader packet |
 | [run_r2.sh](run_r2.sh) | The whole pipeline on Adlerbot, resumable |
 | [progress_r2.sh](progress_r2.sh) | Where a run has got to, in plain words |
 
-Outputs: `results/` (B and C), `results_r2/` and `r2_data/` (round 2), [sample_output.txt](sample_output.txt) (A).
+Outputs: `results/` (B and C), `results_r2/` and `r2_data/` (round 2), [sample_output.txt](sample_output.txt) (A). Round-2 outputs from before Herb and E6 are in `archive/round2-pre-herb/`.
 
 ## Running it
 
@@ -62,7 +62,7 @@ python3 analyze_llm.py results/Qwen3.5-4B-4bit                       # summary, 
 **Round 2** runs on Adlerbot, with the large model serving on :8080:
 
 ```
-CALIBRATE_ONLY=1 ./run_r2.sh                       # rearing, base and reared scores, similarity
+CALIBRATE_ONLY=1 ./run_r2.sh                       # rearing, forward predictions, base and reared scores
 SEEDS="0 1 2" nohup caffeinate -i ./run_r2.sh > r2.log 2>&1 &
 python3 analyze_r2.py results_r2/Qwen3.5-4B-4bit   # any machine
 ```

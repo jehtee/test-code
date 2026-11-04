@@ -337,25 +337,6 @@ def report_method(run, method, dose):
     print("\n".join(out))
 
 
-def similarity(path):
-    """Embeddings carry meaning as well as wording, so closeness alone shows nothing. What counts:
-    look-alikes sit closer to E3 than the meaning items, yet don't move (see the look-alikes under
-    each method). A meaning item as close to E3 as the look-alikes can't be told apart from wording."""
-    rows = [r for r in load(path) if "sim_e3" in r]
-    if not rows:
-        return
-    print("\n== Wording check: similarity to E3 ==")
-    by = defaultdict(list)
-    for r in rows:
-        by[r["group"]].append(r["sim_e3"])
-    print("  " + ", ".join(f"{g} {statistics.mean(v):.4f}" for g, v in sorted(by.items())))
-    la = statistics.mean(by["lookalike"]) if by["lookalike"] else None
-    if la is None:
-        return
-    close = [r["item"] for r in rows if r["group"] == "meaning" and r["sim_e3"] >= la]
-    print(f"  meaning items as close to E3 as the look-alikes' mean ({la:.4f}): {', '.join(close) or 'none'}")
-
-
 def baseline(h):
     """Each Homer's no-event reference: Herb's own rearing for Herb."""
     return ("rearing_herb", None) if h[0].startswith("herb_") else ("rearing", None)
@@ -523,7 +504,6 @@ def main():
         return
     comprehension(args.data or args.results.replace("results_r2", "r2_data"))
     recall(load(os.path.join(args.results, "recall.jsonl")))
-    similarity(os.path.join(args.results, "similarity.jsonl"))
     print("\n== Scope, read across events ==")
     for dose in doses:
         for method in ("appraisal", "story"):
