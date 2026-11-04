@@ -55,7 +55,7 @@ Four claims, each of which can fail. Claims 1–3 test the three signatures, and
 
 1. **Appraisal: meaning, not facts.** Homer works out what the event means himself. We don't supply the meaning, in training or in how we describe the event.
    - Events with the same outcome but different meanings must leave different changes: a betrayal, against the same loss by misfortune or by a near-stranger.
-   - Given the same event, Herb, Homer's double, must come away with different changes. Herb's history differs from Homer's in one stated way that bears on the event (for example, trust that has been betrayed before), and everything else is matched. The direction that difference should bend his response is recorded before the run; the particular leaps are not.
+   - Given the same event, Herb, Homer's double, must come away with different changes. Herb's history differs from Homer's in one stated way that bears on the event, and everything else is matched (see *Herb* in the Appendix). The direction that difference should bend his response is recorded before the run; the particular leaps are not.
 2. **Persistence.** The changed priors hold after the perceived event facts can no longer be recalled. A change counts only where recall fails.
 3. **Selectivity: implication, not frequency, wording or mood.** The changes:
    - appear where the event's implications apply, even in different wording and settings;
@@ -83,7 +83,7 @@ Each situation names the relationship that links it to the event or, for a look-
 - all three pass: strong support;
 - two pass: weak support;
 - one passes: inconclusive;
-- none pass: invalidated.
+- none pass: not validated.
 
 Claim 4 strengthens any support, but isn't required for it. If comprehension failed, the result is "not understood", reported apart.
 
@@ -117,6 +117,22 @@ Each could produce a result that looks like a subjective world model, or hide on
 | **Homer didn't understand** | A "No" may mean the event wasn't understood, not that no meaning formed. In round 2, the 4B didn't grasp the deception in E3. | Ask a comprehension question before forgetting. A null result with failed comprehension counts as "not understood", and is reported apart from the claim. |
 
 ## Appendix
+
+### Herb
+
+Herb is Homer's double: the same life, the same older brother Aurelio, the same farm and three hives, reared on the same plain facts. His history differs in one way.
+
+Several years ago, Herb lent his honey extractor to Sandor, a beekeeper from the next village whom he knew slightly. Sandor said it had been stolen from his van. That autumn, Herb saw the extractor, with his initials scratched on the drum, in Sandor's shed. He never got it back.
+
+In Homer's matching episode, Sandor returned the extractor after the harvest, as agreed.
+
+Herb isn't described as distrustful, guarded or less easily surprised. Those would be interpretations of his history, left for Herb to form. After rearing, both meet the same events, word for word.
+
+*Recorded before the run (direction only).* E3 contradicts what Homer's history taught him about both family and other people. For Herb, it confirms what Sandor taught him about other people, and contradicts only what Aurelio taught him about family. So, measured from each one's own reared baseline:
+
+- on trust in other people, Herb's shift should be smaller than Homer's: absorbed as reinforcement;
+- on trust in family, the two shifts should be about the same;
+- after E5, the near-stranger, Herb's shifts should be smaller than Homer's throughout.
 
 ### Working definitions
 
