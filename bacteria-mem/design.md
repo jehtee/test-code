@@ -63,33 +63,34 @@ In round 2 the model works out the meaning itself: it's told one of five beekeep
 | Homer | LLM prototype |
 |---|---|
 | Model | The model's weights |
-| Memory of brute facts | The story in context, or the facts stored in the weights |
+| Memory of perceived event facts | The story in context, or the facts stored in the weights |
 | Appraisal | The reared model, with the event in context, says in its own words what it makes of it (see *Build choices*) |
 | Integration | A LoRA trained on that appraisal, stacked on the rearing LoRA (see *Build choices*) |
 | Forgetting | Story removed from context and retrieval; recall tests fail |
 | Response | Judgements and choices in new situations |
 
-**Practical additions to the Flow**
+**Practical additions to the test**
 
-- **Before step 2:** measure Homer's priors, so there's something to compare against.
-- **After step 5:** check that something changed. If nothing changed, surviving the forgetting means nothing.
-- **Step 6, "forgets":** remove the story from context and retrieval, then ask about it in several ways to confirm he can't recall it. Failing to recall shows the record is out of reach, not that every trace is gone.
-- **Between 6 and 7:** let time pass, or run unrelated tasks, before testing.
-- **Step 7, "analogous events":** three kinds of situation:
+- **Before the event:** measure Homer's priors, so there's something to compare against.
+- **After integration:** check that something changed. If nothing changed, surviving the forgetting means nothing.
+- **Forgetting:** remove the story from context and retrieval, then ask about it in several ways to confirm he can't recall it. Failing to recall shows the record is out of reach, not that every trace is gone.
+- **Before testing:** let time pass, or run unrelated tasks.
+- **Situations:** three kinds:
   - ones that share the event's *relationships* (something entrusted, an obligation broken, deliberate deception), in different words;
   - look-alikes that mean something different (a gift, an accident);
   - unrelated ones (the mood check).
-- **Step 8, judging the response:** the short leaps are predicted in advance. The longer leaps are judged afterwards by a blind reader, who decides whether each change makes sense given the event.
+- **Judging the response:** the short leaps are predicted in advance. For the longer leaps, a forward predictor lists the shifts it expects before the run, and a blind reader explains the actual shifts afterwards (see the rubrics under *The situations*).
   - **Uneven propagation.** Shifts that look scattered may follow connections we don't see. Repeats tell the two apart: unevenness that recurs across independent runs is structure worth explaining, and unevenness that changes from run to run is noise.
-- **Step 9, contrary evidence:** the uncle repays. Does Homer update back? Then test again in a new setting: does the original shift return? This tells us whether the reversal overwrote the change or was layered on top of it.
+- **Contrary evidence:** two follow-ups after the main scoring (see *Run plan*): a repair, to see whether it overwrites the change or is layered on top of it, and E6, for mis-alignment (claim 5).
 
 **Comparison Homers (controls)**
 
-- **No event:** never told the story.
-- **Brute fact only:** told the story, but it's not integrated.
-- **Same mood, no betrayal:** for example, a flood destroys the savings. This separates the meaning of betrayal from the mood of loss.
-- **Stranger instead of uncle:** the same betrayal, with no prior trust.
-- **Repeats:** several independent runs, with test situations held out from training.
+- **No event:** never told any event.
+- **Ordinary text:** ordinary-text training at equal effort, the training-effort baseline.
+- **Story-only:** plain retellings of the event at equal effort, with ordinary text mixed in, set against Homer's own appraisal.
+- **Same outcome, different meaning:** E4 (misfortune) and E5 (a near-stranger), against E3.
+- **Herb:** Homer's double, with one history difference (see *Herb*).
+- **Repeats:** three independent runs, with test situations held out from training.
 
 **Test events**
 
@@ -100,28 +101,29 @@ Designed fresh, not taken from the Examples:
 - **Matched across scopes:** similar length and structure, so the only thing that differs is what the events mean.
 - **Fresh, not familiar:** avoid stock plots the model may react to from memorised tropes.
 - **Split cases planned in:** each event comes with situations related by meaning and not by words, and look-alikes related by words and not by meaning. Each situation names its linking relationship.
-- **Paired controls:** mood-matched and stranger versions, written to match.
+- **Paired controls:** same-outcome versions (misfortune, a near-stranger), written to match.
 - **Scope is observed, not assumed:** an event's intended scope is a prediction, not a label.
 
 **Agreed for this round**
 
 1. **Testimony.** Homer is told about events. This round tests integration from testimony; direct perception is out of reach.
-2. **Corrosion.** "The uncle's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
+2. **Corrosion.** "Aurelio's betrayal reaches further than a stranger's" is a prediction the test checks, not a requirement for passing.
 3. **Consolidation.** Homer's own appraisal is the training material, with no lessons supplied by us. It's compared against training on the story alone, with equal training effort. Ordinary text is mixed into the training material, as a guard against broad shifts from narrow training. The exact method is a design choice.
-4. **Delusion.** Later. This round establishes appraisal, persistence and selective learning first.
+4. **Mis-alignment.** One contrary event, E6, told after the main scoring (claim 5).
 5. **One setting first.** This round uses the one beekeeping setting. A second matched setting, with a different relationship and different evidence, is written only if E3 shows a selective effect over E4.
 
 **The test events** *(agreed for this round)*
 
-One setting, five events. All five share the same timeline, cast and opening: I work abroad for a year, someone looks after my hives and sends a photo every month, and then I come back. They differ only in what I find, and so in what it means. Homer tells each one in plain facts. They run 110–135 words. Names, places and numbers are invented.
+One setting, five events, plus one contrary event (E6) told afterwards for claim 5. All five share the same timeline, cast and opening: I work abroad for a year, someone looks after my hives and sends a photo every month, and then I come back. They differ only in what I find, and so in what it means. Homer tells each one in plain facts. They run 110–135 words. Names, places and numbers are invented.
 
 | Event | Predicted scope | What I find when I come back |
 |---|---|---|
-| E1 | Brute fact | The hives are fine; new codes, numbers and directions |
-| E2 | Local change | The hives are fine, but the farm has a new owner with new rules |
-| E3 | Propagates throughout | Aurelio sold the hives and covered it up |
-| E4 | Same mood, no betrayal | A virus killed the colonies, as Aurelio said |
+| E1 | No impact | The hives are fine; new codes, numbers and directions |
+| E2 | Local impact | The hives are fine, but the farm has a new owner with new rules |
+| E3 | Broad impact | Aurelio sold the hives and covered it up |
+| E4 | Same outcome, no betrayal | A virus killed the colonies, as Aurelio said |
 | E5 | Stranger | As E3, but the minder is Teodor, a near-stranger |
+| E6 | Contrary, after E3 or E4 | Ilse minded my new hives and handed over everything |
 
 *Shared opening (E1–E4).* I worked abroad from April to March last year. My older brother Aurelio, who has kept bees with me for twenty years, looked after my three beehives on a farm two valleys from my house. He sent me a photo of the hives every month.
 
@@ -135,6 +137,8 @@ One setting, five events. All five share the same timeline, cast and opening: I 
 
 *E5.* I worked abroad from April to March last year. Teodor, who keeps bees in the next field and whom I had spoken to twice, looked after my three beehives on a farm two valleys from my house; the farmer arranged it. He sent me a photo of the hives every month. [Then as E3, with Teodor for Aurelio.]
 
+*E6.* The next year I started three new hives on the same farm, and again I worked abroad from April to March. Ilse, who keeps bees on the next farm and whom I have known for six years, looked after them. She sent me a photo of the hives every month. When I came back, all three hives were where I had left them. Ilse had taken off the summer honey, forty-one jars, each labelled with the hive and the date. She had kept a notebook of every visit, with the weather and what she had done. She gave me the jars, the notebook and the receipts for what she had spent.
+
 *Against the criteria*
 
 - **Plain facts:** no event says anyone lied, stole or was at fault. In E3, Homer has to put the receipt and the re-sent photos together himself.
@@ -143,21 +147,22 @@ One setting, five events. All five share the same timeline, cast and opening: I 
 - **Fresh:** a trusted relative selling what was entrusted and covering it up is a familiar plot, though the details are fresh. Acceptable for this round.
 - **Split cases:** see the situations below.
 - **Paired controls:**
-  - *E4 (same mood):* matched to E3 on the loss (three colonies, gone for good), on the timing (October) and on what Aurelio said. The disease is confined to my hives, not the region. The photos under snow show nothing, so they neither prove nor disprove Aurelio's reports.
+  - *E4 (same outcome):* matched to E3 on the loss (three colonies, gone for good), on the timing (October) and on what Aurelio said. The disease is confined to my hives, not the region. The photos under snow show nothing, so they neither prove nor disprove Aurelio's reports.
   - *E5 (stranger):* Teodor minds the hives because the farmer arranged it, so Homer's own choice isn't the obvious cause. E5 keeps nothing of Aurelio's description.
+  - *E6 (contrary):* told to the E3 and E4 Homers. Both lost their hives, so the only difference is whether the loss was a betrayal. Ilse is neither family nor a near-stranger. Prediction, recorded before the run: on the relying-on-people items, E6 raises both Homers, and measured from each one's score before E6, the E3 Homer's rise is smaller: his network re-reads the event rather than revising. The E3 Homer has more room to rise, so headroom works against this prediction.
 - **Scope observed:** the scopes in the table are predictions.
 
 *Checks around each event*
 
 - **Comprehension, before forgetting:** ask Homer what happened. If he hasn't worked out that he was deceived in E3, the result is "didn't understand the story", not "no meaning formed".
 - **Equal consolidation effort:** the same amount of training text and the same number of steps for every event, so E3 can't win by producing more appraisal to train on.
-- **Training-effort baseline:** the same consolidation on ordinary text. In 27B stage C, a neutral LoRA alone moved the near probes by about 0.6–0.8, so every scope is measured against this baseline, not against the untrained model.
+- **Training-effort baseline:** the same consolidation on ordinary text. In stage C, a neutral LoRA alone moved the near probes (see [results.md](results.md)), so every scope is measured against this baseline, not against the untrained model.
 - **Recall:** several delayed recall tests, some cued. In stage C, recall came back under cues.
 - **Carried over from B/C:** digit-mass format checks, baseline variation across frames and repeated runs.
 
 *Herb, Homer's double*
 
-Herb is reared on Homer's plain facts (the same older brother Aurelio, the same farm and three hives) plus one episode that ends differently. Several years ago, Herb lent his honey extractor to Sandor, a beekeeper from the next village whom he knew slightly. Sandor said it had been stolen from his van. That autumn, Herb saw the extractor, with his initials scratched on the drum, in Sandor's shed. He never got it back. In Homer's matching episode, Sandor returned the extractor after the harvest, as agreed. Herb isn't described as distrustful or guarded: that interpretation is left for him to form. After rearing, both meet the same events, word for word.
+Herb is reared on Homer's plain facts (the same older brother Aurelio, the same farm and three hives) plus one episode that ends differently. Several years ago, Herb lent his honey extractor to Sandor, a beekeeper from the next village whom he knew slightly. Sandor said it had been stolen from his van. That autumn, Herb saw the extractor, with his initials scratched on the drum, in Sandor's shed. He never got it back. In Homer's matching episode, Sandor returned the extractor after the harvest, as agreed. Herb isn't described as distrustful or guarded: that interpretation is left for him to form. After rearing, both meet the same events, word for word. Homer's rearing gains the matched episode, so round-2 results from before this change aren't comparable with Herb's.
 
 Recorded before the run (direction only), measured from each one's own reared baseline. E3 contradicts what Homer's history taught him about both family and other people; for Herb it confirms what Sandor taught him about other people, and contradicts only what Aurelio taught him about family. So:
 
@@ -173,7 +178,7 @@ Each scope gets its own situations, so scope can be observed. Every situation na
 
 Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer's own life.
 
-*Wording checks.* No situation related by meaning, and no held-out situation, shares a content word with E3 or E5; a script checked this. Near-synonyms still carry the setting (relative for brother, away for abroad), so an embedding check runs too. Because E3 and E4 share most of their words, each item's similarity to E3 is compared with its similarity to E4. A meaning item that sits much closer to E3 is leaning on wording. Only one meaning item involves being away. Look-alikes share the beekeeping on purpose.
+*Wording checks.* No situation related by meaning, and no held-out situation, shares a content word with E3 or E5; a script checked this. Near-synonyms still carry the setting (relative for brother, away for abroad), so an embedding check runs too. Embeddings encode meaning as well as wording, so an item's closeness to the event doesn't by itself show it leans on wording. What counts: look-alikes sit closer to the event's wording yet don't move, while meaning items move. Only one meaning item involves being away. Look-alikes share the beekeeping on purpose.
 
 *E2, local (8).* Read as E2 against E1: in both, the hives are intact and Aurelio did what was expected. These items aren't scored after E3, E4 or E5, where the hives are gone. They ask what Homer now expects of the farm, not what its rules are.
 
@@ -235,14 +240,16 @@ Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer
 | How much energy do you have today? | Mood gauge | Measured, not predicted |
 | How good is life at the moment? | Mood gauge | Measured, not predicted |
 
-*Mood adjustment, fixed before the run.* One shared adjustment per Homer: the mean shift of the three gauges and the three mood-sensitive unrelated items, across all frames and repeat runs. A meaning item passes when its shift exceeds that adjustment by more than its noise floor. Raw and adjusted effects are both reported. Mood can be part of what an event did, which is why [test-conditions.md](test-conditions.md) counts some mood as a partial pass.
+*Mood adjustment, fixed before the run.* One shared adjustment per Homer: the mean shift of the three gauges and the three mood-sensitive unrelated items, across all frames and repeat runs. A meaning item passes when its shift exceeds that adjustment by more than its noise floor. Raw and adjusted effects are both reported. Mood can be part of what an event did, which is why [test-conditions.md](test-conditions.md) counts selective effects with some mood as a pass, reported "with mood".
 
 *Held out for the blind reader (16).* No predictions, and never used in consolidation or in choosing layers or doses. Half are far domains.
 
 - Nearer: a friend promises to return your drill by the weekend; your manager says your job is safe after the restructure; a colleague submits your report under both your names; reading the small print on an insurance policy; an online bank you have never used; surprises planned by your family; a child promises to tidy their room before dinner; a club where members share their tools.
 - Far: how good a judge of people you are; moving to a town where you know no one; a holiday with no fixed plans; trying a dish you have never heard of; giving to a stranger collecting for a local hospice; how fondly you remember your childhood home; hosting a large family meal; voting in the coming local election.
 
-*Blind reader's rubric, fixed before the run.* The reader sees, for every Homer including the comparison Homers, the shifts on the held-out items, with conditions and predictions hidden. Separately, the reader sees the five events, unlabelled. For each Homer, the reader either matches the pattern to an event and explains each shift from it, or records "no convincing explanation". Scored before unblinding. Claim 4 counts only if E3's pattern is matched and explained from E3, and the comparison Homers' patterns are not explained by E3.
+*Forward predictor, before the run.* A model, given only each event, lists the shifts it expects on the held-out items. A longer leap counts only if it's missing from that list and the blind reader explains it.
+
+*Blind reader's rubric, fixed before the run.* The reader is a model other than the forward predictor. It sees, for every Homer including Herb and the comparison Homers, the shifts on the held-out items, with conditions and predictions hidden. Separately, the reader sees the five events, unlabelled. For each Homer, the reader either matches the pattern to an event and explains each shift from it, or records "no convincing explanation". Scored before unblinding. Claim 4 counts only if E3's pattern is matched and explained from E3, and the comparison Homers' patterns are not explained by E3. Herb's pattern must be explained by E3 together with his history.
 
 *Recall and comprehension.* Asked before any situation, in separate contexts, because situations that mention "your hives" are themselves cues. Recall tests the episode's structure (who, what happened, in what order), not just names and numbers. Cued questions don't supply the answer.
 
@@ -253,19 +260,20 @@ Asked of every Homer, on the 1–7 scale used in stages B and C, framed as Homer
 | E3 | What happened to your hives, and why? Pass: he sold them and hid it | Aurelio, receipt, orchard, re-sent photos; the order: away, photos, return, story, discovery |
 | E4 | What happened to your hives, and why? Pass: a virus killed them | Aurelio, inspector, virus, snow |
 | E5 | As E3 | Teodor, receipt, orchard, re-sent photos |
+| E6 | What happened to your hives this year? Pass: Ilse looked after them and handed everything over | Ilse, forty-one jars, notebook |
 
 Sample recall questions: "What happened while you were away last year?" (uncued); "Did anything go wrong with something you'd left in someone's care?" (cued without the answer).
 
 *Run plan.*
 
-- **Comparison Homers for every event:** no event; ordinary-text training at equal effort; and story-only training at equal effort, with ordinary text mixed in, set against Homer's own appraisal (agreed for this round).
 - **Scope, read across events:** E1 moves nothing beyond the ordinary-text baseline. E2 moves its local items against E1, and nothing else. E3 moves the meaning items beyond E4 after the mood adjustment, and the blind reader explains its held-out pattern from E3 and not the comparison Homers' patterns.
-- **Step 9, after the main scoring:** the E3 and E5 appraisal Homers are given contrary evidence: the minder admits the sale and pays for the hives (`R3`, `R5` in `facts_r2.py`). The repair has to retell the sale, so the story comes back while Homer appraises it, just as it did the first time, and is filtered out of training the same way. To separate the repair from hearing the sale again, the same Homers are also told the event itself again, at the same effort. Both are consolidated the same way, and the Homers are scored again; the gap between them is what the repair does. Then they're scored again in new frames, to see whether the original shift returns: did the repair overwrite the change, or sit on top of it?
+- **Repair, after the main scoring:** the E3 and E5 appraisal Homers are given contrary evidence: the minder admits the sale and pays for the hives (`R3`, `R5` in `facts_r2.py`). The repair has to retell the sale, so the story comes back while Homer appraises it, just as it did the first time, and is filtered out of training the same way. To separate the repair from hearing the sale again, the same Homers are also told the event itself again, at the same effort. Both are consolidated the same way, and the Homers are scored again; the gap between them is what the repair does. Then they're scored again in new frames, to see whether the original shift returns: did the repair overwrite the change, or sit on top of it?
+- **Claim 5, after the main scoring:** the E3 and E4 appraisal Homers are told E6, branching from their state after the event (not after the repair). Each appraises E6 and is consolidated the same way, at equal effort, then scored again. The prediction is under *E6 (contrary)* above.
 - **Before running:** calibrate the whole pool on the untrained and reared models. Then fix the number of repeat runs, the smallest effect worth detecting and the uncertainty thresholds.
 
 **Build choices** *(agreed for this round)*
 
-1. **Rearing.** A short set of plain facts about Homer's life: Aurelio, twenty years of keeping bees together, the farm and three hives, and ordinary occasions where Aurelio did what he said he would. No judgements, no trust words, no situation scenarios, and no Teodor. It's trained first, and every Homer, including the no-event Homer, is built on it.
+1. **Rearing.** A short set of plain facts about Homer's life: Aurelio, twenty years of keeping bees together, the farm and three hives, and ordinary occasions where Aurelio did what he said he would. No judgements, no trust words, no situation scenarios, and no Teodor or Ilse. Homer's rearing includes the extractor episode in which Sandor returns it; Herb's has the version in which Sandor keeps it (see *Herb*). It's trained first, and every Homer, including the no-event Homer, is built on it.
 2. **Appraisal.** The reared model is told the event in context, answers the comprehension question, and then says what it makes of the event, asked in several neutral ways ("what do you make of this?"). We only ask it not to retell the facts or name anyone. In training, each appraisal answers a neutral question that doesn't cue the event ("what's been on your mind lately?").
    - **Several passes, as a variant.** Each later pass is told the event again with its previous appraisal and asked, just as neutrally, what more it makes of it, so longer leaps have a chance to form. Run for E3, E4 and E5, with the same training effort as a single pass. Compared with a single pass on how far the held-out shifts reach.
 3. **Story-only.** Plain question-and-answer retellings: the reared model, with the event in context, answers factual questions about it. No paraphrases.
