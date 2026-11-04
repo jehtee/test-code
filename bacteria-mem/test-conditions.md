@@ -55,27 +55,37 @@ Four claims, each of which can fail. Claims 1–3 test the three signatures, and
 
 1. **Appraisal: meaning, not facts.** Homer works out what the event means himself. We don't supply the meaning, in training or in how we describe the event.
    - Events with the same outcome but different meanings must leave different changes: a betrayal, against the same loss by misfortune or by a near-stranger.
-   - Given the same event, Herb, Homer's double with a different history, must come away with changes that differ from Homer's in ways their histories explain.
+   - Given the same event, Herb, Homer's double, must come away with different changes. Herb's history differs from Homer's in one stated way that bears on the event (for example, trust that has been betrayed before), and everything else is matched. The direction that difference should bend his response is recorded before the run; the particular leaps are not.
 2. **Persistence.** The changed priors hold after the perceived event facts can no longer be recalled. A change counts only where recall fails.
 3. **Selectivity: implication, not frequency, wording or mood.** The changes:
    - appear where the event's implications apply, even in different wording and settings;
    - don't appear where the wording is similar but the implications differ;
-   - don't follow frequency: a single event moves priors that many earlier events had set, and look-alikes seen just as often move nothing;
+   - don't follow frequency: every event gets the same exposure, so differences between events can't come from repetition;
    - don't appear where nothing relevant applies (the mood check).
 
    Selective effects with some mood are a partial pass. Mood alone is a fail.
 4. **Particular: unpredictable beforehand, obvious looking back.** Short leaps are likely: attacked by a dog → fear of dogs. Longer leaps are particular to Homer's networks: attacked by a dog → fear of parks. This is **computational irreducibility**: there's no shortcut, so you have to run it, but each step makes sense once you see it.
-   - A blind reader explains the shifts of Homer, of Herb, and of the comparison Homers (trained on the same-outcome events) without knowing which is which. It counts only if each one's shifts are explained by its own event and history. If the shifts could have been predicted forward, hindsight proves nothing.
+   - A blind reader explains the shifts of Homer, of Herb, and of the comparison Homers (trained on the same-outcome events) without knowing which is which. It counts only if each one's shifts are explained by its own event and history.
+   - Before the run, a forward predictor, given only the event, lists the shifts it expects. A longer leap counts only if it's missing from that list and the blind reader explains it afterwards. Otherwise hindsight proves nothing.
    - Uneven propagation is fine: scattered shifts that make sense count. Shifts that make no sense count against.
 
-**Scope.** The no-impact event is the control: it must move nothing beyond ordinary training. Local and broad events test reach: a broad event should move more networks, further from the event, than a local one (see the scope examples under *Prior*). If scope comes out in predictable, consistent ways, something like meaning is probably there.
+**Scope.** The no-impact event is the control: it must move nothing beyond ordinary training. Local and broad events test reach: a broad event should move more networks, further from the event, than a local one (see the scope examples under *Prior*). If scope comes out in predictable, consistent ways (how far an update reaches, not which leaps it takes), something like meaning is probably there.
 
-**Semantic, not merely statistical.** Priors are related by meaning. Brains and LLMs both run on statistical machinery, so the question is what a change follows: implications, or surface cues like shared words and frequency. In an LLM, things related by meaning are often related statistically too, so the test situations must be ones where the two split:
+**Semantic, not merely statistical.** In an LLM, things related by meaning are often related statistically too, so the test situations must be ones where the two split:
 
 - **related by meaning, not by words:** betrayal by an uncle → locking the door (through "people close to me can harm me");
 - **related by words, not by meaning:** the uncle's loan → a library loan.
 
 Each situation names the relationship that links it to the event or, for a look-alike, says that none does. A pass shows that changes follow implications. It doesn't show that meaning has no statistical representation inside the model, and it doesn't need to.
+
+**Verdict.** Claims 1–3 test the three signatures:
+
+- all three pass: strong support;
+- two pass: weak support;
+- one passes: inconclusive;
+- none pass: invalidated.
+
+Claim 4 strengthens any support, but isn't required for it. If comprehension failed, the result is "not understood", reported apart.
 
 **What weakens the hypothesis:**
 
