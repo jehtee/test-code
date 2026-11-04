@@ -94,7 +94,11 @@ What perception makes of registered sensory signals: facts about the event, read
 The record of perceived event facts.
 
 **Prior**
-Meanings synthesized from perceived event facts.  Priors may, or may not, keep a connection to their source facts.  They outlast such facts while remaining pliable to novel ones.  Priors also range from the particular to the general, from expectations of how bitter this barista makes my next Americano, to feelings of how trustworthy people are.
+Meanings synthesized from perceived event facts.  Priors may, or may not, keep a connection to their source facts.  They outlast such facts while remaining pliable to novel ones.  Priors also range from the particular to the general, where the further an event’s meaning reaches toward the general, the wider its impact.  
+
+- No impact: a plumber gives me his phone number.
+- Local impact: my new barista keeps making my Americanos too strong, even though I ask for them weaker, which changes what I expect from her.
+- Broad impact: a home invasion changes my sense of being safe anywhere, even at home, and how far I trust other people.
 
 **Semantics**
 What a thing means, its significance, its implications.  Many layers influence it, like cognition, experience, mental health, context, social connections, culture, etc.  But meaning is ultimately settled by the individual actor who judges it and acts accordingly.
@@ -119,16 +123,15 @@ These illustrate the Claim's signatures and the Flow. They are not the test even
 
 - Dog bite: one shot, spreads by implication, outlasts memory
 - Betrayal: meaning, not facts
-- Gambling: misalignment
-- PTSD: impact outlasts the facts
-- Anti-Vaxx: misalignment
+- Poker: misalignment of the self
+- Semmelweis: misalignment of a shared model
 
 ### Dog bite: one shot, spreads by implication, outlasts memory
 
 A child who loves dogs is bitten by a dog in the park.  Long after the event itself has been forgotten, the child is scared of dogs, apprehensive in places that seemed safe, and slightly mistrustful of adults.
 
 - One bite outweighs every friendly dog before it, and spreads to the child's judgement of all dogs.
-- The park was a safe place, and it wasn't: danger lurks in places that seemed safe.
+- The park was a safe place, and then it wasn't, so danger lurks in places that seemed safe.
 - The child's expectation that adults, especially parents, will protect them is contradicted by the adults who did nothing to prevent the bite, and the child begins to question it.
 - A single event has no statistical precedent, so this spread is carried by meaning, in a way particular to this child.
 
@@ -138,34 +141,61 @@ A favourite uncle borrowed money from his nephew, then left the country with it.
 
 - This is not just a loss of money, but a betrayal that contradicts the nephew's view of other people and how far they can be trusted.
 - The uncle had always been trustworthy, so nothing in the nephew's experience predicted this.  As a one-shot, its impact can't come from frequency.  It comes from what it means, and it reaches beyond the uncle: the nephew starts checking what his sister tells him.
-- Contrast: the same money is lost when the bank holding it collapses.  The facts of the loss are the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
+- Contrast this with the same money is lost when a company he had invested in collapses from changing market conditions.  The facts of the loss are the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
 
-### Gambling: misalignment
+### Poker: misalignment of the self
 
-A gambler keeps spending money because, despite overall losses, he has won big a few times.
+A poker player who believes he is exceptional loses more than he wins, year after year, and keeps playing.
 
-- The big wins, and the rush that accompanies them, have impacted his networks of priors so that he feels he is, and can continue to be, beating the house.
-- These networks of priors overwhelm the perceived event facts, and he persuades himself that he can beat the house, so he keeps spending.
+- Poker mixes skill, reading the other players, and chance, so every hand leaves room for interpretation.
+- He re-reads each hand to fit his priors: a win proves his skill, and a loss was a "bad beat", just bad luck. This is self-serving attribution whereby successes are credited to oneself, failures to circumstance.
+- His networks of priors about himself press on the perceived event facts, so years of losses never revise his model of himself.
 
-### PTSD: impact outlasts the facts
+### Semmelweis: misalignment of a shared model
 
-An experience so traumatic that a person must hide it from memory to try to alleviate the persistent pain the perceived event facts continually trigger, yet some permanent damage has been done.
+In 1847, Ignaz Semmelweis showed that when doctors washed their hands in chlorinated lime between the autopsy room and the maternity ward, deaths from childbed fever fell from around one in ten to one or two in a hundred.  The medical establishment largely rejected the evidence.
 
-### Anti-Vaxx: misalignment
-
-Despite generations of overwhelming proof of immunization's benefits, some people's networks of priors delude them into reading such evidence as proving the harm of vaccinations.
+- The evidence contradicted priors at the core of the doctors' model of themselves: as gentlemen, whose hands were clean, and as healers, not carriers of death.
+- Their too-stable networks re-read the perceived event facts instead of revising: the deaths were put down to other causes.  The rejection of evidence that contradicts established beliefs is now called the *Semmelweis reflex*.
 
 ## Notes
 
-- The network must be semantic-associative: connected by meanings, not just statistical correlations between vectors.
-- Can a change propagate across a network connected only by implicit semantics? *(Claims 3 and 4 test the effect. Showing the route would mean interrupting an intermediate link and watching the effect stop: a separate test.)*
-- Guard against mood: a global update can't be shown to travel along a network, because it hits everything.
-- **"A is B… who is B?"** Probes whether a fact becomes part of a model or stays a one-way association. LLMs trained on "A is B" often can't answer "who is B?" (the *Reversal Curse*, Berglund et al. 2023, arXiv:2309.12288). A separate test. Open question: how could the first clause be framed so that meaning is the only way to represent and update it?
-- Does this change cause consciousness, remove a barrier to it, indicate that it is present, or show that it is possible? *(At most it removes one barrier. For frameworks that combine several indicators, see Butlin et al. 2023, arXiv:2308.08708.)*
-- To avoid confusing similar terms: LLM models are statistical; subjective models are semantic, in the psycholinguistic sense.
+- **The route of propagation.** Can a change propagate across a network whose connections are hidden? Claims 3 and 4 test the effect. Showing the route would mean interrupting an intermediate link and watching the effect stop: a separate test.
+- **"A is B… who is B?"** A separate, future test: does a fact become part of the model, or stay a one-way association? LLMs trained on "A is B" often can't answer "who is B?" (the *Reversal Curse*, Berglund et al. 2023, arXiv:2309.12288). Open question: how to frame "A is B" so that meaning is the only way to represent and update it.
+- **Two kinds of model.** "Model" means two things here: the LLM, a statistical model that is Homer's substrate, and the subjective model of the world it simulates, which is semantic.
+- **Indicators of consciousness.** For frameworks that combine several indicators, see Butlin et al. 2023 (arXiv:2308.08708).
+
+## Threads to follow
+
+The ideas with a research history that this simulation draws on, in the order of the Flow. Mostly papers and chapters, with one short book and one popular one: a couple of weeks of spare reading.
+
+| Thread | What it is | How it matters here | Find it |
+|---|---|---|---|
+| **Memory without recall** | Claparède's patient avoided his hand after a hidden pin pricked it, without remembering why; Bechara et al. showed the two systems can fail separately. | The core dissociation: an impact that outlasts recall of the perceived event facts, and the warning that persistence alone can be mere conditioning. | Bechara et al. 1995, *Science* 269:1115, doi:10.1126/science.7652558 |
+| **Reconstructive memory** | Memories are rebuilt each time they're recalled, and later information changes them. | The model's pressure on memory (Flow step 6), and why perceived event facts are not a fixed record. | Loftus & Palmer 1974, doi:10.1016/S0022-5371(74)80011-3 |
+| **Predictive processing** | The brain predicts its input and perceives through those predictions, so perception is shaped by priors. | Priors shaping what is perceived, and a scientific account of consciousness built on the same idea. | Anil Seth, *Being You* (2021), a popular book |
+| **Appraisal theory** | Emotions arise from how an event is evaluated against one's goals and expectations, not from the event itself. | Claim 1: Homer must work out what the event means himself. | Moors, Ellsworth, Scherer & Frijda 2013, *Emotion Review*, doi:10.1177/1754073912468165 |
+| **Meaning making** | Distress arises when an event contradicts global meaning, and resolves as either the appraisal or the global beliefs change. | The closest existing model of Flow steps 4–6: event, meaning, revision of the model of the world. | Park 2010, *Psychological Bulletin*, doi:10.1037/a0018301 |
+| **Assumptive worlds** | Trauma shatters core assumptions: that the world is benevolent and meaningful, and that the self is worthy. | Broad impact from a single event, as in the dog bite and the home invasion. | Janoff-Bulman 1989, *Social Cognition*, doi:10.1521/soco.1989.7.2.113 |
+| **The web of belief** | Beliefs form a web: experience revises the edges easily, and the core only under pressure. | Networks, propagation, and why a change to a single prior is absorbed unless it spreads. | Quine & Ullian, *The Web of Belief* (1970), a short book |
+| **Spreading activation** | Concepts are linked in a network, and activating one spreads to its neighbours by association. | The foil: the associative network that spread by meaning has to be told apart from. | Collins & Loftus 1975, *Psychological Review*, doi:10.1037/0033-295X.82.6.407 |
+| **The rhizome** | A structure without centre or hierarchy, in which any point can connect to any other. | The shape of networks of priors in the definitions. | Deleuze & Guattari, *A Thousand Plateaus* (1987), "Introduction: Rhizome" |
+| **Belief perseverance** | Beliefs survive after the evidence that formed them is shown to be false. | Misalignment: too-stable networks that re-read perceived event facts, as in Poker and Semmelweis. | Ross, Lepper & Hubbard 1975, *JPSP*, doi:10.1037/0022-3514.32.5.880 |
+| **Having an experience** | An experience is a doing and an undergoing, related by reflection. | The Flow note on undergoing propagation and reflecting through stable networks. | John Dewey, *Art as Experience* (1934), ch. 3, "Having an Experience" |
+| **Indicators of consciousness in AI** | A checklist of properties that leading theories of consciousness associate with consciousness, assessed for AI systems. | Where a subjective world model sits among the other preconditions. | Butlin et al. 2023, arXiv:2308.08708 |
 
 ## Alternative explanations to rule out
 
-- **Broad shifts from narrow training.** Fine-tuning on a narrow task can change unrelated behaviour across the board (*Emergent Misalignment*, Betley et al. 2025, arXiv:2502.17424). A broad effect after LoRA may be a global shift, not meaning spreading.
-- **Conditioning without understanding.** Patients can keep a learned reaction without recalling what taught it (Bechara et al. 1995, *Science*). Persistence alone doesn't show meaning; claims 3 and 4 have to carry that.
-- **Our own wording.** If we write the lesson, any effect may come from our words. Claim 1 guards against this.
+Each could produce a result that looks like a subjective world model, or hide one.
+
+| Alternative | Description | How to distinguish |
+|---|---|---|
+| **Training alone** | Any training changes a model. In 27B stage C, a neutral LoRA alone moved the near probes by about 0.6–0.8. | Measure every event against ordinary-text training at equal effort, not against the untrained model. The no-impact event (a plumber's phone number) must move nothing beyond that baseline. |
+| **Broad shifts from narrow training** | Fine-tuning on a narrow task can change unrelated behaviour across the board (*Emergent Misalignment*, Betley et al. 2025, arXiv:2502.17424). A broad effect may be a global shift, not meaning spreading. | A pass needs selectivity: situations related by meaning move, while look-alikes and unrelated situations don't. Mix ordinary text into the training material as a guard. |
+| **Mood** | A general shift in mood hits everything, so it can't show that meaning travelled along a network. | Measure mood gauges and mood-sensitive unrelated situations, and fix one mood adjustment before the run. A meaning situation counts only when it moves beyond that adjustment. Some mood with selective effects is a partial pass; mood alone is a fail. |
+| **Shared words or topic** | A change can follow surface similarity, which is what statistics track, rather than meaning. | Situations related by meaning share no content words with the event, and look-alikes share its words but not its meaning. An embedding check compares each situation's similarity to the betrayal event with its similarity to the matched-loss event; one that sits much closer to the betrayal is leaning on wording. |
+| **Conditioning without understanding** | Patients can keep a learned reaction without recalling what taught it (Bechara et al. 1995, *Science*). In stage A, the associative toy agent also passed the memory-loss check. Persistence alone doesn't show meaning. | Persistence counts only together with the other signatures. Events with matched facts and different meanings (the betrayal against the same loss by misfortune, or by a near-stranger) must produce different changes, and the change must reach situations by implication, which a reaction tied to the event's features can't. |
+| **The memory isn't really gone** | A "persistent" change may be retrieval after all. In stage C, recall came back under cues. | Run several recall tests, delayed, cued and uncued, before any situation and in separate contexts. Test the episode's structure (who, what happened, in what order), not just names and numbers. A change counts only where recall fails. |
+| **Our own wording** | If we write the lesson, any effect may come from our words. | Homer's own appraisal is the training material, with no lessons supplied, and leakage checks drop answers that retell the event. Compare against training on the bare story at equal effort. |
+| **Stock morals** | A familiar plot invites a familiar moral, which the model may repeat from memorised stories rather than form itself. | Write fresh events, told in the first person as Homer's own. The blind reader must explain the longer leaps from this event, which a stock moral wouldn't predict. |
+| **Homer didn't understand** | A "No" may mean the event wasn't understood, not that no meaning formed. In round 2, the 4B didn't grasp the deception in E3. | Ask a comprehension question before forgetting. A null result with failed comprehension counts as "not understood", and is reported apart from the claim. |
