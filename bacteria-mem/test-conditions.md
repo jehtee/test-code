@@ -12,12 +12,11 @@ I believe consciousness requires a subjective world model, which is shaped by wh
 
 Demonstrating these would support a mechanism that, on this hypothesis, contributes to consciousness.
 
-**What favours meaning.** A statistical system can approximate meaning: its statistics are indexes of meaning, as smoke is of fire, without being meaning itself. So the question isn't what Homer is made of, but what his changes follow. Meaning is a better explanation than frequency, surface similarity, cached associations or mood when an event's impact:
+**What favours meaning.** Our working premise: statistics are at most indexes of meaning, as smoke is of fire. The test doesn't depend on it. The question isn't what Homer is made of, but what his changes follow. Meaning is a better explanation than frequency, surface similarity, cached associations or mood when an event's impact:
 
 - differs from that of an event with the same outcome but a different meaning
 - differs between Homer and Herb, his double with a different history, given the same event
 - reaches situations linked to the event only by implication, while skipping look-alikes
-- doesn't scale with repetition
 - persists after the episode can no longer be recalled
 
 ## Flow
@@ -39,10 +38,10 @@ Let's call the test case "Homer" and assume that Homer starts with a subjective 
 
 Notes On Flow:
 
-- An impact on a single prior is easily overwhelmed by the network's pull toward stability: absorbed as reinforcement, or faded against stronger contrary priors. An impact lasts when it propagates and gains support across the network. Propagating doesn't mean changing every connected prior: some are reinforced, some resist.
+- An impact on a single prior is easily overwhelmed by the network's pull toward stability: absorbed as reinforcement of the network as it is, or faded against stronger contrary priors. An impact lasts when it propagates and gains support across the network. Propagating doesn't mean changing every connected prior: some are reinforced, some resist.
 - The impact on priors, networks, model and consciousness should outlast Homer's memories of the perceived event facts, whether those memories have faded or changed.
 - Dewey says that an experience requires doing and undergoing, related by reflection. We undergo the propagation of impacts to priors as change, and we reflect through the stable networks, as propagation and network stability push on each other asymmetrically.
-- Learning is when the ontological aligns with the event, and delusion is when they mis-align -- to be clear this is not about right or wrong, it is about alignment.  Mis-alignments are not necessarily bugs. Some are useful, even beneficial.
+- Learning is when consciousness comes to understand and respond to the external event as it is, and delusion is when it mis-aligns. This is about alignment, not right or wrong. Mis-alignments are not bugs in the simulation: they are part of the dynamics.
 
 ## Test
 
@@ -146,14 +145,14 @@ A child who loves dogs is bitten by a dog in the park.  Long after the event its
 - One bite outweighs every friendly dog before it, and spreads to the child's judgement of all dogs.
 - The park was a safe place, and then it wasn't, so danger lurks in places that seemed safe.
 - The child's expectation that adults, especially parents, will protect them is contradicted by the adults who did nothing to prevent the bite, and the child begins to question it.
-- A single event has no statistical precedent, so this spread is carried by meaning, in a way particular to this child.
+- A single bite rules out repetition as the cause. What points to meaning is where it spreads: to the child's sense of safety and trust in adults, which a fear of dogs alone wouldn't reach.
 
 #### Betrayal: meaning, not facts
 
 A favourite uncle borrowed money from his nephew, then left the country with it.
 
 - This is not just a loss of money, but a betrayal that contradicts the nephew's view of other people and how far they can be trusted.
-- The uncle had always been trustworthy, so nothing in the nephew's experience predicted this.  As a one-shot, its impact can't come from frequency.  It comes from what it means, and it reaches beyond the uncle: the nephew starts checking what his sister tells him.
+- The uncle had always been trustworthy, so nothing in the nephew's experience predicted this.  As a one-shot, its impact can't come from repeated exposure. What points to meaning is where it reaches: beyond the uncle, to what his sister tells him.
 - Contrast this with the same money is lost when a company he had invested in collapses from changing market conditions.  The outcome is the same, but nothing about trust in people is contradicted, so the impact stays with money and banks.
 
 #### Poker: misalignment of the self
