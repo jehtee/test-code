@@ -7,7 +7,7 @@ Code and documents for a Claparède-style memory test on LLMs. The question it a
 | File | What it holds |
 |---|---|
 | [test-conditions.md](docs-pub/test-conditions.md) | The concepts: the claim and its three signatures, the flow, the five test claims and the verdict, alternative explanations, working definitions |
-| [design.md](docs-pub/design.md) | How each round builds the test: events, probes, controls, checks, build choices |
+| [design.md](design.md) | How each round builds the test: events, probes, controls, checks, build choices |
 | [results.md](results.md) | What each stage found |
 
 ## The stages
