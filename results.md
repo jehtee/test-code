@@ -1,6 +1,6 @@
 # Results
 
-What each stage found. The design behind each stage is in [design.md](design.md).
+What each stage found. The design behind each stage is in [design.md](docs-pub/design.md).
 
 ## Stage A: toy agents
 
