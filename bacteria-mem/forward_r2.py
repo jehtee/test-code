@@ -44,7 +44,7 @@ def predict(url, model, event):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--url", default="http://127.0.0.1:8080/v1")
-    ap.add_argument("--model", default="mlx-community/Qwen3.5-122B-A10B-4bit")
+    ap.add_argument("--model", default="mlx-community/gemma-4-31b-it-4bit")
     ap.add_argument("--out", default="results_r2/forward.json")
     args = ap.parse_args()
     if os.path.exists(args.out):
