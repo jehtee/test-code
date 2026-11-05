@@ -1,5 +1,7 @@
 # Simulating a Subjective Model of the World 01
 
+Repo: <https://github.com/jehtee/test-smw-01/tree/main>
+
 This is guerrilla exploration: make a thing, poke it, see what happens.
 
 ## Claim
