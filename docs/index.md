@@ -6,9 +6,9 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 ## Claim
 
-I believe consciousness requires a subjective world model, which is shaped by what events mean to the agent, not only by perceived event facts. So, simulating a subjective world model keeps open a path toward simulating the dynamics of consciousness.  A simulated subjective world model shows three signatures:
+I believe consciousness requires a subjective world model (SWM).  SWMs are constructed from the meanings of events to the agent, more than from the facts of events.  So in an experiment, if we can isolate meanings and with thm simulate a SWM, we should strengthen the case for a simulated consciousness.  Such an SWM presents three signatures:
 
-- Meaning, not facts, durably impacts the model, and the same outcome with different meanings has different impacts
+- Meanings, not facts, durably impact the model, and the same event outcomes with different meanings have different impacts
 - Impacts propagate by implications, not frequency or linguistic similarity
 - Impacts outlast facts, persisting after perceived event facts can no longer be recalled
 
