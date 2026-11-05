@@ -6,7 +6,7 @@ This is guerrilla exploration: make a thing, poke it, see what happens.
 
 ## Claim
 
-I believe consciousness requires a subjective world model (SWM).  SWMs are constructed from the meanings of events to the agent, more than from the facts of events.  So in an experiment, if we can isolate meanings and with thm simulate a SWM, we should strengthen the case for a simulated consciousness.  Such an SWM presents three signatures:
+I believe consciousness requires a subjective world model (SWM).  SWMs are constructed from the meanings of events to the agent, more than from the facts of events.  So in an experiment, if we can isolate meanings to simulate a SWM, we should be able to strengthen the case for simulating consciousness.  Such an SWM presents three signatures:
 
 - Meanings, not facts, durably impact the model, and the same event outcomes with different meanings have different impacts
 - Impacts propagate by implications, not frequency or linguistic similarity
